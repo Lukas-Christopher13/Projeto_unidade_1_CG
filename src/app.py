@@ -14,11 +14,12 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 from utils.windowtk import WindowTk
+from utils.shape import Shape
 
 TRIANGLE = np.array([
-    [ 0.0,  0.5, 0.0, 1.0],
-    [-0.5, -0.5, 0.0, 1.0],
-    [ 0.5, -0.5, 0.0, 1.0],
+    [-0.75,  1.0, 0.0, 1.0],
+    [-1.0,   0.5, 0.0, 1.0],
+    [-0.5,   0.5, 0.0, 1.0]
 ], dtype=np.float32)
 
 SQUARE = np.array([
@@ -27,6 +28,10 @@ SQUARE = np.array([
     [ 0.5, -0.5, 0.0, 1.0],  
     [ 0.5,  0.5, 0.0, 1.0],  
 ], dtype=np.float32)
+
+
+traingle_shape = Shape(TRIANGLE)
+square_shape = Shape(SQUARE)
 
 
 WIDTH = 800
@@ -44,19 +49,26 @@ def main():
     window.pack(side=RIGHT, expand=True, fill=BOTH, padx=0, pady=0)
 
     side_frame = Frame(root)
-    side_frame.pack(side=LEFT, fill=Y, padx=0, pady=0) 
+    side_frame.pack(side=LEFT, fill=Y, padx=0, pady=0)
 
     def action():
-        window.update(GL_TRIANGLE_FAN, SQUARE)
+        window.add_shape(traingle_shape)
 
     def clear():
-        window.clear()
+        traingle_shape.clear()
+        square_shape.clear()
+
+    def add_shape():
+        window.add_shape(square_shape)
 
     btn_action = Button(side_frame, text="action", command=action)
     btn_action.grid(row=0, column=0, columnspan=2, pady=10)
 
     btn_clear = Button(side_frame, text="clear", command=clear)
     btn_clear.grid(row=1, column=0, columnspan=2, pady=10)
+
+    btn_add_shape = Button(side_frame, text="add shape", command=add_shape)
+    btn_add_shape.grid(row=2, column=0, columnspan=2, pady=10)
 
     window.animate = 1
     window.mainloop()
