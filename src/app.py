@@ -21,29 +21,26 @@ from src.shapes_lateral_bar import ShapesLateralBar
 
 from src.backgrounds import cartesiam_plane
 
-
-WIDTH = 800
-HEIGHT = 600
-
-
 def main():
     global vertices
     vertices = []
 
     root = Tk()
     root.title("testes")
+    root.attributes("-zoomed", True)
 
     side_frame = Frame(root)
     side_frame.pack(side=LEFT, fill=Y, padx=0, pady=0)
 
-    window = WindowTk(root, width=WIDTH, height=HEIGHT, bd=0, highlightthickness=0)
+    window = WindowTk(root, bd=0, highlightthickness=0)
     window.pack(side=LEFT, expand=True, fill=BOTH, padx=0, pady=0)
     window.add_background(cartesiam_plane) #passivel de melhorias
-
-    shapes_lateral_bar = ShapesLateralBar(root)
+    
+    shapes_lateral_bar = ShapesLateralBar(root, window_tk=window)
+    window.add_listener(shapes_lateral_bar)
 
     def action():
-        pass
+        shapes_lateral_bar.update()
 
     def clear():
         window.clear_all()

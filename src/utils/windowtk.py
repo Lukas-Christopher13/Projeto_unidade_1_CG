@@ -1,13 +1,16 @@
+from typing import List
+
 from tkinter import *
 from pyopengltk import OpenGLFrame
 from OpenGL.GL import *
 
 from .shape import Shape
 
-
+#singleton
 class WindowTk(OpenGLFrame):
-    #tipar
-    shapes = []
+    #adicionar observer
+    shapes: List[Shape] = []
+    listeners = []
     backgrounds = []
     current_shape = 0
     gl_option = GL_POINTS
@@ -33,6 +36,7 @@ class WindowTk(OpenGLFrame):
 
     def add_shape(self, shape: Shape):
         self.shapes.append(shape)
+        self.notify()
 
     def add_background(self, background):
         self.backgrounds.append(background)
@@ -41,3 +45,10 @@ class WindowTk(OpenGLFrame):
     def clear_all(self):
         for shape in self.shapes:
             shape.clear() 
+
+    def add_listener(self, listener):
+        self.listeners.append(listener)
+
+    def notify(self):
+        for listener in self.listeners:
+            listener.update()
