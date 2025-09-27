@@ -56,7 +56,6 @@ def main():
 
     shapes_lateral_bar = ShapesLateralBar(root)
 
-   
     def action():
         window.add_shape(traingle_shape)
 

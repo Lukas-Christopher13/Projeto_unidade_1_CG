@@ -7,17 +7,25 @@ class ContextMenu(Frame):
         super().__init__(parent, **kwargs)
         self.parent = parent
 
-        self.context_menu = Menu(parent, tearoff=0)
-        self.context_menu.add_command(label="Triangulo", command=self.create_triangle)
-        self.context_menu.add_command(label="retas", command=self.command)
-        self.context_menu.add_command(label="tranformaçẽos", command=self.command)
-        self.context_menu.add_command(label="definir ponto", command=self.command)
-        self.context_menu.add_command(label="3D", command=self.command)
+        self.contexte_menu = Menu(parent, tearoff=0)
+        self.sub_menu = Menu(self.contexte_menu, tearoff=0)
+
+        self.sub_menu.add_command(label="Pixel", command=self.command)
+        self.sub_menu.add_command(label="Line (DDA)", command=self.command)
+        self.sub_menu.add_command(label="Line (PM)", command=self.command)
+        self.sub_menu.add_command(label="Triangle", command=self.command)
+        self.sub_menu.add_command(label="Square", command=self.command)
+        
+        self.contexte_menu.add_cascade(label="shapes", menu=self.sub_menu)
 
         self.parent.bind("<Button-3>", self.show_menu)
 
     def show_menu(self, event):
-        self.context_menu.tk_popup(event.x_root, event.y_root)
+        self.contexte_menu.tk_popup(event.x_root, event.y_root)
+
+    def create_shape(self):
+        
+        pass
 
     def create_triangle(self):
         tringle = [
