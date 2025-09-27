@@ -19,6 +19,8 @@ from utils.shape import Shape
 from src.contexte_menu import ContextMenu
 from src.shapes_lateral_bar import ShapesLateralBar
 
+from src.backgrounds import cartesiam_plane
+
 TRIANGLE = np.array([
     [-0.75,  1.0, 0.0, 1.0],
     [-1.0,   0.5, 0.0, 1.0],
@@ -53,6 +55,7 @@ def main():
 
     window = WindowTk(root, width=WIDTH, height=HEIGHT, bd=0, highlightthickness=0)
     window.pack(side=LEFT, expand=True, fill=BOTH, padx=0, pady=0)
+    window.add_background(cartesiam_plane) #passivel de melhorias
 
     shapes_lateral_bar = ShapesLateralBar(root)
 

@@ -7,8 +7,8 @@ class ContextMenu(Frame):
         super().__init__(parent, **kwargs)
         self.parent = parent
 
-        self.contexte_menu = Menu(parent, tearoff=0)
-        self.sub_menu = Menu(self.contexte_menu, tearoff=0)
+        self.context_menu = Menu(parent, tearoff=0)
+        self.sub_menu = Menu(self.context_menu, tearoff=0)
 
         self.sub_menu.add_command(label="Pixel", command=self.command)
         self.sub_menu.add_command(label="Line (DDA)", command=self.command)
@@ -16,12 +16,12 @@ class ContextMenu(Frame):
         self.sub_menu.add_command(label="Triangle", command=self.command)
         self.sub_menu.add_command(label="Square", command=self.command)
         
-        self.contexte_menu.add_cascade(label="shapes", menu=self.sub_menu)
+        self.context_menu.add_cascade(label="shapes", menu=self.sub_menu)
 
         self.parent.bind("<Button-3>", self.show_menu)
 
     def show_menu(self, event):
-        self.contexte_menu.tk_popup(event.x_root, event.y_root)
+        self.context_menu.tk_popup(event.x_root, event.y_root)
 
     def create_shape(self):
         

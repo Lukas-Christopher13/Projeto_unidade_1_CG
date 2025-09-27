@@ -8,7 +8,7 @@ class ShapesLateralBar(Frame):
         lateralbar = Frame(self.parent, width=150)
         lateralbar.pack(side=LEFT, fill=BOTH, padx=0, pady=0)
 
-        main_frame = Frame(lateralbar, bg="#ffffff")
+        main_frame = Frame(lateralbar)
         main_frame.pack(side=LEFT, fill=BOTH, expand=True)
 
         listbox = Listbox(main_frame)

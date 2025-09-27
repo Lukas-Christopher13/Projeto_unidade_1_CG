@@ -1,5 +1,3 @@
-import numpy as np
-
 from tkinter import *
 from pyopengltk import OpenGLFrame
 from OpenGL.GL import *
@@ -9,6 +7,7 @@ from .shape import Shape
 
 class WindowTk(OpenGLFrame):
     shapes = []
+    backgrounds = []
     current_shape = 0
     gl_option = GL_POINTS
     
@@ -21,9 +20,10 @@ class WindowTk(OpenGLFrame):
         glClearColor(1, 1, 1, 1)
 
     def redraw(self):
-        #criar um objeto shape e adiconar a um shape list
-        #cada shape object sera rendereizado aqui
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+        for background in self.backgrounds:
+            background()
 
         for shape in self.shapes:
             shape.render()
@@ -32,3 +32,6 @@ class WindowTk(OpenGLFrame):
 
     def add_shape(self, shape: Shape):
         self.shapes.append(shape)
+
+    def add_background(self, background):
+        self.backgrounds.append(background)
