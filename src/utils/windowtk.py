@@ -6,6 +6,7 @@ from .shape import Shape
 
 
 class WindowTk(OpenGLFrame):
+    #tipar
     shapes = []
     backgrounds = []
     current_shape = 0
@@ -35,3 +36,8 @@ class WindowTk(OpenGLFrame):
 
     def add_background(self, background):
         self.backgrounds.append(background)
+
+    #delete e remover da lista
+    def clear_all(self):
+        for shape in self.shapes:
+            shape.clear() 

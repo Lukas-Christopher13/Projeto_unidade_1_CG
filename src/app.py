@@ -21,23 +21,6 @@ from src.shapes_lateral_bar import ShapesLateralBar
 
 from src.backgrounds import cartesiam_plane
 
-TRIANGLE = np.array([
-    [-0.75,  1.0, 0.0, 1.0],
-    [-1.0,   0.5, 0.0, 1.0],
-    [-0.5,   0.5, 0.0, 1.0]
-], dtype=np.float32)
-
-SQUARE = np.array([
-    [-0.5,  0.5, 0.0, 1.0],  
-    [-0.5, -0.5, 0.0, 1.0],  
-    [ 0.5, -0.5, 0.0, 1.0],  
-    [ 0.5,  0.5, 0.0, 1.0],  
-], dtype=np.float32)
-
-
-traingle_shape = Shape(TRIANGLE)
-square_shape = Shape(SQUARE)
-
 
 WIDTH = 800
 HEIGHT = 600
@@ -60,14 +43,13 @@ def main():
     shapes_lateral_bar = ShapesLateralBar(root)
 
     def action():
-        window.add_shape(traingle_shape)
+        pass
 
     def clear():
-        traingle_shape.clear()
-        square_shape.clear()
+        window.clear_all()
 
     def add_shape():
-        window.add_shape(square_shape)
+        pass
 
     btn_action = Button(side_frame, text="action", command=action)
     btn_action.grid(row=0, column=0, columnspan=2, pady=10)

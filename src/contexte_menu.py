@@ -1,6 +1,7 @@
 from tkinter import *
 
 from utils.shape import Shape
+from src.shape_factory import ShapeFactory
 
 class ContextMenu(Frame):
     def __init__(self, parent, **kwargs):
@@ -9,32 +10,29 @@ class ContextMenu(Frame):
 
         self.context_menu = Menu(parent, tearoff=0)
         self.sub_menu = Menu(self.context_menu, tearoff=0)
-
-        self.sub_menu.add_command(label="Pixel", command=self.command)
-        self.sub_menu.add_command(label="Line (DDA)", command=self.command)
-        self.sub_menu.add_command(label="Line (PM)", command=self.command)
-        self.sub_menu.add_command(label="Triangle", command=self.command)
-        self.sub_menu.add_command(label="Square", command=self.command)
         
-        self.context_menu.add_cascade(label="shapes", menu=self.sub_menu)
+        self.sub_menu.add_command(label="Triangle", command=lambda: self.create_shape(1))
+        self.sub_menu.add_command(label="Square", command=lambda: self.create_shape(2))
+        self.sub_menu.add_command(label="Rectangle", command=lambda: self.create_shape(3))
+        
+        self.context_menu.add_cascade(label="Shapes", menu=self.sub_menu)
 
         self.parent.bind("<Button-3>", self.show_menu)
 
     def show_menu(self, event):
         self.context_menu.tk_popup(event.x_root, event.y_root)
 
-    def create_shape(self):
-        
-        pass
-
-    def create_triangle(self):
-        tringle = [
-            [-0.75,  1.0, 0.0, 1.0],
-            [-1.0,   0.5, 0.0, 1.0],
-            [-0.5,   0.5, 0.0, 1.0]
-        ]
-
-        self.parent.add_shape(Shape(tringle))
+    def create_shape(self, type: str):
+        match type:
+            case 1:
+                shape = ShapeFactory.triangle()
+            case 2:
+                shape = ShapeFactory.square()
+            case 3:
+                shape = ShapeFactory.rectangle()   
+            case _:
+                print("Nenuma forma foi selecionada")
+        self.parent.add_shape(shape)
 
     def command():
         pass
