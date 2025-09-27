@@ -10,8 +10,8 @@ class Shape():
     gl_option = GL_TRIANGLE_FAN
     gl_color = np.empty([0, 0, 1], dtype=np.float32)
 
-    def __init__(self, np_array):
-        self.vertex = np_array
+    def __init__(self, matrix):
+        self.vertex = np.array(matrix, dtype=np.float32)
     
     def render(self):
         glColor3f(0,0,1)

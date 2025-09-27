@@ -16,6 +16,8 @@ from OpenGL.GLU import *
 from utils.windowtk import WindowTk
 from utils.shape import Shape
 
+from src.contexte_menu import ContextMenu
+
 TRIANGLE = np.array([
     [-0.75,  1.0, 0.0, 1.0],
     [-1.0,   0.5, 0.0, 1.0],
@@ -69,6 +71,8 @@ def main():
 
     btn_add_shape = Button(side_frame, text="add shape", command=add_shape)
     btn_add_shape.grid(row=2, column=0, columnspan=2, pady=10)
+
+    contexte_menu = ContextMenu(window)
 
     window.animate = 1
     window.mainloop()
