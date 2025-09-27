@@ -17,6 +17,7 @@ from utils.windowtk import WindowTk
 from utils.shape import Shape
 
 from src.contexte_menu import ContextMenu
+from src.shapes_lateral_bar import ShapesLateralBar
 
 TRIANGLE = np.array([
     [-0.75,  1.0, 0.0, 1.0],
@@ -47,12 +48,15 @@ def main():
     root = Tk()
     root.title("testes")
 
-    window = WindowTk(root, width=WIDTH, height=HEIGHT, bd=0, highlightthickness=0)
-    window.pack(side=RIGHT, expand=True, fill=BOTH, padx=0, pady=0)
-
     side_frame = Frame(root)
     side_frame.pack(side=LEFT, fill=Y, padx=0, pady=0)
 
+    window = WindowTk(root, width=WIDTH, height=HEIGHT, bd=0, highlightthickness=0)
+    window.pack(side=LEFT, expand=True, fill=BOTH, padx=0, pady=0)
+
+    shapes_lateral_bar = ShapesLateralBar(root)
+
+   
     def action():
         window.add_shape(traingle_shape)
 
