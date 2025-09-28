@@ -46,6 +46,13 @@ class WindowTk(OpenGLFrame):
         for shape in self.shapes:
             shape.clear() 
 
+    def delete_shape(self, id):
+        shape = self.shapes[id]
+        shape.clear()
+
+        self.shapes.remove(shape)
+        self.notify()
+
     def add_listener(self, listener):
         self.listeners.append(listener)
 
