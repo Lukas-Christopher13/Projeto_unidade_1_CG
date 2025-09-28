@@ -1,12 +1,13 @@
 from tkinter import *
 
+from src.utils.windowtk import WindowTk
 from src.edite_shape import EditShape
 
 class ShapesLateralBar(Frame):
-    def __init__(self, root, gl_window, **kwargs):
+    def __init__(self, root, gl_window: WindowTk, **kwargs):
         super().__init__(root, **kwargs)
         self.root = root
-        self.widown_tk = gl_window
+        self.gl_window = gl_window
 
         lateralbar = Frame(self.root, width=150)
         lateralbar.pack(side=TOP, fill=BOTH, padx=0, pady=0)
@@ -23,32 +24,16 @@ class ShapesLateralBar(Frame):
 
         self.listbox.bind("<<ListboxSelect>>", self.select_shape)
 
-        ############### mov to edit shape ######################
-        frame = Frame(self.root, height=100)
-        frame.pack(side=BOTTOM, fill=BOTH, padx=0, pady=0)
-
-        btn_delete = Button(frame, text="delete", command=lambda: self.delete(self.selected))
-        btn_delete.pack(pady=5)
-
-        btn_change_color = Button(frame, text="change_color", command=self.test)
-        btn_change_color.pack(pady=5)
-
+        edit_shape = EditShape(self.root, self.gl_window)
 
     def update(self):
         self.listbox.delete(0, "end")
-        for id, valor in enumerate(self.widown_tk.shapes):
+        for id, valor in enumerate(self.gl_window.shapes):
             self.listbox.insert("end", str(id))
 
     def select_shape(self, event):
         select = self.listbox.curselection()
         if select:
-            print(select)
             indice = select[0]
-            valor = self.listbox.get(indice)
-            self.selected = int(valor)
-    
-    def delete(self, id):
-        self.widown_tk.delete_shape(id)
-        
-    def test():
-        pass
+            valor = int(self.listbox.get(indice))
+            self.gl_window.set_selected(valor)

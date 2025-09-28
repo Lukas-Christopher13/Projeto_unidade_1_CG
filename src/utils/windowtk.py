@@ -8,12 +8,9 @@ from .shape import Shape
 
 #singleton
 class WindowTk(OpenGLFrame):
-    #adicionar observer
     shapes: List[Shape] = []
     listeners = []
     backgrounds = []
-    current_shape = 0
-    gl_option = GL_POINTS
     
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
@@ -46,8 +43,8 @@ class WindowTk(OpenGLFrame):
         for shape in self.shapes:
             shape.clear() 
 
-    def delete_shape(self, id):
-        shape = self.shapes[id]
+    def delete_shape(self):
+        shape = self.shapes[self.selected]
         shape.clear()
 
         self.shapes.remove(shape)
@@ -59,3 +56,6 @@ class WindowTk(OpenGLFrame):
     def notify(self):
         for listener in self.listeners:
             listener.update()
+
+    def set_selected(self, selected: int):
+        self.selected = selected
