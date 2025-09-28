@@ -1,14 +1,14 @@
 from tkinter import *
 
-from utils.shape import Shape
+from src.utils.windowtk import WindowTk
 from src.shape_factory import ShapeFactory
 
 class ContextMenu(Frame):
-    def __init__(self, parent, **kwargs):
-        super().__init__(parent, **kwargs)
-        self.parent = parent
+    def __init__(self, gl_window: WindowTk, **kwargs):
+        super().__init__(gl_window, **kwargs)
+        self.gl_window = gl_window
 
-        self.context_menu = Menu(parent, tearoff=0)
+        self.context_menu = Menu(gl_window, tearoff=0)
         self.sub_menu = Menu(self.context_menu, tearoff=0)
         
         self.sub_menu.add_command(label="Triangle", command=lambda: self.create_shape(1))
@@ -17,7 +17,7 @@ class ContextMenu(Frame):
         
         self.context_menu.add_cascade(label="Shapes", menu=self.sub_menu)
 
-        self.parent.bind("<Button-3>", self.show_menu)
+        self.gl_window.bind("<Button-3>", self.show_menu)
 
     def show_menu(self, event):
         self.context_menu.tk_popup(event.x_root, event.y_root)
@@ -32,7 +32,7 @@ class ContextMenu(Frame):
                 shape = ShapeFactory.rectangle()   
             case _:
                 print("Nenuma forma foi selecionada")
-        self.parent.add_shape(shape)
+        self.gl_window.add_shape(shape)
 
     def command():
         pass

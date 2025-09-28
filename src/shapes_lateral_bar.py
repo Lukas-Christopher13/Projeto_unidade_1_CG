@@ -3,12 +3,12 @@ from tkinter import *
 from src.edite_shape import EditShape
 
 class ShapesLateralBar(Frame):
-    def __init__(self, parent, window_tk, **kwargs):
-        super().__init__(parent, **kwargs)
-        self.parent = parent
-        self.widown_tk = window_tk
+    def __init__(self, root, gl_window, **kwargs):
+        super().__init__(root, **kwargs)
+        self.root = root
+        self.widown_tk = gl_window
 
-        lateralbar = Frame(self.parent, width=150)
+        lateralbar = Frame(self.root, width=150)
         lateralbar.pack(side=TOP, fill=BOTH, padx=0, pady=0)
 
         main_frame = Frame(lateralbar)
@@ -23,8 +23,8 @@ class ShapesLateralBar(Frame):
 
         self.listbox.bind("<<ListboxSelect>>", self.select_shape)
 
-        #####################################
-        frame = Frame(self.parent, height=100)
+        ############### mov to edit shape ######################
+        frame = Frame(self.root, height=100)
         frame.pack(side=BOTTOM, fill=BOTH, padx=0, pady=0)
 
         btn_delete = Button(frame, text="delete", command=lambda: self.delete(self.selected))
