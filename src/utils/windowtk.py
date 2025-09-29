@@ -59,3 +59,6 @@ class WindowTk(OpenGLFrame):
 
     def set_selected(self, selected: int):
         self.selected = selected
+
+    def get_selected(self):
+        return self.shapes[self.selected]

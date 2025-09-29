@@ -24,4 +24,15 @@ class Shape():
     def clear(self):
         self.vertex = np.empty((0, 4), dtype=np.float32)
 
+    def translate(self, x: np.float32, y: np.float32, z=0.0):
+        translation = np.array([
+            [1.0, 0.0, 0.0, x  ],
+            [0.0, 1.0, 0.0, y  ],
+            [0.0, 0.0, 1.0, z  ],
+            [0.0, 0.0, 0.0, 1.0]
+        ], dtype=np.float32)
+
+        self.vertex = self.vertex @ translation.T
+
+
     

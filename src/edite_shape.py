@@ -13,8 +13,20 @@ class EditShape(Frame):
         btn_delete = Button(frame, text="delete", command=self.delete)
         btn_delete.pack(pady=5)
 
-        btn_change_color = Button(frame, text="change_color", command=self.test)
+        btn_change_color = Button(frame, text="translate", command=self.translate)
         btn_change_color.pack(pady=5)
+
+        btn_to_origin = Button(frame, text="to origin", command=self.to_origin)
+        btn_to_origin.pack(pady=5)
+
+    def translate(self):
+        shape = self.gl_window.get_selected()
+        shape.translate(0.2, 0.2)
+
+    def to_origin(self):
+        shape = self.gl_window.get_selected()
+        first_point = shape.vertex[0]
+        shape.translate(-first_point[0], -first_point[1], -first_point[2])
 
     def delete(self):
         self.gl_window.delete_shape()
