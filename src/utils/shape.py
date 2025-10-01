@@ -1,5 +1,7 @@
 import numpy as np
 
+from math import cos, sin, radians
+
 from tkinter import *
 from OpenGL.GL import *
 
@@ -33,6 +35,19 @@ class Shape():
         ], dtype=np.float32)
 
         self.vertex = self.vertex @ translation.T
+
+    def rotation(self, angle: float):
+        r = radians(angle)
+
+        rotation = np.array([
+            [cos(r), -sin(r), 0.0, 0.0],
+            [sin(r),  cos(r), 0.0, 0.0],
+            [0.0, 0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0, 1.0]
+        ], dtype=np.float32)
+
+        self.vertex = self.vertex @ rotation.T
+
 
 
     
