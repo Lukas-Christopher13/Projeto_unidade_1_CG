@@ -6,7 +6,7 @@ from services.transformacoes import aplicar_translacao, aplicar_escala, aplicar_
 from services.visualizacao_opengl import OpenGLCanvas
 from screens.points_editor import PointsEditor
 
-from utils.CGmatriz import CGMatriz
+from utils.matrix_transform import CGMatriz
 from utils.points import normalize_points
 from utils.matrix import translation_matrix, scale_matrix, apply_matrix_point, multiply_matrices
 

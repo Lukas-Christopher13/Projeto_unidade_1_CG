@@ -1,6 +1,7 @@
 from tkinter import *
 
 from src.utils.windowtk import WindowTk
+from src.utils.matrix_transform import *
 
 from src.components.translate_frame import TranslateFrame
 from src.components.rotation_frame import RotationFrame
@@ -17,6 +18,9 @@ class EditShape(Frame):
         self.rotation_frame = RotationFrame(frame, command=self.rotation)
         
         #Remover Depois/Mover
+        btn_scaling = Button(frame, text="scaling", command=self.scaling)
+        btn_scaling.pack(side=BOTTOM)
+
         btn_to_origin = Button(frame, text="To Origin", command=self.to_origin)
         btn_to_origin.pack(side=BOTTOM)
 
@@ -24,26 +28,47 @@ class EditShape(Frame):
         btn_delete.pack(side=BOTTOM)
 
     def translate(self):
-        data = self.translate_frame.get_input()
+        x, y, z = self.translate_frame.get_input()
         shape = self.gl_window.get_selected()
-        shape.translate(
-            x=data[0],
-            y=data[1],
-            z=data[2]
-        )
+        
+        translate_ = translate(x, y, z)
+        shape.transform([translate_])
 
     def rotation(self):
         angle = self.rotation_frame.get_input()
         shape = self.gl_window.get_selected()
-        first_point = shape.vertex[0]
-        shape.translate(-first_point[0], -first_point[1], -first_point[2])
-        shape.rotation(angle)
-        shape.translate(first_point[0], first_point[1], first_point[2])
+        xm, ym, zm, wm = shape.mid_point_vertex() #melhorar esse nome
+
+        translate_to_center = translate(-xm, -ym, -zm)
+        rotation = basic_rotation(angle)
+        translate_to_inital_position = translate(xm, ym, zm)
+
+        shape.transform([
+            translate_to_center,
+            rotation,
+            translate_to_inital_position
+        ])
+
+    def scaling(self):
+        shape = self.gl_window.get_selected()
+        xm, ym, zm, wm = shape.mid_point_vertex() #melhorar esse nome
+
+        translate_to_center = translate(-xm, -ym, -zm)
+        scaling = basic_scaling(0.5, 0.5, 0.5) #implementar o componente
+        translate_to_inital_position = translate(xm, ym, zm)
+
+        shape.transform([
+            translate_to_center,
+            scaling,
+            translate_to_inital_position
+        ])
 
     def to_origin(self):
         shape = self.gl_window.get_selected()
-        first_point = shape.vertex[0]
-        shape.translate(-first_point[0], -first_point[1], -first_point[2])
+        xm, ym, zm, wm = shape.mid_point_vertex() #melhorar esse nome
+
+        to_center = translate(-xm, -ym, -zm)
+        shape.transform([to_center])
 
     def delete(self):
         self.gl_window.delete_shape()
