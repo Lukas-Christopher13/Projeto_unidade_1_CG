@@ -5,6 +5,7 @@ from src.utils.matrix_transform import *
 
 from src.components.translate_frame import TranslateFrame
 from src.components.rotation_frame import RotationFrame
+from src.components.scaling_frame import ScalingFrame
 
 class EditShape(Frame):
     def __init__(self, root, gl_window: WindowTk, **kwargs):
@@ -16,11 +17,8 @@ class EditShape(Frame):
 
         self.translate_frame = TranslateFrame(frame, command=self.translate)
         self.rotation_frame = RotationFrame(frame, command=self.rotation)
+        self.scaling_frame = ScalingFrame(frame, command=self.scaling)
         
-        #Remover Depois/Mover
-        btn_scaling = Button(frame, text="scaling", command=self.scaling)
-        btn_scaling.pack(side=BOTTOM)
-
         btn_to_origin = Button(frame, text="To Origin", command=self.to_origin)
         btn_to_origin.pack(side=BOTTOM)
 
@@ -50,11 +48,12 @@ class EditShape(Frame):
         ])
 
     def scaling(self):
+        x, y, z = self.scaling_frame.get_input()
         shape = self.gl_window.get_selected()
         xm, ym, zm, wm = shape.mid_point_vertex() #melhorar esse nome
 
         translate_to_center = translate(-xm, -ym, -zm)
-        scaling = basic_scaling(0.5, 0.5, 0.5) #implementar o componente
+        scaling = basic_scaling(x, y, z,) 
         translate_to_inital_position = translate(xm, ym, zm)
 
         shape.transform([
