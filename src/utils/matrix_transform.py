@@ -1,4 +1,3 @@
-import math
 from math import cos, sin, radians
 import numpy as np
 
@@ -25,6 +24,14 @@ def basic_rotation(angle: float):
 
     return rotation
 
+def scaling(vertex, sx: np.float32, sy: np.float32, sz=0.0):
+    x_mean, y_mean, z_mean, w_mean = vertex.mean(axis=0)
+    
+    vertex = vertex @ translate(-x_mean, -y_mean, -z_mean).T
+    vertex = vertex @ basic_scaling(sx, sy, sz).T
+    return vertex @ translate(x_mean, y_mean, z_mean)
+    
+
 def basic_scaling(sx: np.float32, sy: np.float32, sz=0.0):
     scaling = np.array([
         [sx, 0.0, 0.0, 0.0],
@@ -34,3 +41,10 @@ def basic_scaling(sx: np.float32, sy: np.float32, sz=0.0):
     ], dtype=np.float32)
 
     return scaling
+
+def aplay_transformation(vertex, steps: list):
+    print(vertex)
+    for i in steps:
+        vertex = vertex @ i.T
+        print(vertex)
+    return vertex

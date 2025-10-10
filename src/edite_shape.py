@@ -6,11 +6,15 @@ from src.utils.matrix_transform import *
 from src.components.translate_frame import TranslateFrame
 from src.components.rotation_frame import RotationFrame
 from src.components.scaling_frame import ScalingFrame
+from src.viewport import ViewPort
 
 class EditShape(Frame):
+    viewport = ViewPort(-0.9, -0.9, 0.9, 0.9) # singleton no arquivo de singletons!
+
     def __init__(self, root, gl_window: WindowTk, **kwargs):
         super().__init__(root, **kwargs)
         self.gl_window = gl_window
+        self.viewport.set_coordinate_space(0.0, 0.0, 0.5, 0.5)
 
         frame = Frame(root, height=100)
         frame.pack(side=TOP, fill=BOTH, padx=0, pady=0)
