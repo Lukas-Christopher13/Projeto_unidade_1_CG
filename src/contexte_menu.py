@@ -14,8 +14,10 @@ class ContextMenu(Frame):
         self.sub_menu.add_command(label="Triangle", command=lambda: self.create_shape(1))
         self.sub_menu.add_command(label="Square", command=lambda: self.create_shape(2))
         self.sub_menu.add_command(label="Rectangle", command=lambda: self.create_shape(3))
+        self.sub_menu.add_command(label="info", command=self.command)
         
         self.context_menu.add_cascade(label="Shapes", menu=self.sub_menu)
+        
 
         self.gl_window.bind("<Button-3>", self.show_menu)
 
@@ -34,7 +36,7 @@ class ContextMenu(Frame):
                 print("Nenuma forma foi selecionada")
         self.gl_window.add_shape(shape)
 
-    def command():
-        pass
+    def command(self):
+        self.gl_window.print_info()
 
 

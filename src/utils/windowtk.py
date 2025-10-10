@@ -8,6 +8,9 @@ from .shape import Shape
 
 #singleton
 class WindowTk(OpenGLFrame):
+    gl_width = 0
+    gl_heigth = 0
+
     shapes: List[Shape] = []
     listeners = []
     backgrounds = []
@@ -19,6 +22,8 @@ class WindowTk(OpenGLFrame):
         
     def initgl(self):
         glClearColor(1, 1, 1, 1)
+        self.gl_width = self.winfo_width()
+        self.gl_heigth = self.winfo_height()
 
     def redraw(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -62,3 +67,7 @@ class WindowTk(OpenGLFrame):
 
     def get_selected(self):
         return self.shapes[self.selected]
+    
+    def print_info(self):
+        print(self.width)
+        print(self.height)

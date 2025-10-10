@@ -14,6 +14,9 @@ class EditShape(Frame):
 
         frame = Frame(root, height=100)
         frame.pack(side=TOP, fill=BOTH, padx=0, pady=0)
+        
+        self.window_info = Label(frame, text="")
+        self.window_info.pack(side=TOP)
 
         self.translate_frame = TranslateFrame(frame, command=self.translate)
         self.rotation_frame = RotationFrame(frame, command=self.rotation)
@@ -24,6 +27,8 @@ class EditShape(Frame):
 
         btn_delete = Button(frame, text="Delete", command=self.delete)
         btn_delete.pack(side=BOTTOM)
+
+        frame.bind("<Map>", self.test)
 
     def translate(self):
         x, y, z = self.translate_frame.get_input()
@@ -72,5 +77,7 @@ class EditShape(Frame):
     def delete(self):
         self.gl_window.delete_shape()
 
-    def test():
-        pass
+    def test(self, event=None):
+        width = self.gl_window.winfo_width()
+        height = self.gl_window.winfo_height()
+        self.window_info.config(text=f"Window Size: {width} X {height}")

@@ -1,0 +1,3 @@
+ - Implementar sistema de coordenadas do mundo
+ - view port
+ - Após isso aplicar recorte
