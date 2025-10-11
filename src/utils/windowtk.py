@@ -48,8 +48,6 @@ class WindowTk(OpenGLFrame):
 
         aspect = width / height
 
-        cartesiam_plane(width * aspect, height * aspect)
-
         if(width >= height):
             gluOrtho2D(-1000 * aspect, 1000 * aspect, -1000, 1000)
         else:
