@@ -3,14 +3,15 @@ from typing import List
 from tkinter import *
 from pyopengltk import OpenGLFrame
 from OpenGL.GL import *
+from OpenGL.GLU import *
 
 from .shape import Shape
+from backgrounds import cartesiam_plane
 
 #singleton
 class WindowTk(OpenGLFrame):
     shapes: List[Shape] = []
     listeners = []
-    backgrounds = []
     
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
@@ -18,25 +19,45 @@ class WindowTk(OpenGLFrame):
         self._init_config = lambda: None
         
     def initgl(self):
+        glClearColor (1.0, 1.0, 1.0, 0.0)
+        glMatrixMode(GL_PROJECTION)
+        gluOrtho2D(-1000, 1000, -1000, 1000) # Passar esse valor
+        glMatrixMode (GL_MODELVIEW)
+
         glClearColor(1, 1, 1, 1)
 
     def redraw(self):
+        width = self.winfo_width()
+        height = self.winfo_height()
+        aspect = width / height
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        
+        self.resize_window(width, height)
 
-        for background in self.backgrounds:
-            background()
-
+        cartesiam_plane(width * aspect, height * aspect)
         for shape in self.shapes:
             shape.render()
 
         glFlush()
 
+    def resize_window(self, width, height):
+        glViewport(0, 0, width, height)
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+
+        aspect = width / height
+
+        cartesiam_plane(width * aspect, height * aspect)
+
+        if(width >= height):
+            gluOrtho2D(-1000 * aspect, 1000 * aspect, -1000, 1000)
+        else:
+            gluOrtho2D(-1000, 1000, -1000 / aspect, 1000 / aspect)
+                
     def add_shape(self, shape: Shape):
         self.shapes.append(shape)
         self.notify()
-
-    def add_background(self, background):
-        self.backgrounds.append(background)
 
     #delete e remover da lista
     def clear_all(self):
