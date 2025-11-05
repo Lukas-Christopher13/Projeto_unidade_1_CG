@@ -9,7 +9,7 @@ class ShapesLateralBar(Frame):
         self.root = root
         self.gl_window = gl_window
 
-        lateralbar = Frame(self.root, width=150)
+        lateralbar = Frame(self.root, width=300)
         lateralbar.pack(side=TOP, fill=BOTH, padx=0, pady=0)
 
         main_frame = Frame(lateralbar)

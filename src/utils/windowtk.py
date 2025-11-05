@@ -29,13 +29,12 @@ class WindowTk(OpenGLFrame):
     def redraw(self):
         width = self.winfo_width()
         height = self.winfo_height()
-        aspect = width / height
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         
         self.resize_window(width, height)
 
-        cartesiam_plane(width * aspect, height * aspect)
+        cartesiam_plane(2000, 2000)
         for shape in self.shapes:
             shape.render()
 
