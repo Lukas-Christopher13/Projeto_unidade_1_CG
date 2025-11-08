@@ -31,8 +31,12 @@ class ShapeFactory:
             [ 700.0,  400.0, 0.0, 1.0],
         ]
         return Shape(rectangle, GL_TRIANGLE_FAN)
-
-
     
+    def line():
+        line = [
+            [0.0,  0.0, 0.0, 1.0],
+            [500.0,  500.0, 0.0, 1.0]
+        ]
+        return Shape(line, GL_LINES)
 
 

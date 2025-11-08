@@ -9,14 +9,20 @@ class ContextMenu(Frame):
         self.gl_window = gl_window
 
         self.context_menu = Menu(gl_window, tearoff=0)
-        self.sub_menu = Menu(self.context_menu, tearoff=0)
+
+        self.shapes_sub_menu = Menu(self.context_menu, tearoff=0)
+        self.lines_sub_menu = Menu(self.context_menu, tearoff=0)
         
-        self.sub_menu.add_command(label="Triangle", command=lambda: self.create_shape(1))
-        self.sub_menu.add_command(label="Square", command=lambda: self.create_shape(2))
-        self.sub_menu.add_command(label="Rectangle", command=lambda: self.create_shape(3))
-        self.sub_menu.add_command(label="info", command=self.command)
+        self.shapes_sub_menu.add_command(label="Triangle", command=lambda: self.create_shape(1))
+        self.shapes_sub_menu.add_command(label="Square", command=lambda: self.create_shape(2))
+        self.shapes_sub_menu.add_command(label="Rectangle", command=lambda: self.create_shape(3))
+        self.shapes_sub_menu.add_command(label="info", command=self.command)
+
+        self.lines_sub_menu.add_command(label="DDA", command=lambda: self.create_shape(4))
+        self.lines_sub_menu.add_command(label="MidPoint", command=self.pass_)
         
-        self.context_menu.add_cascade(label="Shapes", menu=self.sub_menu)
+        self.context_menu.add_cascade(label="Shapes", menu=self.shapes_sub_menu)
+        self.context_menu.add_cascade(label="Lines", menu=self.lines_sub_menu)
         
 
         self.gl_window.bind("<Button-3>", self.show_menu)
@@ -31,12 +37,17 @@ class ContextMenu(Frame):
             case 2:
                 shape = ShapeFactory.square()
             case 3:
-                shape = ShapeFactory.rectangle()   
+                shape = ShapeFactory.rectangle()
+            case 4:
+                shape = ShapeFactory.line()   
             case _:
                 print("Nenuma forma foi selecionada")
         self.gl_window.add_shape(shape)
 
     def command(self):
         self.gl_window.print_info()
+
+    def pass_():
+        pass
 
 
