@@ -6,7 +6,7 @@ from OpenGL.GLU import *
 
 from utils.point import Point
 from utils.windowtk import WindowTk
-from tk_widgets.scrollabe_show_result import scrolable_show_result
+from components.scrollabe_show_result import scrolable_show_result
 from algorithms.PontoMedio import drowLine
 
 

@@ -6,7 +6,7 @@ from OpenGL.GLU import *
 
 from utils.windowtk import WindowTk
 from algorithms.DDA import drowLineDDA
-from tk_widgets.scrollabe_show_result import scrolable_show_result
+from components.scrollabe_show_result import scrolable_show_result
 
 
 WIDTH = 800
