@@ -16,7 +16,7 @@ from OpenGL.GLU import *
 from utils.windowtk import WindowTk
 
 from components.contexte_menu import ContextMenu
-from src.shapes_lateral_bar import ShapesLateralBar
+from components.shapes_lateral_bar import ShapesLateralBar
 
 def main():
     root = Tk()
