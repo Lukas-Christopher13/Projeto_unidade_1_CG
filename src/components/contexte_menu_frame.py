@@ -6,10 +6,11 @@ from src.utils.windowtk import WindowTk
 from shape import Shape
 from utils.shape_factory import ShapeFactory
 
-from src.components.line_frame import LineFrame
+from components.line_popup_frame import LineFrame
 
 from src.algorithms.DDA import drowLineDDA
 from src.algorithms.PontoMedio import drowLineMP
+from src.algorithms.circle_midpoint import drow_circleMP
 
 class ContextMenu(Frame):
     def __init__(self, gl_window: WindowTk, **kwargs):
@@ -20,6 +21,7 @@ class ContextMenu(Frame):
 
         self.shapes_sub_menu = Menu(self.context_menu, tearoff=0)
         self.lines_sub_menu = Menu(self.context_menu, tearoff=0)
+        self.circle_sub_menu = Menu(self.context_menu, tearoff=0)
         
         self.shapes_sub_menu.add_command(label="Triangle", command=lambda: self.create_shape(1))
         self.shapes_sub_menu.add_command(label="Square", command=lambda: self.create_shape(2))
@@ -28,9 +30,12 @@ class ContextMenu(Frame):
 
         self.lines_sub_menu.add_command(label="DDA", command=lambda: self.create_line(drowLineDDA))
         self.lines_sub_menu.add_command(label="MidPoint", command=lambda: self.create_line(drowLineMP))
+
+        self.circle_sub_menu.add_command(label="MidPoint", command=lambda: self.create_circle())
         
         self.context_menu.add_cascade(label="Shapes", menu=self.shapes_sub_menu)
         self.context_menu.add_cascade(label="Lines", menu=self.lines_sub_menu)
+        self.context_menu.add_cascade(label="Circles", menu=self.circle_sub_menu)
         
 
         self.gl_window.bind("<Button-3>", self.show_menu)
@@ -66,6 +71,13 @@ class ContextMenu(Frame):
             y2=lineFrame.y2
         )
         
+        shape = Shape(points, GL_POINTS)
+
+        self.gl_window.add_shape(shape)
+
+    def create_circle(self):
+        points = drow_circleMP(200)
+
         shape = Shape(points, GL_POINTS)
 
         self.gl_window.add_shape(shape)

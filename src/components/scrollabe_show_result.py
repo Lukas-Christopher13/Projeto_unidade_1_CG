@@ -1,6 +1,5 @@
 from tkinter import *
 
-
 def scrolable_show_result(root, list, *args, **kwargs):
     frame = Frame(root)
     frame.grid(row=6, column=1, sticky="nsew")
