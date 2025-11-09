@@ -38,5 +38,11 @@ class ShapeFactory:
             [500.0,  500.0, 0.0, 1.0]
         ]
         return Shape(line, GL_LINES)
-
-
+    
+    def testLine():
+        line = [
+            [500.0, 500.0, 0.0, 1.0],
+            [501.0, 501.0, 0.0, 1.0],
+            [502.0, 502.0, 0.0, 1.0],
+        ]
+        return Shape(line, GL_POINTS)

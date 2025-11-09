@@ -9,6 +9,8 @@ class Shape():
     gl_color = np.empty([0, 0, 1], dtype=np.float32)
 
     def __init__(self, matrix, gl_option):
+        if len(matrix[0]) != 4:
+            matrix = self.__to_4d_array_matrix(matrix)
         self.vertex = np.array(matrix, dtype=np.float32)
         self.gl_option = gl_option
     
@@ -34,10 +36,15 @@ class Shape():
     def mid_point_vertex(self):
         x_mean, y_mean, z_mean, w_mean = self.vertex.mean(axis=0)
         return [x_mean, y_mean, z_mean, w_mean]
-            
-
-
-
-
-
     
+    def __to_4d_array_matrix(self, matrix):
+        for array in matrix:
+            if len(array) == 2:
+                array.append(0.0)
+                array.append(1.0)
+            elif len(array) == 3:
+                array.append(1.0)
+            else:
+                raise Exception("Array de tamanho invalido para a converção!")
+        return matrix 
+

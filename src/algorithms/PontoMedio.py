@@ -1,23 +1,23 @@
-def drowLine(start, end) -> list:
-    if abs(end.x - start.x) > abs(end.y - start.y): 
-        return drowLineH(start, end)
+def drowLineMP(x1, y1, x2, y2) -> list:
+    if abs(x2 - x1) > abs(y2 - y1): 
+        return drowLineH(x1, y1, x2, y2)
     else:
-        return drowLineV(start, end)
+        return drowLineV(x1, y1, x2, y2)
 
-def drowLineH(start, end) -> list:
+def drowLineH(x1, y1, x2, y2) -> list:
     result = []
 
-    dx = end.x - start.x
-    dy = end.y - start.y
+    dx = x2 - x1
+    dy = y2 - y1
 
     d = 2 * dy - dx
     incE = 2 * dy
     incNE = 2 * (dy - dx)
 
-    x, y = start.x, start.y
+    x, y = x1, y1
 
     result.append([x, y])
-    while x < end.x:
+    while x < x2:
         if d <= 0:
             d += incE
             x += 1
@@ -28,20 +28,20 @@ def drowLineH(start, end) -> list:
         result.append([x, y])
     return result
 
-def drowLineV(start, end):
+def drowLineV(x1, y1, x2, y2):
     result = []
 
-    dx = end.x - start.x
-    dy = end.y - start.y
+    dx = x2 - x1
+    dy = y2 - y1
 
     d = 2 * dx - dy
     incE = 2 * dx
     incNE = 2 * (dx - dy)
 
-    x, y = start.x, start.y
+    x, y = x1, y1
 
     result.append([x, y])
-    while y < end.y:
+    while y < y2:
         if d <= 0:
             d += incE
             y += 1
