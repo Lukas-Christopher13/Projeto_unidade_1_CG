@@ -13,6 +13,7 @@ from src.algorithms.DDA import drawLineDDA
 from src.algorithms.PontoMedio import drawLineMP
 from src.algorithms.circle_midpoint import draw_circleMP
 from src.algorithms.circle_polynomial import draw_circle_polynomial
+from src.algorithms.circle_trigonometric import draw_circle_trigonometric
 
 class ContextMenu(Frame):
     def __init__(self, gl_window: WindowTk, **kwargs):
@@ -33,6 +34,7 @@ class ContextMenu(Frame):
         self.lines_sub_menu.add_command(label="DDA", command=lambda: self.create_line(drawLineDDA))
         self.lines_sub_menu.add_command(label="MidPoint", command=lambda: self.create_line(drawLineMP))
 
+        self.circle_sub_menu.add_command(label="Trigonometric", command=lambda: self.create_circle(draw_circle_trigonometric))
         self.circle_sub_menu.add_command(label="Polynomial", command=lambda: self.create_circle(draw_circle_polynomial))
         self.circle_sub_menu.add_command(label="MidPoint", command=lambda: self.create_circle(draw_circleMP))
         
