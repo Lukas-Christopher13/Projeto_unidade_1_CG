@@ -1,26 +1,12 @@
 from tkinter import * 
 
-class LineFrame(Frame):
+from src.components.shared.popup_frame import PopupFrame
+
+class LineFrame(PopupFrame):
     def __init__(self, root, **kwargs):
-       self.root = root
+       super().__init__(root, **kwargs)
 
     def open_popup(self):
-        self.popup = Toplevel(self.root)
-        self.popup.title("Line")
-        
-        w = 400
-        h = 150
-        self.popup.geometry(f"{w}x{h}")
-
-        #Centraliza o self.popup
-        self.popup.update_idletasks()  
-        sw = self.popup.winfo_screenwidth()
-        sh = self.popup.winfo_screenheight()
-
-        x = (sw // 2) - (w // 2)
-        y = (sh // 2) - (h // 2)
-        self.popup.geometry(f"{w}x{h}+{x}+{y}")
-
         Label(self.popup, text="Ponto A (x1, y1):").grid(row=0, column=0, pady=5)
         self.ent_x1 = Entry(self.popup, width=6)
         self.ent_y1 = Entry(self.popup, width=6)
