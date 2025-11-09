@@ -1,7 +1,7 @@
 from tkinter import *
 
 from src.utils.windowtk import WindowTk
-from controllers.shape_controller import EditShape
+from shape_controller import EditShape
 
 class ShapesLateralBar(Frame):
     def __init__(self, root, gl_window: WindowTk, **kwargs):

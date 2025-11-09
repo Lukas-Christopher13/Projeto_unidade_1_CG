@@ -3,8 +3,8 @@ from OpenGL.GL import *
 
 from src.utils.windowtk import WindowTk
 
-from src.utils.shape import Shape
-from src.shape_factory import ShapeFactory
+from shape import Shape
+from utils.shape_factory import ShapeFactory
 
 from src.components.line_frame import LineFrame
 
@@ -58,7 +58,6 @@ class ContextMenu(Frame):
         lineFrame.open_popup()
 
         self.gl_window.wait_window(lineFrame.popup)
-        print("some thing")
 
         points = drowline(
             x1=lineFrame.x1,

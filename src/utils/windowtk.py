@@ -5,8 +5,8 @@ from pyopengltk import OpenGLFrame
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from .shape import Shape
-from backgrounds import cartesiam_plane
+from src.shape import Shape
+from utils.backgrounds import cartesiam_plane
 
 #singleton
 class WindowTk(OpenGLFrame):

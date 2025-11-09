@@ -1,6 +1,6 @@
 from OpenGL.GL import *
 
-from src.utils.shape import Shape
+from shape import Shape
 
 class ShapeFactory:
     @staticmethod
