@@ -1,3 +1,5 @@
+from src.algorithms.octant import draw_octant
+
 def draw_circleMP(radius):
     points = []
     
@@ -16,18 +18,4 @@ def draw_circleMP(radius):
         x += 1
         points.append((x, y))
     
-    return draw_oc(points)
-
-def draw_oc(points):
-    circle = []
-    for x, y in points:
-        circle.append([+x, +y])
-        circle.append([-x, +y])
-        circle.append([+x, -y])
-        circle.append([-x, -y])
-        circle.append([+y, +x])
-        circle.append([-y, +x])
-        circle.append([+y, -x])
-        circle.append([-y, -x])
-    return circle
-
+    return draw_octant(points)

@@ -12,6 +12,7 @@ from components.circle_popup_frame import CircleFrame
 from src.algorithms.DDA import drawLineDDA
 from src.algorithms.PontoMedio import drawLineMP
 from src.algorithms.circle_midpoint import draw_circleMP
+from src.algorithms.circle_polynomial import draw_circle_polynomial
 
 class ContextMenu(Frame):
     def __init__(self, gl_window: WindowTk, **kwargs):
@@ -32,7 +33,8 @@ class ContextMenu(Frame):
         self.lines_sub_menu.add_command(label="DDA", command=lambda: self.create_line(drawLineDDA))
         self.lines_sub_menu.add_command(label="MidPoint", command=lambda: self.create_line(drawLineMP))
 
-        self.circle_sub_menu.add_command(label="MidPoint", command=lambda: self.create_circle())
+        self.circle_sub_menu.add_command(label="Polynomial", command=lambda: self.create_circle(draw_circle_polynomial))
+        self.circle_sub_menu.add_command(label="MidPoint", command=lambda: self.create_circle(draw_circleMP))
         
         self.context_menu.add_cascade(label="Shapes", menu=self.shapes_sub_menu)
         self.context_menu.add_cascade(label="Lines", menu=self.lines_sub_menu)
@@ -76,13 +78,13 @@ class ContextMenu(Frame):
 
         self.gl_window.add_shape(shape)
 
-    def create_circle(self):
+    def create_circle(self, draw_circle):
         circleFrame = CircleFrame(self.gl_window)
         circleFrame.open_popup()
 
         self.gl_window.wait_window(circleFrame.popup)
         
-        points = draw_circleMP(circleFrame.radian)
+        points = draw_circle(circleFrame.radian)
 
         shape = Shape(points, GL_POINTS)
 
