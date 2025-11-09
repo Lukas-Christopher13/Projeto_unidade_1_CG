@@ -1,4 +1,4 @@
-def drow_circleMP(radius):
+def draw_circleMP(radius):
     points = []
     
     x = 0
@@ -16,9 +16,9 @@ def drow_circleMP(radius):
         x += 1
         points.append((x, y))
     
-    return drow_oc(points)
+    return draw_oc(points)
 
-def drow_oc(points):
+def draw_oc(points):
     circle = []
     for x, y in points:
         circle.append([+x, +y])

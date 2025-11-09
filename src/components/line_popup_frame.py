@@ -19,7 +19,7 @@ class LineFrame(PopupFrame):
         self.ent_x2.grid(row=1, column=1)
         self.ent_y2.grid(row=1, column=2)
 
-        btn = Button(self.popup, text="Drow", command=self.get_input)
+        btn = Button(self.popup, text="Draw", command=self.get_input)
         btn.grid(row=2, column=0, columnspan=3, pady=12)
 
         # Centralizar colunas

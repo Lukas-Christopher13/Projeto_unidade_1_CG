@@ -9,9 +9,9 @@ from utils.shape_factory import ShapeFactory
 from components.line_popup_frame import LineFrame
 from components.circle_popup_frame import CircleFrame
 
-from src.algorithms.DDA import drowLineDDA
-from src.algorithms.PontoMedio import drowLineMP
-from src.algorithms.circle_midpoint import drow_circleMP
+from src.algorithms.DDA import drawLineDDA
+from src.algorithms.PontoMedio import drawLineMP
+from src.algorithms.circle_midpoint import draw_circleMP
 
 class ContextMenu(Frame):
     def __init__(self, gl_window: WindowTk, **kwargs):
@@ -29,8 +29,8 @@ class ContextMenu(Frame):
         self.shapes_sub_menu.add_command(label="Rectangle", command=lambda: self.create_shape(3))
         self.shapes_sub_menu.add_command(label="info", command=self.command)
 
-        self.lines_sub_menu.add_command(label="DDA", command=lambda: self.create_line(drowLineDDA))
-        self.lines_sub_menu.add_command(label="MidPoint", command=lambda: self.create_line(drowLineMP))
+        self.lines_sub_menu.add_command(label="DDA", command=lambda: self.create_line(drawLineDDA))
+        self.lines_sub_menu.add_command(label="MidPoint", command=lambda: self.create_line(drawLineMP))
 
         self.circle_sub_menu.add_command(label="MidPoint", command=lambda: self.create_circle())
         
@@ -59,13 +59,13 @@ class ContextMenu(Frame):
     def command(self):
         self.gl_window.print_info()
 
-    def create_line(self, drowline):
+    def create_line(self, drawline):
         lineFrame = LineFrame(self.gl_window)
         lineFrame.open_popup()
 
         self.gl_window.wait_window(lineFrame.popup)
 
-        points = drowline(
+        points = drawline(
             x1=lineFrame.x1,
             y1=lineFrame.y1,
             x2=lineFrame.x2,
@@ -82,7 +82,7 @@ class ContextMenu(Frame):
 
         self.gl_window.wait_window(circleFrame.popup)
         
-        points = drow_circleMP(circleFrame.radian)
+        points = draw_circleMP(circleFrame.radian)
 
         shape = Shape(points, GL_POINTS)
 

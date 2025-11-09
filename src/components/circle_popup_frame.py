@@ -11,7 +11,7 @@ class CircleFrame(PopupFrame):
         self.radian = Entry(self.popup, width=6)
         self.radian.grid(row=0, column=1)
 
-        btn = Button(self.popup, text="Drow", command=self.get_input)
+        btn = Button(self.popup, text="Draw", command=self.get_input)
         btn.grid(row=2, column=0, columnspan=3, pady=12)
 
         # Centralizar colunas

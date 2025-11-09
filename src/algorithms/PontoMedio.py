@@ -1,10 +1,10 @@
-def drowLineMP(x1, y1, x2, y2) -> list:
+def drawLineMP(x1, y1, x2, y2) -> list:
     if abs(x2 - x1) > abs(y2 - y1): 
-        return drowLineH(x1, y1, x2, y2)
+        return drawLineH(x1, y1, x2, y2)
     else:
-        return drowLineV(x1, y1, x2, y2)
+        return drawLineV(x1, y1, x2, y2)
 
-def drowLineH(x1, y1, x2, y2) -> list:
+def drawLineH(x1, y1, x2, y2) -> list:
     result = []
 
     dx = x2 - x1
@@ -28,7 +28,7 @@ def drowLineH(x1, y1, x2, y2) -> list:
         result.append([x, y])
     return result
 
-def drowLineV(x1, y1, x2, y2):
+def drawLineV(x1, y1, x2, y2):
     result = []
 
     dx = x2 - x1

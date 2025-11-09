@@ -1,10 +1,10 @@
-def drowLineDDA(x1: float, y1: float, x2: float, y2: float) -> list:
+def drawLineDDA(x1: float, y1: float, x2: float, y2: float) -> list:
     if abs(x2 - x1) > abs(y2 - y1): 
-        return drowLineDDAH(x1, y1, x2, y2)
+        return drawLineDDAH(x1, y1, x2, y2)
     else:
-        return drowLineDDAV(x1, y1, x2, y2)
+        return drawLineDDAV(x1, y1, x2, y2)
 
-def drowLineDDAH(x1: float, y1: float, x2: float, y2: float):
+def drawLineDDAH(x1: float, y1: float, x2: float, y2: float):
     result = []
 
     lenght = abs(x2 - x1)
@@ -28,7 +28,7 @@ def drowLineDDAH(x1: float, y1: float, x2: float, y2: float):
     
     return result
 
-def drowLineDDAV(x1: float, y1: float, x2: float, y2: float):
+def drawLineDDAV(x1: float, y1: float, x2: float, y2: float):
     result = []
 
     lenght = abs(y2 - y1)
