@@ -7,6 +7,7 @@ from shape import Shape
 from utils.shape_factory import ShapeFactory
 
 from components.line_popup_frame import LineFrame
+from components.circle_popup_frame import CircleFrame
 
 from src.algorithms.DDA import drowLineDDA
 from src.algorithms.PontoMedio import drowLineMP
@@ -76,7 +77,12 @@ class ContextMenu(Frame):
         self.gl_window.add_shape(shape)
 
     def create_circle(self):
-        points = drow_circleMP(200)
+        circleFrame = CircleFrame(self.gl_window)
+        circleFrame.open_popup()
+
+        self.gl_window.wait_window(circleFrame.popup)
+        
+        points = drow_circleMP(circleFrame.radian)
 
         shape = Shape(points, GL_POINTS)
 

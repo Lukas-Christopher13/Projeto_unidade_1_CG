@@ -7,19 +7,19 @@ class LineFrame(PopupFrame):
        super().__init__(root, **kwargs)
 
     def open_popup(self):
-        Label(self.popup, text="Ponto A (x1, y1):").grid(row=0, column=0, pady=5)
+        Label(self.popup, text="Point A (x1, y1):").grid(row=0, column=0, pady=5)
         self.ent_x1 = Entry(self.popup, width=6)
         self.ent_y1 = Entry(self.popup, width=6)
         self.ent_x1.grid(row=0, column=1)
         self.ent_y1.grid(row=0, column=2)
 
-        Label(self.popup, text="Ponto B (x2, y2):").grid(row=1, column=0, pady=5)
+        Label(self.popup, text="Point B (x2, y2):").grid(row=1, column=0, pady=5)
         self.ent_x2 = Entry(self.popup, width=6)
         self.ent_y2 = Entry(self.popup, width=6)
         self.ent_x2.grid(row=1, column=1)
         self.ent_y2.grid(row=1, column=2)
 
-        btn = Button(self.popup, text="Desenhar", command=self.get_input)
+        btn = Button(self.popup, text="Drow", command=self.get_input)
         btn.grid(row=2, column=0, columnspan=3, pady=12)
 
         # Centralizar colunas
