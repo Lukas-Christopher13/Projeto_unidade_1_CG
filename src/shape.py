@@ -8,11 +8,12 @@ from OpenGL.GL import *
 class Shape():
     gl_color = np.empty([0, 0, 1], dtype=np.float32)
 
-    def __init__(self, matrix, gl_option):
+    def __init__(self, matrix, gl_option, edge_sequence=None):
         if len(matrix[0]) != 4:
             matrix = self.__to_4d_array_matrix(matrix)
         self.vertex = np.array(matrix, dtype=np.float32)
         self.gl_option = gl_option
+        self.edge_sequence = edge_sequence
     
     def render(self):
         glColor3f(0,0,1)
@@ -47,4 +48,10 @@ class Shape():
             else:
                 raise Exception("Array de tamanho invalido para a converção!")
         return matrix 
+    
+    def has_edge_sequence(self):
+        if self.edge_sequence is None:
+            return False
+        else:
+            return True
 
