@@ -16,6 +16,34 @@ from OpenGL.GLU import *
 
 angle = 0.0
 
+axies = np.array([
+    [1000.0, 0.0, 0.0, 1],
+    [-1000.0, 0.0, 0.0, 1],
+    [0.0, 1000.0, 0.0, 1],
+    [0.0, -1000.0, 0.0, 1],
+    [0.0, 0.0, 1000.0, 1],
+    [0.0, 0.0, -1000.0, 1]
+],dtype=np.float32)
+
+cube = np.array([
+    [ 50.0, 0.0, 0.0, 1.0],
+    [ 0.0,  0.0,  50.0, 1.0],
+    [ -50.0,  0.0,  0.0, 1.0],
+    [ 0.0,  6.0, -50.0, 1.0],
+
+    [ 50.0, 50.0, 0.0, 1.0],
+    [ 0.0,  50.0,  50.0, 1.0],
+    [-50.0,  50.0,  0.0, 1.0],
+    [ 0.0,  50.0, -50.0, 1.0],
+], dtype=np.float32)
+
+
+    # edges = [
+    #     (0, 1), (1, 2), (2, 3), (3, 0),  # frente
+    #     (4, 5), (5, 6), (6, 7), (7, 4),  # trás
+    #     (0, 4), (1, 5), (2, 6), (3, 7)   # conecta frente ↔ trás
+    # ]
+
 # MODELING TRANSFORMATION
 #Aplica as tranformações no objeto, Primeira etapa
 def modeling_transformation():
@@ -112,21 +140,9 @@ def viewport_transformation(x_min, y_min, width, height):
 
 
 
-def pipline(eye):
+def pipline(eye, object):
+    cur = object.copy()
     print(f"eye:{eye}")
-    cube = np.array([
-        [ 9.0,  4.0, -4.0, 1.0],
-        [11.0,  4.0, -4.0, 1.0],
-        [11.0,  6.0, -4.0, 1.0],
-        [ 9.0,  6.0, -4.0, 1.0],
-
-        [ 9.0,  4.0, -2.0, 1.0],
-        [11.0,  4.0, -2.0, 1.0],
-        [11.0,  6.0, -2.0, 1.0],
-        [ 9.0,  6.0, -2.0, 1.0],
-    ], dtype=np.float32)
-
-
 
     #eye    = [10.0, 10.0, 10.0]   # afastada diagonalmente acima do centro
     center = [0.0, 0.0, 0.0]      # olhando para a origem
@@ -148,7 +164,6 @@ def pipline(eye):
     M_proj  = projection_transformation(fov, aspect, near, far)
     M_vp    = viewport_transformation(x_min, y_min, width, height)
 
-    cur = cube.copy()
     print("World:\n", cur)
 
     # Model
@@ -187,7 +202,8 @@ def display(eye):
     glLoadIdentity()
 
     # Roda o pipeline
-    points = pipline(eye)
+    points = pipline(eye, cube)
+    
 
     # Desenha os vértices
     glPointSize(8)
@@ -197,9 +213,9 @@ def display(eye):
     glEnd()
 
     edges = [
-        (0, 1), (1, 5), (5, 4), (4, 0),  # frente
-        (2, 3), (3, 7), (7, 6), (6, 2),  # trás
-        (0, 2), (1, 3), (4, 6), (5, 7)   # conecta frente ↔ trás
+        (0, 1), (1, 2), (2, 3), (3, 0),  # frente
+        (4, 5), (5, 6), (6, 7), (7, 4),  # trás
+        (0, 4), (1, 5), (2, 6), (3, 7)   # conecta frente ↔ trás
     ]
 
     glColor3f(1.0, 1.0, 1.0)
@@ -210,21 +226,39 @@ def display(eye):
         glVertex2f(points[b][0], points[b][1])
     glEnd()
 
+    points2 = pipline(eye, axies)
+
+    glPointSize(8)
+    glBegin(GL_LINES)
+    for p in points2:
+        glVertex2f(p[0], p[1])  
+    glEnd()
+
+
     glFlush()
 
 
 def main():
-    eye = [10.0, 10.0, 10.0] 
+    eye = [100.0, 70.0, 100.0] 
 
     def keyboard(key, x, y):
         if key == GLUT_KEY_UP:
-            eye[1] += 0.2
+            eye[1] += 2.2
         elif key == GLUT_KEY_LEFT:
-            eye[0] -= 0.2
+            eye[0] -= 2.2
         elif key == GLUT_KEY_RIGHT:
-            eye[0] += 0.2
+            eye[0] += 2.2
         elif key == GLUT_KEY_DOWN:
-            eye[1] -= 0.2
+            eye[1] -= 2.2
+        glutPostRedisplay()
+
+    def mouse(button, state, x, y):
+        if button == 3 and state == GLUT_DOWN:
+            eye[0] += 2.0
+            eye[2] += 2.0
+        elif button == 4 and state == GLUT_DOWN:
+            eye[0] -= 2.0
+            eye[2] -= 2.0 
         glutPostRedisplay()
 
     glutInit()
@@ -233,8 +267,8 @@ def main():
     glutCreateWindow("Pipeline Manual")
     glutDisplayFunc(lambda: display(eye))
     glutSpecialFunc(keyboard)
+    glutMouseFunc(mouse)
     glutMainLoop()
-
 
 
 main()
