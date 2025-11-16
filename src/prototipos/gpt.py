@@ -42,10 +42,10 @@ def viewing_tranformation(eye, center, up):
     v = np.cross(n, u)
 
     M = np.array([
-        [ u[0],  v[0],  n[0],  0.0 ],
-        [ u[1],  v[1],  n[1],  0.0 ],
-        [ u[2],  v[2],  n[2],  0.0 ],
-        [-np.dot(u, eye), -np.dot(v, eye), -np.dot(n, eye), 1.0 ]
+        [u[0], u[1], u[2], -np.dot(u, eye)],
+        [v[0], v[1], v[2], -np.dot(v, eye)],
+        [n[0], n[1], n[2], -np.dot(n, eye)],
+        [0, 0, 0, 1 ]
     ])
 
     return M
@@ -103,16 +103,17 @@ def viewport_transformation(x_min, y_min, width, height):
     # A matriz de viewport é uma transformação afim:
     M = np.array([
         [ w2,   0.0, 0.0, x_min + w2 ],
-        [ 0.0, -h2, 0.0, y_min + h2 ],  # OBS: sinal negativo para inverter Y
-        [ 0.0,  0.0, 0.5, 0.5        ], # mapeia Z de [-1,1] para [0,1]
-        [ 0.0,  0.0, 0.0, 1.0        ]
+        [ 0.0,  h2, 0.0, y_min + h2 ],  # OBS: sinal negativo para inverter Y
+        [ 0.0,  0.0, 0.5, 0.5       ], # mapeia Z de [-1,1] para [0,1]
+        [ 0.0,  0.0, 0.0, 1.0       ]
     ], dtype=np.float32)
 
     return M
 
 
 
-def pipline():
+def pipline(eye):
+    print(f"eye:{eye}")
     cube = np.array([
         [ 9.0,  4.0, -4.0, 1.0],
         [11.0,  4.0, -4.0, 1.0],
@@ -125,14 +126,17 @@ def pipline():
         [ 9.0,  6.0, -2.0, 1.0],
     ], dtype=np.float32)
 
-    eye    = [4.0, 4.0, 4.0]
-    center = [0.0, 0.0, 0.0]
-    up     = [0.0, 1.0, 0.0]
 
-    fov    = np.radians(45)   # ← precisa estar em radianos (altera)
-    aspect = 16/9
-    near   = 0.1
-    far    = 100
+
+    #eye    = [10.0, 10.0, 10.0]   # afastada diagonalmente acima do centro
+    center = [0.0, 0.0, 0.0]      # olhando para a origem
+    up     = [0.0, 1.0, 0.0]      # vetor "para cima"
+
+    # Parâmetros da projeção
+    fov    = np.radians(60)       # campo de visão
+    aspect = 16/9                  # proporção da tela
+    near   = 1.0                   # plano próximo (afastado para não cortar objetos próximos)
+    far    = 100  
 
     x_min  = 0
     y_min  = 0
@@ -171,7 +175,7 @@ def pipline():
 
 width, height = 800, 600
 
-def display():
+def display(eye):
     glClear(GL_COLOR_BUFFER_BIT)
 
     # <<< COORDENADAS DE TELA >>>
@@ -183,7 +187,7 @@ def display():
     glLoadIdentity()
 
     # Roda o pipeline
-    points = pipline()
+    points = pipline(eye)
 
     # Desenha os vértices
     glPointSize(8)
@@ -210,12 +214,28 @@ def display():
 
 
 def main():
+    eye = [10.0, 10.0, 10.0] 
+
+    def keyboard(key, x, y):
+        if key == GLUT_KEY_UP:
+            eye[1] += 0.2
+        elif key == GLUT_KEY_LEFT:
+            eye[0] -= 0.2
+        elif key == GLUT_KEY_RIGHT:
+            eye[0] += 0.2
+        elif key == GLUT_KEY_DOWN:
+            eye[1] -= 0.2
+        glutPostRedisplay()
+
     glutInit()
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
     glutInitWindowSize(width, height)
     glutCreateWindow("Pipeline Manual")
-    glutDisplayFunc(display)
+    glutDisplayFunc(lambda: display(eye))
+    glutSpecialFunc(keyboard)
     glutMainLoop()
+
+
 
 main()
 
