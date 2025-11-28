@@ -126,6 +126,14 @@ class Window3D():
         result = np.array([self.normalize_to_ndc(v) for v in result])
         result = result @ self.viewport_transformation().T
 
+        # --Ordem--
+        #Modeling Transformation
+        #Viewing Transformation
+        #Projection Transformation
+        #Normalization Transformation
+        #Viewport Transformation
+        #Clipping Transformation 
+
         return result
 
     def normalize_to_ndc(self, v):
