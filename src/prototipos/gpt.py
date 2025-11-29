@@ -1,275 +1,162 @@
-import os
 import sys
-import platform
-
-sys.path.append('.')
-so = platform.system()
-if so == "Linux":
-    os.environ['PYOPENGL_PLATFORM'] = 'glx'
-
-
+import math
 import numpy as np
-
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-angle = 0.0
+# --- Construção da matriz isométrica ortográfica (4x4) ---
+theta_y = math.radians(45.0)                    # Ry = 45°
+theta_x = math.atan(1.0 / math.sqrt(2.0))        # Rx = arctan(1/sqrt(2)) ≈ 35.264°
 
-axies = np.array([
-    [10000.0, 0.0, 0.0, 1],
-    [-10000.0, 0.0, 0.0, 1],
-    [0.0, 10000.0, 0.0, 1],
-    [0.0, -10000.0, 0.0, 1],
-    [0.0, 0.0, 10000.0, 1],
-    [0.0, 0.0, -10000.0, 1]
-],dtype=np.float32)
-
-cube = np.array([
-    [ 50.0, 0.0, 0.0, 1.0],
-    [ 0.0,  0.0,  50.0, 1.0],
-    [ -50.0,  0.0,  0.0, 1.0],
-    [ 0.0,  0.0, -50.0, 1.0],
-
-    [ 50.0, 50.0, 0.0, 1.0],
-    [ 0.0,  50.0,  50.0, 1.0],
-    [-50.0,  50.0,  0.0, 1.0],
-    [ 0.0,  50.0, -50.0, 1.0],
+# Rotação em Y (4x4)
+R_y = np.array([
+    [ math.cos(theta_y), 0.0, -math.sin(theta_y), 0.0],
+    [ 0.0,               1.0,  0.0,               0.0],
+    [ math.sin(theta_y), 0.0,  math.cos(theta_y), 0.0],
+    [ 0.0,               0.0,  0.0,               1.0]
 ], dtype=np.float32)
 
+# Rotação em X (4x4)
+R_x = np.array([
+    [1.0, 0.0,               0.0,                0.0],
+    [0.0, math.cos(theta_x), -math.sin(theta_x), 0.0],
+    [0.0, math.sin(theta_x),  math.cos(theta_x), 0.0],
+    [0.0, 0.0,               0.0,                1.0]
+], dtype=np.float32)
 
-    # edges = [
-    #     (0, 1), (1, 2), (2, 3), (3, 0),  # frente
-    #     (4, 5), (5, 6), (6, 7), (7, 4),  # trás
-    #     (0, 4), (1, 5), (2, 6), (3, 7)   # conecta frente ↔ trás
-    # ]
+R_iso = R_x @ R_y
 
-# MODELING TRANSFORMATION
-#Aplica as tranformações no objeto, Primeira etapa
-def modeling_transformation():
-    return
+# Projeção ortográfica que "zera" componente Z (mantemos coluna/linha homogênea)
+P_ortho = np.array([
+    [1.0, 0.0, 0.0, 0.0],
+    [0.0, 1.0, 0.0, 0.0],
+    [0.0, 0.0, 0.0, 0.0],  # descarta Z
+    [0.0, 0.0, 0.0, 1.0]
+], dtype=np.float32)
 
-#Viewing Transformation
-#center -> ponto onde a camera olha > direção de olhar
-#up -> controlar a posição da tela;
-#eye -> posição da camera:
-def viewing_tranformation(eye, center, up):
-    eye = np.array(eye, dtype=float)
-    center = np.array(center, dtype=float)
-    up = np.array(up, dtype=float)
+M_iso_ortho = P_ortho @ R_iso  # matriz 4x4 final
 
-    # n = camera backward direction
-    n = eye - center
-    n = n / np.linalg.norm(n)
-
-    # u = right vector
-    u = np.cross(up, n)
-    u = u / np.linalg.norm(u)
-
-    # v = true up vector
-    v = np.cross(n, u)
-
-    M = np.array([
-        [u[0], u[1], u[2], -np.dot(u, eye)],
-        [v[0], v[1], v[2], -np.dot(v, eye)],
-        [n[0], n[1], n[2], -np.dot(n, eye)],
-        [0, 0, 0, 1 ]
-    ])
-
-    return M
-
-#fov = field of view, abertura da câmera
-#aspect ratio = largura/altura
-#near / far = planos de corte
-#(objetos fora disso são descartados)
-def projection_transformation(fov, aspect, near, far):
-    t = np.tan(fov / 2)
-
-    return np.array([
-        [1/(t * aspect), 0,                 0,                           0],
-        [0,              1/t,               0,                           0],
-        [0,              0,       -(far+near)/(far-near),   -(2*far*near)/(far-near)],
-        [0,              0,               -1,                           0]
-    ], dtype=np.float32)
-#Um vértice (x, y, z, w) está dentro do frustum SE, e somente se:
-# -w ≤ x ≤ w
-# -w ≤ y ≤ w
-# -w ≤ z ≤ w
-def cliping():
-    pass
-
-def normalize_to_ndc(v):
-    """
-    Converte um ponto em Clip Space (x, y, z, w)
-    para NDC ao dividir tudo por w.
-    """
-    x, y, z, w = v
-    
-    if w == 0:
-        raise ValueError("w = 0 → não é possível dividir")
-
-    return np.array([x/w, y/w, z/w, 1.0], dtype=np.float32)
-
-import numpy as np
-
-#Viewport Transformation
-def viewport_transformation(x_min, y_min, width, height):
-    """
-    Retorna a matriz 4x4 de transformação de viewport.
-    
-    Parâmetros:
-        x_min  → posição inicial do viewport no eixo X
-        y_min  → posição inicial do viewport no eixo Y
-        width  → largura do viewport (em pixels)
-        height → altura do viewport (em pixels)
-    """
-
-    # Metade das dimensões
-    w2 = width / 2.0
-    h2 = height / 2.0
-
-    # A matriz de viewport é uma transformação afim:
-    M = np.array([
-        [ w2,   0.0, 0.0, x_min + w2 ],
-        [ 0.0,  h2, 0.0, y_min + h2 ],  # OBS: sinal negativo para inverter Y
-        [ 0.0,  0.0, 0.5, 0.5       ], # mapeia Z de [-1,1] para [0,1]
-        [ 0.0,  0.0, 0.0, 1.0       ]
-    ], dtype=np.float32)
-
-    return M
-
-
-
-def pipline(eye, object):
-    cur = object.copy()
-    print(f"eye:{eye}")
-
-    #eye    = [10.0, 10.0, 10.0]   # afastada diagonalmente acima do centro
-    center = [0.0, 0.0, 0.0]      # olhando para a origem
-    up     = [0.0, 1.0, 0.0]      # vetor "para cima"
-
-    # Parâmetros da projeção
-    fov    = np.radians(60)       # campo de visão
-    aspect = 16/9                  # proporção da tela
-    near   = 1.0                   # plano próximo (afastado para não cortar objetos próximos)
-    far    = 100  
-
-    x_min  = 0
-    y_min  = 0
-    width  = 800
-    height = 600
-
-    #M_model = modeling_transformation()
-    M_view  = viewing_tranformation(eye, center, up)
-    M_proj  = projection_transformation(fov, aspect, near, far)
-    M_vp    = viewport_transformation(x_min, y_min, width, height)
-
-    print("World:\n", cur)
-
-    # Model
-    # cur = cur @ M_model.T
-    # print("\nModel:\n", cur)
-
-    # View
-    cur = cur @ M_view.T
-    print("\nView:\n", cur)
-
-    # Projection
-    cur = cur @ M_proj.T
-    print("\nProjection:\n", cur)
-
-    # NDC normalization (divide by w)
-    cur = np.array([normalize_to_ndc(v) for v in cur])
-    print("\nNDC:\n", cur)
-
-    # Viewport
-    cur = cur @ M_vp.T
-    print("\nViewport:\n", cur)
-
-    return cur
-
+# --- OpenGL / GLUT ---
 width, height = 800, 600
 
-def display(eye):
-    glClear(GL_COLOR_BUFFER_BIT)
+angle = 0.0  # opcional: girar o cubo antes da projeção (apenas para dinâmica)
 
-    # <<< COORDENADAS DE TELA >>>
+def init_gl():
+    glClearColor(0.95, 0.95, 0.95, 1.0)
+    glEnable(GL_DEPTH_TEST)
+    glDepthFunc(GL_LEQUAL)
+    glShadeModel(GL_SMOOTH)
+    glEnable(GL_CULL_FACE)
+    glCullFace(GL_BACK)
+
+def load_isometric_projection_matrix():
+    # OpenGL espera matriz em column-major; numpy é row-major -> usamos .T
+    mat = M_iso_ortho.T.flatten().astype(np.float32)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    glOrtho(0, width, 0, height, -1, 1)
-
+    # Carregamos a matriz isométrica diretamente como matriz de projeção
+    glMultMatrixf(mat)
+    # Como a matriz z foi zerada, o volume de recorte padrão pode ser não apropriado;
+    # portanto aplicamos um scale/translate simples para ajustar a cena na viewport.
+    # (opcional) expandir coordenadas para caber na janela:
+    # aqui mantemos identidade no modelview para desenhar nas coordenadas transformadas.
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
-    # Roda o pipeline
-    points = pipline(eye, cube)
-    
-
-    # Desenha os vértices
-    glPointSize(8)
-    glBegin(GL_POINTS)
-    for p in points:
-        glVertex2f(p[0], p[1])  
+def draw_axes(length=1.5):
+    glLineWidth(2.0)
+    glBegin(GL_LINES)
+    # X - vermelho
+    glColor3f(0.8, 0.1, 0.1)
+    glVertex3f(0,0,0); glVertex3f(length,0,0)
+    # Y - verde
+    glColor3f(0.1,0.7,0.1)
+    glVertex3f(0,0,0); glVertex3f(0,length,0)
+    # Z - azul
+    glColor3f(0.1,0.1,0.9)
+    glVertex3f(0,0,0); glVertex3f(0,0,length)
     glEnd()
 
-    edges = [
-        (0, 1), (1, 2), (2, 3), (3, 0),  # frente
-        (4, 5), (5, 6), (6, 7), (7, 4),  # trás
-        (0, 4), (1, 5), (2, 6), (3, 7)   # conecta frente ↔ trás
+def draw_cube(size=1.0):
+    # Desenha um cubo com faces coloridas (centrado na origem)
+    hs = size / 2.0
+    vertices = [
+        [-hs, -hs, -hs],
+        [ hs, -hs, -hs],
+        [ hs,  hs, -hs],
+        [-hs,  hs, -hs],
+        [-hs, -hs,  hs],
+        [ hs, -hs,  hs],
+        [ hs,  hs,  hs],
+        [-hs,  hs,  hs],
     ]
-
-    glColor3f(1.0, 1.0, 1.0)
-    glLineWidth(2)
-    glBegin(GL_LINES)
-    for a, b in edges:
-        glVertex2f(points[a][0], points[a][1])
-        glVertex2f(points[b][0], points[b][1])
+    faces = [
+        (0,1,2,3),  # back
+        (4,5,6,7),  # front
+        (0,4,7,3),  # left
+        (1,5,6,2),  # right
+        (3,2,6,7),  # top
+        (0,1,5,4),  # bottom
+    ]
+    colors = [
+        (0.8,0.3,0.3),
+        (0.3,0.8,0.3),
+        (0.3,0.3,0.8),
+        (0.9,0.8,0.3),
+        (0.6,0.3,0.9),
+        (0.3,0.9,0.9),
+    ]
+    glBegin(GL_QUADS)
+    for f_idx, face in enumerate(faces):
+        glColor3f(*colors[f_idx % len(colors)])
+        for vi in face:
+            glVertex3f(*vertices[vi])
     glEnd()
 
-    points2 = pipline(eye, axies)
+def display():
+    global angle
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    glPushMatrix()
+    # opcional: um pequeno giro no modelview antes da projeção (não necessário).
+    # glRotatef(angle, 0.0, 1.0, 0.0)
 
-    glPointSize(8)
-    glBegin(GL_LINES)
-    for p in points2:
-        glVertex2f(p[0], p[1])  
-    glEnd()
+    # desenha eixos para referência (eles também serão projetados)
+    draw_axes(1.2)
+    # desenha cubo
+    draw_cube(1.0)
 
+    glPopMatrix()
+    glutSwapBuffers()
 
-    glFlush()
+def idle():
+    global angle
+    #angle += 0.1
+    glutPostRedisplay()
 
+def reshape(w, h):
+    global width, height
+    width, height = w, h
+    glViewport(0, 0, w, h)
+    # Ao redimensionar, recarregamos a matriz isométrica para manter proporção
+    load_isometric_projection_matrix()
+
+def keyboard(key, x, y):
+    if key == b'\x1b' or key == b'q':  # ESC ou q para sair
+        sys.exit(0)
 
 def main():
-    eye = [100.0, 70.0, 100.0] 
-
-    def keyboard(key, x, y):
-        if key == GLUT_KEY_UP:
-            eye[1] += 2.2
-        elif key == GLUT_KEY_LEFT:
-            eye[0] -= 2.2
-        elif key == GLUT_KEY_RIGHT:
-            eye[0] += 2.2
-        elif key == GLUT_KEY_DOWN:
-            eye[1] -= 2.2
-        glutPostRedisplay()
-
-    def mouse(button, state, x, y):
-        if button == 3 and state == GLUT_DOWN:
-            eye[0] += 2.0
-            eye[2] += 2.0
-        elif button == 4 and state == GLUT_DOWN:
-            eye[0] -= 2.0
-            eye[2] -= 2.0 
-        glutPostRedisplay()
-
-    glutInit()
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
+    glutInit(sys.argv)
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH)
     glutInitWindowSize(width, height)
-    glutCreateWindow("Pipeline Manual")
-    glutDisplayFunc(lambda: display(eye))
-    glutSpecialFunc(keyboard)
-    glutMouseFunc(mouse)
+    glutCreateWindow(b"Isometric Orthographic Projection - Cube (PyOpenGL)")
+    init_gl()
+    load_isometric_projection_matrix()
+    glutDisplayFunc(display)
+    glutIdleFunc(idle)
+    glutReshapeFunc(reshape)
+    glutKeyboardFunc(keyboard)
     glutMainLoop()
 
-
-main()
-
+if __name__ == "__main__":
+    main()
