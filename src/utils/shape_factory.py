@@ -3,6 +3,11 @@ from OpenGL.GL import *
 from shape import Shape
 
 class ShapeFactory:
+
+    @staticmethod
+    def default_shape(shape_matrix):
+        return Shape(shape_matrix, GL_TRIANGLE_STRIP)
+
     @staticmethod
     def triangle():
         triangle = [

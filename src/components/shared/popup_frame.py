@@ -4,13 +4,13 @@ from abc import ABC, abstractmethod
 
 
 class PopupFrame(ABC, Frame):
-    w = 400
-    h = 150
-
-    def __init__(self, root, **kwargs):
+    def __init__(self, root, title="",  w=400, h=150,  **kwargs):
+        self.title = title
+        self.w = w
+        self.h = h
         self.root = root
         self.popup = Toplevel(self.root)
-        self.popup.title("Line")
+        self.popup.title(title)
         self.popup.geometry(f"{self.w}x{self.h}")
  
         self.popup.update_idletasks()  
@@ -28,5 +28,3 @@ class PopupFrame(ABC, Frame):
     @abstractmethod
     def get_input(self):
        pass
-
-        

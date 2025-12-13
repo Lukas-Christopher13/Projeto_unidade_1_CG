@@ -8,6 +8,7 @@ from utils.shape_factory import ShapeFactory
 
 from components.line_popup_frame import LineFrame
 from components.circle_popup_frame import CircleFrame
+from components.matriz_frame import MatrizFrame
 
 from src.algorithms.DDA import drawLineDDA
 from src.algorithms.PontoMedio import drawLineMP
@@ -29,6 +30,7 @@ class ContextMenu(Frame):
         self.shapes_sub_menu.add_command(label="Triangle", command=lambda: self.create_shape(1))
         self.shapes_sub_menu.add_command(label="Square", command=lambda: self.create_shape(2))
         self.shapes_sub_menu.add_command(label="Rectangle", command=lambda: self.create_shape(3))
+        self.shapes_sub_menu.add_command(label="New", command=lambda: self.new_shape())
         self.shapes_sub_menu.add_command(label="info", command=self.command)
 
         self.lines_sub_menu.add_command(label="DDA", command=lambda: self.create_line(drawLineDDA))
@@ -58,6 +60,17 @@ class ContextMenu(Frame):
                 shape = ShapeFactory.rectangle()
             case _:
                 print("Nenuma forma foi selecionada")
+        self.gl_window.add_shape(shape)
+    
+    def new_shape(self):
+        matriz_frame = MatrizFrame(self.gl_window)
+        matriz_frame.open_popup()
+
+        self.gl_window.wait_window(matriz_frame.popup)
+
+        shape = ShapeFactory.default_shape(matriz_frame.input)
+        print(shape.vertex)
+
         self.gl_window.add_shape(shape)
 
     def command(self):
