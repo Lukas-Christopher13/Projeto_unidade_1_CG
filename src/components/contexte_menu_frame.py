@@ -69,12 +69,8 @@ class ContextMenu(Frame):
         self.gl_window.wait_window(matriz_frame.popup)
 
         shape = ShapeFactory.default_shape(matriz_frame.input)
-        print(shape.vertex)
 
         self.gl_window.add_shape(shape)
-
-    def command(self):
-        self.gl_window.print_info()
 
     def create_line(self, drawline):
         lineFrame = LineFrame(self.gl_window)
@@ -104,5 +100,8 @@ class ContextMenu(Frame):
         shape = Shape(points, GL_POINTS)
 
         self.gl_window.add_shape(shape)
+
+    def command(self):
+        self.gl_window.print_info()
         
 

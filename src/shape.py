@@ -54,4 +54,7 @@ class Shape():
             return False
         else:
             return True
+        
+    def __str__(self):
+        return str(self.vertex.T)
 
