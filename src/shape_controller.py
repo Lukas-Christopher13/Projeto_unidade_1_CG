@@ -6,6 +6,7 @@ from src.utils.matrix_transform import *
 from src.components.translate_frame import TranslateFrame
 from src.components.rotation_frame import RotationFrame
 from src.components.scaling_frame import ScalingFrame
+from src.components.transform_frame import TransformFrame
 
 class EditShape(Frame):
 
@@ -22,6 +23,9 @@ class EditShape(Frame):
         self.translate_frame = TranslateFrame(frame, command=self.translate)
         self.rotation_frame = RotationFrame(frame, command=self.rotation)
         self.scaling_frame = ScalingFrame(frame, command=self.scaling)
+
+        btn_transform = Button(frame, text="Transform", command=self.transform)
+        btn_transform.pack(side=BOTTOM)
         
         btn_to_origin = Button(frame, text="To Origin", command=self.to_origin)
         btn_to_origin.pack(side=BOTTOM)
@@ -67,6 +71,10 @@ class EditShape(Frame):
             scaling,
             translate_to_inital_position
         ])
+
+    def transform(self):
+        transform_frame = TransformFrame(self.gl_window, self.gl_window.get_selected())
+        transform_frame.open_popup()
 
     def to_origin(self):
         shape = self.gl_window.get_selected()
