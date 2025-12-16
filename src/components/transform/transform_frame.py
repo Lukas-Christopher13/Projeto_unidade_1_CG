@@ -2,6 +2,10 @@ from collections import deque
 from tkinter import * 
 
 from src.components.shared.popup_frame import PopupFrame
+from src.components.transform.rotation_input import RotationInput
+from src.components.transform.translation_input import TranslationInput
+from src.components.transform.scale_input import ScaleInput
+
 from src.utils.matrix_transform import *
 
 WIDHT = 800
@@ -26,14 +30,14 @@ class TransformFrame(PopupFrame):
         label = Label(self.popup, textvariable=self.transform_description, font=("Arial", 14))
         label.grid(row=0, column=0, pady=5)
 
-        btn_rotation = Button(self.popup, text="rotate", command=self.rotation)
-        btn_rotation.grid(row=2, column=0, columnspan=3, pady=12)
+        self.rotation_input = RotationInput(self.popup, self.rotation)
+        self.rotation_input.grid(row=2, column=0, columnspan=3, pady=12)
 
-        btn_translation = Button(self.popup, text="translate", command=self.translation)
-        btn_translation.grid(row=3, column=0, columnspan=3, pady=12)
+        self.translation_input = TranslationInput(self.popup, self.translation)
+        self.translation_input.grid(row=3, column=0, columnspan=3, pady=12)
 
-        btn_scale = Button(self.popup, text="scale", command=self.scale)
-        btn_scale.grid(row=4, column=0, columnspan=3, pady=12)
+        self.scale_input = ScaleInput(self.popup, self.scale)
+        self.scale_input.grid(row=4, column=0, columnspan=3, pady=12)
 
         btn_transform = Button(self.popup, text="Transform", command=self.transform)
         btn_transform.grid(row=0, column=1, columnspan=3, pady=12)
@@ -60,16 +64,22 @@ class TransformFrame(PopupFrame):
         print(self.current_shape.vertex @ current.T)
 
     def rotation(self):
-        self.queue.append(basic_rotation(30.0))
-        self.transform_description.set("R(30) x " + self.transform_description.get())
+        radians = self.rotation_input.get()
+
+        self.queue.append(basic_rotation(radians))
+        self.transform_description.set(f"R({radians}) x " + self.transform_description.get())
 
     def translation(self):
-        self.queue.append(translate(400, 400))
-        self.transform_description.set("T(400, 400) x " + self.transform_description.get())
+        xy = self.translation_input.get()
+
+        self.queue.append(translate(xy[0], xy[1]))
+        self.transform_description.set(f"T({xy[0]}, {xy[1]}) x " + self.transform_description.get())
 
     def scale(self):
-        self.queue.append(basic_scaling(2,2))
-        self.transform_description.set("S(2, 2) x " + self.transform_description.get())
+        xy = self.scale_input.get()
+
+        self.queue.append(basic_scaling(xy[0], xy[1]))
+        self.transform_description.set(f"S({xy[0]}, {xy[1]}) x " + self.transform_description.get())
 
     def get_input(self):
         try:

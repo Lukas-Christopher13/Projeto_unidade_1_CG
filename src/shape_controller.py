@@ -6,7 +6,7 @@ from src.utils.matrix_transform import *
 from src.components.translate_frame import TranslateFrame
 from src.components.rotation_frame import RotationFrame
 from src.components.scaling_frame import ScalingFrame
-from src.components.transform_frame import TransformFrame
+from components.transform.transform_frame import TransformFrame
 
 class EditShape(Frame):
 
