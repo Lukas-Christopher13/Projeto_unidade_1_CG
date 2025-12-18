@@ -42,6 +42,14 @@ def basic_scaling(sx: np.float32, sy: np.float32, sz=0.0):
 
     return scaling
 
+def reflection_x():
+    return np.array([
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0,-1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ], dtype=np.float32)
+    
 def aplay_transformation(vertex, steps: list):
     print(vertex)
     for i in steps:

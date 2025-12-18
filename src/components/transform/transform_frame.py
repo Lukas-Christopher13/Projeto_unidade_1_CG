@@ -39,6 +39,9 @@ class TransformFrame(PopupFrame):
         self.scale_input = ScaleInput(self.popup, self.scale)
         self.scale_input.grid(row=4, column=0, columnspan=3, pady=12)
 
+        btn_reflection_x = Button(self.popup, text="reflection X", command=self.reflection_axis_x)
+        btn_reflection_x.grid(row=5, column=0, columnspan=3, pady=12)
+
         btn_transform = Button(self.popup, text="Transform", command=self.transform)
         btn_transform.grid(row=0, column=1, columnspan=3, pady=12)
 
@@ -80,6 +83,10 @@ class TransformFrame(PopupFrame):
 
         self.queue.append(basic_scaling(xy[0], xy[1]))
         self.transform_description.set(f"S({xy[0]}, {xy[1]}) x " + self.transform_description.get())
+
+    def reflection_axis_x(self):
+        self.queue.append(reflection_x())
+        self.transform_description.set("Rx x " + self.transform_description.get())
 
     def get_input(self):
         try:
