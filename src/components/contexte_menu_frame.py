@@ -17,11 +17,12 @@ from src.algorithms.circle_polynomial import draw_circle_polynomial
 from src.algorithms.circle_trigonometric import draw_circle_trigonometric
 
 class ContextMenu(Frame):
-    def __init__(self, gl_window: WindowTk, **kwargs):
-        super().__init__(gl_window, **kwargs)
-        self.gl_window = gl_window
+    def __init__(self, main_frame, **kwargs):
+        super().__init__(main_frame, **kwargs)
+        #reformular
+        self.gl_window = main_frame.gl_window
 
-        self.context_menu = Menu(gl_window, tearoff=0)
+        self.context_menu = Menu(self.gl_window, tearoff=0)
 
         self.shapes_sub_menu = Menu(self.context_menu, tearoff=0)
         self.lines_sub_menu = Menu(self.context_menu, tearoff=0)

@@ -4,12 +4,14 @@ from src.utils.windowtk import WindowTk
 from shape_controller import EditShape
 
 class ShapesLateralBar(Frame):
-    def __init__(self, root, gl_window: WindowTk, **kwargs):
-        super().__init__(root, **kwargs)
-        self.root = root
-        self.gl_window = gl_window
+    def __init__(self, main_frame, **kwargs):
+        super().__init__(main_frame, **kwargs)
+        self.gl_window = main_frame.gl_window
 
-        lateralbar = Frame(self.root, width=300)
+        #reformular
+        self.gl_window.add_listener(self)
+
+        lateralbar = Frame(self, width=300)
         lateralbar.pack(side=TOP, fill=BOTH, padx=0, pady=0)
 
         main_frame = Frame(lateralbar)
@@ -24,7 +26,7 @@ class ShapesLateralBar(Frame):
 
         self.listbox.bind("<<ListboxSelect>>", self.select_shape)
 
-        edit_shape = EditShape(self.root, self.gl_window)
+        edit_shape = EditShape(self, self.gl_window)
 
     def update(self):
         self.listbox.delete(0, "end")
