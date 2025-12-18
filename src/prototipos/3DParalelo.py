@@ -161,9 +161,9 @@ class Window3D():
     def isometric_rotation(self):
         # Rotação em Y: 45°
         Ry = np.array([
-            [ np.sqrt(2)/2, 0,  np.sqrt(2)/2, 0],
+            [ np.sqrt(2)/2, 0,  -np.sqrt(2)/2, 0],
             [ 0,             1,  0,             0],
-            [-np.sqrt(2)/2, 0,  np.sqrt(2)/2,  0],
+            [ np.sqrt(2)/2, 0,  np.sqrt(2)/2,  0],
             [ 0,             0,  0,             1]
         ], dtype=np.float32)
 
