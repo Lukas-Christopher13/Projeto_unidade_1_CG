@@ -20,7 +20,7 @@ from src.models.gl_window_model import singleton
 
 class ContextMenuController:
     def __init__(self, view):
-        self.model = singleton
+        self.model = singleton #remover dps
         self.view = view
 
         self.view.shapes_sub_menu.add_command(label="Triangle",      command=lambda:self.create_shape(1))
@@ -46,7 +46,7 @@ class ContextMenuController:
                 shape = ShapeFactory.rectangle()
             case _:
                 print("Nenuma forma foi selecionada")
-        self.model.add_shape(shape)
+        singleton.add_shape(shape)
     
     #rever
     def new_shape(self):

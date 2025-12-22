@@ -15,7 +15,7 @@ class MainFrameView(Frame):
         self.gl_window_view = GlWindowView(self, bd=0, highlightthickness=0)
         self.gl_window_view.pack(side=LEFT, expand=True, fill=BOTH, padx=0, pady=0)
 
-        self.lateral_bar_view = LateralBarView(self, self.gl_window_view)
+        self.lateral_bar_view = LateralBarView(self)
         self.lateral_bar_view.pack(side=LEFT, fill=BOTH, padx=0, pady=0)
 
         self.context_menu_view = ContextMenuView(self.gl_window_view)
