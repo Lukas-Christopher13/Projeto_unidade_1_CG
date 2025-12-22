@@ -12,9 +12,9 @@ from src.views.inputs.scale_input_frame import ScaleInputFrame
 from components.transform.transform_frame import TransformFrame
 
 class EditShape(Frame):
-    def __init__(self, root, **kwargs):
+    def __init__(self, root, gl_window, **kwargs):
         super().__init__(root, **kwargs)
-        self.gl_window = root.gl_window
+        self.gl_window = gl_window
         
         self.window_info = Label(self, text="")
         self.window_info.grid(row=1, column=0)

@@ -13,14 +13,15 @@ from tkinter import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from src.views.main_frame import MainFrame
+from src.controllers.main_frame_controller import MainFrameController
 
 def main():
     root = Tk()
     root.title("testes")
     root.attributes("-zoomed", True)
 
-    main_frame = MainFrame(root)
+    main_frame_controller = MainFrameController(root)
+    main_frame_controller.run()
    
 if __name__ == "__main__":
     main()
