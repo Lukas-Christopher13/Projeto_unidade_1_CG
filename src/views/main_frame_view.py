@@ -1,6 +1,9 @@
 from tkinter import *
-from src.views.lateralbar_frame_view import LateralBarView
+
 from src.views.gl_window_view import GlWindowView
+from src.views.context_menu_view import ContextMenuView
+from src.views.lateralbar_frame_view import LateralBarView
+
 
 class MainFrameView(Frame):
     def __init__(self, parent, controller, **kwargs): #adicionar controller
@@ -14,6 +17,10 @@ class MainFrameView(Frame):
 
         self.lateral_bar_view = LateralBarView(self, self.gl_window_view)
         self.lateral_bar_view.pack(side=LEFT, fill=BOTH, padx=0, pady=0)
+
+        self.context_menu_view = ContextMenuView(self.gl_window_view)
+
+        
 
 
     
