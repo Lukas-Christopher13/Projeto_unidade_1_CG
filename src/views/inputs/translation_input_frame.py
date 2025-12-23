@@ -1,10 +1,10 @@
 from tkinter import *
 
 class TranslationInputFrame(Frame):
-    def __init__(self, root, command, text=None, **kwargs):
+    def __init__(self, root, command,  text=None, **kwargs):
         super().__init__(root, **kwargs)
 
-        Label(root, text="Translate").grid(row=0, column=1, padx=5, pady=2)
+        Label(self, text="Translate").grid(row=0, column=1, padx=5, pady=2)
 
         Label(self, text="X").grid(row=1, column=0, sticky="e", padx=5, pady=2)
         self.x_input = Entry(self, textvariable=StringVar(value="0.0"), width=10)

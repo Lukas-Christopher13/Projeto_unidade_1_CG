@@ -2,9 +2,9 @@ from typing import List
 from src.shape import Shape
 
 class GlWindowModel:
-    shapes: List[Shape] = []
     listeners = []
-                
+    shapes: List[Shape] = []
+    
     def add_shape(self, shape: Shape):
         self.shapes.append(shape)
         self.notify()

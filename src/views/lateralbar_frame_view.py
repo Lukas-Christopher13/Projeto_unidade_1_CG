@@ -1,5 +1,6 @@
 from tkinter import *
 from src.shape_controller import EditShape
+from src.views.edit_shape_view import EditShapeView 
 
 class LateralBarView(Frame):
     def __init__(self, root, **kwargs):
@@ -12,9 +13,12 @@ class LateralBarView(Frame):
         self.scrollbar.grid(row=0, column=1)
 
         self.listbox.config(yscrollcommand=self.scrollbar.set)
+
+        self.edit_shape_view = EditShapeView(self)
+        self.edit_shape_view.grid(row=1, column=0)
         
         # edit_shape = EditShape(self, gl_window)
         # edit_shape.grid(row=1, column=0)
 
   
-        
+    
