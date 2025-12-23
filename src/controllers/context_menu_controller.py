@@ -29,12 +29,12 @@ class ContextMenuController:
         self.view.shapes_sub_menu.add_command(label="New", command=self.do_not)
         self.view.shapes_sub_menu.add_command(label="info", command=self.do_not)
 
-        self.view.lines_sub_menu.add_command(label="DDA", command=self.do_not)
-        self.view.lines_sub_menu.add_command(label="MidPoint", command=self.do_not)
+        self.view.lines_sub_menu.add_command(label="DDA",            command=lambda:self.create_line(drawLineDDA))
+        self.view.lines_sub_menu.add_command(label="MidPoint",       command=lambda:self.create_line(drawLineMP))
 
-        self.view.circle_sub_menu.add_command(label="Trigonometric", command=self.do_not)
-        self.view.circle_sub_menu.add_command(label="Polynomial", command=self.do_not)
-        self.view.circle_sub_menu.add_command(label="MidPoint", command=self.do_not)
+        self.view.circle_sub_menu.add_command(label="Trigonometric", command=lambda:self.create_circle(draw_circle_trigonometric))
+        self.view.circle_sub_menu.add_command(label="Polynomial",    command=lambda:self.create_circle(draw_circle_polynomial))
+        self.view.circle_sub_menu.add_command(label="MidPoint",      command=lambda:self.create_circle(draw_circleMP))
         
     def create_shape(self, type: str):
         match type:
@@ -48,23 +48,11 @@ class ContextMenuController:
                 print("Nenuma forma foi selecionada")
         singleton.add_shape(shape)
     
-    #rever
-    def new_shape(self):
-        matriz_frame = MatrizFrame(self.gl_window)
-        matriz_frame.open_popup()
-
-        self.gl_window.wait_window(matriz_frame.popup)
-
-        shape = ShapeFactory.default_shape(matriz_frame.input)
-
-        self.model.add_shape(shape)
-
-    #rever
     def create_line(self, drawline):
-        lineFrame = LineFrame(self.gl_window)
+        lineFrame = LineFrame(self.view)
         lineFrame.open_popup()
 
-        self.gl_window.wait_window(lineFrame.popup)
+        self.view.wait_window(lineFrame.popup)
 
         points = drawline(
             x1=lineFrame.x1,
@@ -75,20 +63,30 @@ class ContextMenuController:
         
         shape = Shape(points, GL_POINTS)
 
-        self.gl_window.add_shape(shape)
+        singleton.add_shape(shape)
 
-    #rever
     def create_circle(self, draw_circle):
-        circleFrame = CircleFrame(self.gl_window)
+        circleFrame = CircleFrame(self.view)
         circleFrame.open_popup()
 
-        self.gl_window.wait_window(circleFrame.popup)
+        self.view.wait_window(circleFrame.popup)
         
         points = draw_circle(circleFrame.radian)
 
         shape = Shape(points, GL_POINTS)
 
-        self.gl_window.add_shape(shape)
+        singleton.add_shape(shape)
+
+    #rever
+    def new_shape(self):
+        matriz_frame = MatrizFrame(self.gl_window)
+        matriz_frame.open_popup()
+
+        self.gl_window.wait_window(matriz_frame.popup)
+
+        shape = ShapeFactory.default_shape(matriz_frame.input)
+
+        self.model.add_shape(shape)
 
     def do_not(self):
         pass
