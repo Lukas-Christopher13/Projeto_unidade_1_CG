@@ -1,7 +1,7 @@
 
 from src.utils.matrix_transform import *
 from src.models.gl_window_model import singleton
-from src.components.transform.transform_frame import TransformFrame
+from components.transform_frame import TransformFrame
 
 class EditShapeController:
     def __init__(self, view, model):

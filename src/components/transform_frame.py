@@ -2,9 +2,9 @@ from collections import deque
 from tkinter import * 
 
 from src.components.shared.popup_frame import PopupFrame
-from src.components.transform.rotation_input import RotationInput
-from src.components.transform.translation_input import TranslationInput
-from src.components.transform.scale_input import ScaleInput
+from src.components.input_components.rotation_input import RotationInput
+from src.components.input_components.translation_input import TranslationInput
+from src.components.input_components.scale_input import ScaleInput
 
 from src.utils.matrix_transform import *
 
