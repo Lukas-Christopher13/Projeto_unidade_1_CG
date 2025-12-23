@@ -2,7 +2,7 @@ from tkinter import *
 from OpenGL.GL import *
 
 
-from shape import Shape
+from models.shape import Shape
 from utils.shape_factory import ShapeFactory
 
 from components.line_popup_frame import LineFrame

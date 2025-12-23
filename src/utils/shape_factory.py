@@ -1,6 +1,6 @@
 from OpenGL.GL import *
 
-from shape import Shape
+from models.shape import Shape
 
 class ShapeFactory:
 

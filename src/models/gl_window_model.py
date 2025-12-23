@@ -1,5 +1,5 @@
 from typing import List
-from src.shape import Shape
+from models.shape import Shape
 
 class GlWindowModel:
     listeners = []

@@ -1,5 +1,4 @@
 from tkinter import *
-from src.shape_controller import EditShape
 from src.views.edit_shape_view import EditShapeView 
 
 class LateralBarView(Frame):

@@ -5,7 +5,7 @@ from pyopengltk import OpenGLFrame
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from src.shape import Shape
+from models.shape import Shape
 from utils.backgrounds import cartesiam_plane
 
 #singleton
