@@ -53,11 +53,11 @@ class EditShapeController:
         transform_frame.open_popup()
 
     def to_origin(self):
-        shape = self.gl_window.get_selected()
+        shape = singleton.get_selected()
         xm, ym, zm, wm = shape.mid_point_vertex() #melhorar esse nome
 
         to_center = translate(-xm, -ym, -zm)
         shape.transform([to_center])
 
     def delete(self):
-        self.gl_window.delete_shape()
+        singleton.delete_shape()

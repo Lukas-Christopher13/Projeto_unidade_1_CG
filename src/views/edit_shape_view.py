@@ -4,7 +4,7 @@ from src.views.inputs.scale_input_frame import ScaleInputFrame
 from src.views.inputs.rotation_input_frame import RotationInputFrame
 from src.views.inputs.translation_input_frame import TranslationInputFrame
 
-
+#falta o transform!
 class EditShapeView(Frame):
     def __init__(self, root, **kwargs):
         super().__init__(root, **kwargs)
@@ -23,10 +23,10 @@ class EditShapeView(Frame):
         btn_transform = Button(self, text="Transform", command=self.do_not)
         btn_transform.grid(row=4, column=0)
         
-        btn_to_origin = Button(self, text="To Origin", command=self.do_not)
+        btn_to_origin = Button(self, text="To Origin", command=self.to_origin)
         btn_to_origin.grid(row=5, column=0)
 
-        btn_delete = Button(self, text="Delete", command=self.do_not)
+        btn_delete = Button(self, text="Delete", command=self.delete)
         btn_delete.grid(row=6, column=0)
 
     def set_controller(self, controller):
@@ -40,6 +40,12 @@ class EditShapeView(Frame):
 
     def scale(self):
         self.controller.scale()
+
+    def to_origin(self):
+        self.controller.to_origin()
+
+    def delete(self):
+        self.controller.delete()
 
     def do_not(self):
         pass
