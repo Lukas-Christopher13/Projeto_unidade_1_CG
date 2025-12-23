@@ -20,7 +20,7 @@ class EditShapeView(Frame):
         self.scaling_input_frame.grid(row=3, column=0)
 
         #talvez separar isso
-        btn_transform = Button(self, text="Transform", command=self.do_not)
+        btn_transform = Button(self, text="Transform", command=self.transform)
         btn_transform.grid(row=4, column=0)
         
         btn_to_origin = Button(self, text="To Origin", command=self.to_origin)
@@ -41,6 +41,9 @@ class EditShapeView(Frame):
     def scale(self):
         self.controller.scale()
 
+    def transform(self):
+        self.controller.transform()
+        
     def to_origin(self):
         self.controller.to_origin()
 

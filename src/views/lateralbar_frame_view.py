@@ -17,8 +17,6 @@ class LateralBarView(Frame):
         self.edit_shape_view = EditShapeView(self)
         self.edit_shape_view.grid(row=1, column=0)
         
-        # edit_shape = EditShape(self, gl_window)
-        # edit_shape.grid(row=1, column=0)
 
   
     

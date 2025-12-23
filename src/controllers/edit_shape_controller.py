@@ -49,7 +49,7 @@ class EditShapeController:
         ])
 
     def transform(self):
-        transform_frame = TransformFrame(self.gl_window, self.gl_window.get_selected())
+        transform_frame = TransformFrame(self.view, singleton.get_selected())
         transform_frame.open_popup()
 
     def to_origin(self):
