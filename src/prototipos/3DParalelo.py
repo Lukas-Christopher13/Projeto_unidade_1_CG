@@ -17,7 +17,7 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-from models.shape import Shape
+from src.models.shape import Shape
 
 class Camera:
     eye =    [100.0, 70.0, 100.0]    # afastada diagonalmente acima do centro
