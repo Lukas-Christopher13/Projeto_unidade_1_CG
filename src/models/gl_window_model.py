@@ -1,13 +1,21 @@
 from typing import List
-from models.shape import Shape
+from src.models.shape import Shape
+from utils.backgrounds import axies_3d
 
 class GlWindowModel:
     listeners = []
     shapes: List[Shape] = []
+    backgrounds: List[Shape] = []
     
     def add_shape(self, shape: Shape):
         self.shapes.append(shape)
         self.notify()
+
+    def use_3d_axies(self):
+        self.backgrounds.append(axies_3d)
+    
+    def add_background(self, background: Shape):
+        self.backgrounds.append(background)
 
     #delete e remover da lista
     def clear_all(self):

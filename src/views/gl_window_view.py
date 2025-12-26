@@ -8,37 +8,7 @@ from utils.backgrounds import cartesiam_plane
 from src.models.gl_window_model import singleton
 from src.models.shape import Shape
 
-
-axies = np.array([
-    [0.0, 0.0, 0.0, 1.0],
-    [1000.0, 0.0, 0.0, 1.0],
-    [0.0, 0.0, 0.0, 1],
-    [0.0, 10000.0, 0.0, 1],
-    [0.0, 0.0, 0.0, 1],
-    [0.0, 0.0, 10000.0, 1]
-],dtype=np.float32)
-
-cube = np.array([
-    [ 25.0, -25.0, 25.0, 1.0],
-    [ 25.0, -25.0, -25.0, 1.0],
-    [ -25.0, -25.0, -25.0, 1.0],
-    [ -25.0, -25.0, 25.0, 1.0],
-
-    [ 25.0, 25.0, 25.0, 1.0],
-    [ 25.0, 25.0, -25.0, 1.0],
-    [ -25.0, 25.0, -25.0, 1.0],
-    [ -25.0,  25.0, 25.0, 1.0],
-], dtype=np.float32)
-
-cube_edges = [
-    (0, 1), (1, 2), (2, 3), (3, 0),  # face baixa
-    (4, 5), (5, 6), (6, 7), (7, 4),  # face alta
-    (0, 4), (1, 5), (2, 6), (3, 7)   # conectar as faces
-]
-
-axies = Shape(matrix=axies, gl_option=GL_LINES)
-shape = Shape(matrix=cube, gl_option=GL_LINES, edge_sequence=cube_edges)
-
+from src.utils.shape_factory_3d import ShapeFactory3D
 
 class GlWindowView(OpenGLFrame):
     def __init__(self, root, **kwargs):
@@ -56,8 +26,8 @@ class GlWindowView(OpenGLFrame):
         self.x_min, self.y_min = 0, 0
         self.width, self.height = 800, 600
 
-        singleton.add_shape(axies)
-        singleton.add_shape(shape)
+        singleton.use_3d_axies()
+        singleton.add_shape(ShapeFactory3D.cube())
 
         self.display()
 
@@ -99,12 +69,16 @@ class GlWindowView(OpenGLFrame):
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
+        for background in singleton.backgrounds:
+            self.draw_3d(background)
+
         for shape in singleton.shapes:
             self.draw_3d(shape)
+
         glFlush()
 
     def draw_3d(self, shape):
-        points = self.pipileine_3d(shape)
+        points = self.pipileine_3d(shape.vertex)
 
         glColor3f(1.0, 0.0, 0.0)
         glLineWidth(2)
@@ -118,11 +92,11 @@ class GlWindowView(OpenGLFrame):
                 glVertex2f(point[0], point[1])
         glEnd()
 
-    def pipileine_3d(self, shape):
+    def pipileine_3d(self, np_matrix):
         #modeling_transformation = None #Implementar ()
         #clipping = None #Implementar
  
-        result = shape.vertex @ self.isometric_rotation().T
+        result = np_matrix @ self.isometric_rotation().T
 
         # 2 — Projeção ortográfica paralela
         result = result @ self.orthographic_projection().T
