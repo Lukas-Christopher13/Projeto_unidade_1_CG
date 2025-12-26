@@ -23,4 +23,8 @@ class GlWindowController:
         else:
             gluOrtho2D(-1000, 1000, -1000 / aspect, 1000 / aspect)
 
-        
+    def to_2d(self):
+        self.view.window_mode = "2d"
+    
+    def to_3d(self):
+        self.view.window_mode = "3d"

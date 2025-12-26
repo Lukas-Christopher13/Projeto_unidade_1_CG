@@ -8,7 +8,7 @@ class MainFrameController:
         self.view = MainFrameView(root, self)
 
         self.gl_window_controller = GlWindowController(self.view.gl_window_view)
-        self.lateral_bar_controller = LateralBarController(self.view.lateral_bar_view, None)
+        self.lateral_bar_controller = LateralBarController(self.view.lateral_bar_view, self.gl_window_controller, None)
         self.context_menu_controller = ContextMenuController(self.view.context_menu_view)
 
         self.main_frame_model = None

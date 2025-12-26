@@ -29,7 +29,7 @@ class GlWindowView(OpenGLFrame):
         glClearColor(1, 1, 1, 1)
 
     def redraw(self):
-        if self.window_mode == "3d":
+        if self.window_mode == "2d":
             self.redraw_2d()
         else:
             self.redraw_3d()

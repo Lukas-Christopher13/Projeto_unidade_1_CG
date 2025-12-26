@@ -1,11 +1,14 @@
 from src.models.gl_window_model import singleton
 from src.controllers.edit_shape_controller import EditShapeController
+from src.controllers.view_mode_controller import ViewModeController
 
 class LateralBarController:
-    def __init__(self, view, model):
-        self.model = model
+    def __init__(self, view, gl_window_controller, model):
         self.view = view
+        self.model = model
+        self.gl_window_controller = gl_window_controller
 
+        self.view_mode_controller = ViewModeController(self.view.view_mode_view, gl_window_controller, None)
         self.edit_shape_controller = EditShapeController(self.view.edit_shape_view, None)
 
         singleton.add_listener(self)
