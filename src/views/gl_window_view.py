@@ -11,6 +11,9 @@ from src.models.shape import Shape
 from src.utils.pipeline_3d import Pipeline3D
 from src.utils.shape_factory_3d import ShapeFactory3D
 
+singleton.use_3d_axies()
+singleton.add_shape(ShapeFactory3D.cube())
+
 class GlWindowView(OpenGLFrame):
     window_mode = "2d"
 
@@ -54,9 +57,6 @@ class GlWindowView(OpenGLFrame):
             x_min=0,
             y_min=0
         )
-
-        singleton.use_3d_axies()
-        singleton.add_shape(ShapeFactory3D.cube())
 
         self.display_3d()
     
