@@ -11,6 +11,8 @@ from src.models.shape import Shape
 from src.utils.shape_factory_3d import ShapeFactory3D
 
 class GlWindowView(OpenGLFrame):
+    window_mode = "3d"
+
     def __init__(self, root, **kwargs):
         super().__init__(root, **kwargs)
         
@@ -23,14 +25,33 @@ class GlWindowView(OpenGLFrame):
         glClearColor(1, 1, 1, 1)
 
     def redraw(self):
+        if self.window_mode == "2d":
+            self.redraw_2d()
+        else:
+            self.redraw_3d()
+
+    def redraw_2d(self):
+        width = self.winfo_width()
+        height = self.winfo_height()
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        
+        self.resize_window(width, height)
+
+        cartesiam_plane(2000, 2000)
+        self.controller.model.render_shapes()
+       
+        glFlush()
+
+    def redraw_3d(self):
         self.x_min, self.y_min = 0, 0
         self.width, self.height = 800, 600
 
         singleton.use_3d_axies()
         singleton.add_shape(ShapeFactory3D.cube())
 
-        self.display()
-
+        self.display_3d()
+    
     def resize_window(self, width, height):
         glViewport(0, 0, width, height)
         glMatrixMode(GL_PROJECTION)
@@ -46,20 +67,8 @@ class GlWindowView(OpenGLFrame):
     def set_controller(self, controller):
         self.controller = controller
 
-    def redraw_2d(self):
-        width = self.winfo_width()
-        height = self.winfo_height()
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        
-        self.resize_window(width, height)
-
-        cartesiam_plane(2000, 2000)
-        self.controller.model.render_shapes()
-       
-        glFlush()
-
-    def display(self):
+    
+    def display_3d(self):
         glClear(GL_COLOR_BUFFER_BIT)
 
         glMatrixMode(GL_PROJECTION)
