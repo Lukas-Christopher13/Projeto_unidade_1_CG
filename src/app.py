@@ -2,8 +2,6 @@ import os
 import sys
 import platform
 
-import numpy as np
-
 sys.path.append('.')
 so = platform.system()
 if so == "Linux":

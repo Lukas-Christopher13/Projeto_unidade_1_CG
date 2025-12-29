@@ -4,6 +4,8 @@ from src.views.gl_window_view import GlWindowView
 from src.views.context_menu_view import ContextMenuView
 from src.views.lateralbar_frame_view import LateralBarView
 
+from src.models.gl_window_model import gl_window_model
+
 
 class MainFrameView(Frame):
     def __init__(self, parent, controller, **kwargs): #adicionar controller
@@ -11,7 +13,9 @@ class MainFrameView(Frame):
         self.controller = controller
          
         self.pack(fill="both", expand=True, padx=10, pady=10)
+        self.build()
 
+    def build(self):
         self.gl_window_view = GlWindowView(self, bd=0, highlightthickness=0)
         self.gl_window_view.pack(side=LEFT, expand=True, fill=BOTH, padx=0, pady=0)
 
@@ -20,8 +24,4 @@ class MainFrameView(Frame):
 
         self.context_menu_view = ContextMenuView(self.gl_window_view)
 
-        
-
-
-    
 

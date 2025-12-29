@@ -1,14 +1,15 @@
+from tkinter import Frame
 from typing import List
 from src.models.shape import Shape
 from src.utils.backgrounds import axies_3d
 
-from src.utils.shape_factory_3d import ShapeFactory3D
 
 class GlWindowModel:
     window_mode = "2d"
     listeners = []
     shapes: List[Shape] = []
     backgrounds: List[Shape] = []
+    frames: List[Frame] = []
     
     def add_shape(self, shape: Shape):
         self.shapes.append(shape)
@@ -16,9 +17,16 @@ class GlWindowModel:
 
     def add_listener(self, listener):
         self.listeners.append(listener)
+
+    def add_frame(self, frame: Frame):
+        self.frames.append(frame)
     
     def add_background(self, background: Shape):
         self.backgrounds.append(background)
+
+    def rebuild_frames(self):
+        for frame in self.frames:
+            frame.rebuild()
 
     def delete_shape(self):
         shape = self.shapes[self.selected]
@@ -57,16 +65,23 @@ class GlWindowModel:
     def use_3d_axies(self):
         self.backgrounds.append(axies_3d)
 
+    def is_2d(self):
+        if self.window_mode == "2d":
+            return True
+        else:
+            return False
+
     def to_2d(self):
-        self.empty_window()
         self.window_mode = "2d"
-    
-    def to_3d(self):
-        self.empty_window()        
+        self.empty_window()
+        self.rebuild_frames()
+        
+    def to_3d(self):   
         self.window_mode = "3d"
+        self.empty_window()   
+        self.rebuild_frames()
 
         #temporariamente vai ficar aqui 
         self.use_3d_axies()
-        self.add_shape(ShapeFactory3D.cube())
 
 gl_window_model = GlWindowModel()

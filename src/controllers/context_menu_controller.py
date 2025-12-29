@@ -2,8 +2,10 @@ from tkinter import *
 from OpenGL.GL import *
 
 
-from models.shape import Shape
-from utils.shape_factory import ShapeFactory
+from src.models.shape import Shape
+from src.utils.shape_factory import ShapeFactory
+from src.utils.shape_factory_3d import ShapeFactory3D
+
 
 from components.line_popup_frame import LineFrame
 from components.circle_popup_frame import CircleFrame
@@ -20,12 +22,12 @@ from src.models.gl_window_model import gl_window_model
 
 class ContextMenuController:
     def __init__(self, view):
-        self.model = gl_window_model #remover dps
         self.view = view
 
-        self.view.shapes_sub_menu.add_command(label="Triangle",      command=lambda:self.create_shape(1))
-        self.view.shapes_sub_menu.add_command(label="Square",        command=lambda:self.create_shape(2))
-        self.view.shapes_sub_menu.add_command(label="Rectangle",     command=lambda:self.create_shape(3))
+    def options_2d(self):
+        self.view.shapes_sub_menu.add_command(label="Traingle",      command=lambda:self.create_shape("triangle"))
+        self.view.shapes_sub_menu.add_command(label="Square",        command=lambda:self.create_shape("square"))
+        self.view.shapes_sub_menu.add_command(label="Rectangle",     command=lambda:self.create_shape("rectangle"))
         self.view.shapes_sub_menu.add_command(label="New", command=self.do_not)
         self.view.shapes_sub_menu.add_command(label="info", command=self.do_not)
 
@@ -36,18 +38,26 @@ class ContextMenuController:
         self.view.circle_sub_menu.add_command(label="Polynomial",    command=lambda:self.create_circle(draw_circle_polynomial))
         self.view.circle_sub_menu.add_command(label="MidPoint",      command=lambda:self.create_circle(draw_circleMP))
         
-    def create_shape(self, type: str):
-        match type:
-            case 1:
-                shape = ShapeFactory.triangle()
-            case 2:
-                shape = ShapeFactory.square()
-            case 3:
-                shape = ShapeFactory.rectangle()
-            case _:
-                print("Nenuma forma foi selecionada")
+    def options_3d(self):
+        self.view.shapes_sub_menu.add_command(label="Cube",      command=lambda:self.create_shape("cube"))
+        
+    def create_shape(self, shape_type: str):
+        shape_map = {
+            "triangle": ShapeFactory.triangle,
+            "square": ShapeFactory.square,
+            "rectangle": ShapeFactory.rectangle,
+            "cube": ShapeFactory3D.cube
+        }
+
+        factory = shape_map.get(shape_type)
+
+        if not factory:
+            print("Nenhuma forma foi selecionada")
+            return
+
+        shape = factory()
         gl_window_model.add_shape(shape)
-    
+
     def create_line(self, drawline):
         lineFrame = LineFrame(self.view)
         lineFrame.open_popup()

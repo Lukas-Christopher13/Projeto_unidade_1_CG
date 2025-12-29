@@ -9,7 +9,7 @@ class Pipeline3D:
         self.y_min = y_min
 
     def transform(self, np_matrix):
-        #modeling_transformation = None #Implementar ()
+        #modeling_transformation = None #Implementar () #aparentemente não precisa - o Shape Ja faz!!!
         #clipping = None #Implementar
  
         result = np_matrix @ self.isometric_rotation().T
