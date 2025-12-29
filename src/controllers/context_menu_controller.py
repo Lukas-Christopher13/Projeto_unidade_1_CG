@@ -15,12 +15,12 @@ from src.algorithms.circle_midpoint import draw_circleMP
 from src.algorithms.circle_polynomial import draw_circle_polynomial
 from src.algorithms.circle_trigonometric import draw_circle_trigonometric
 
-from src.models.gl_window_model import singleton
+from src.models.gl_window_model import gl_window_model
 
 
 class ContextMenuController:
     def __init__(self, view):
-        self.model = singleton #remover dps
+        self.model = gl_window_model #remover dps
         self.view = view
 
         self.view.shapes_sub_menu.add_command(label="Triangle",      command=lambda:self.create_shape(1))
@@ -46,7 +46,7 @@ class ContextMenuController:
                 shape = ShapeFactory.rectangle()
             case _:
                 print("Nenuma forma foi selecionada")
-        singleton.add_shape(shape)
+        gl_window_model.add_shape(shape)
     
     def create_line(self, drawline):
         lineFrame = LineFrame(self.view)
@@ -63,7 +63,7 @@ class ContextMenuController:
         
         shape = Shape(points, GL_POINTS)
 
-        singleton.add_shape(shape)
+        gl_window_model.add_shape(shape)
 
     def create_circle(self, draw_circle):
         circleFrame = CircleFrame(self.view)
@@ -75,7 +75,7 @@ class ContextMenuController:
 
         shape = Shape(points, GL_POINTS)
 
-        singleton.add_shape(shape)
+        gl_window_model.add_shape(shape)
 
     #rever
     def new_shape(self):

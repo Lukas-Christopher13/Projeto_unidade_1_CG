@@ -1,6 +1,6 @@
 
 from src.utils.matrix_transform import *
-from src.models.gl_window_model import singleton
+from src.models.gl_window_model import gl_window_model
 from components.transform_frame import TransformFrame
 
 class EditShapeController:
@@ -13,7 +13,7 @@ class EditShapeController:
     #adicionar um model para isso!   
     def rotate(self):
         angle = self.view.rotation_input_frame.get()
-        shape = singleton.get_selected()
+        shape = gl_window_model.get_selected()
         xm, ym, zm, wm = shape.mid_point_vertex() #melhorar esse nome
 
         translate_to_center = translate(-xm, -ym, -zm)
@@ -28,14 +28,14 @@ class EditShapeController:
 
     def translate(self):
         x, y = self.view.translate_input_frame.get()
-        shape = singleton.get_selected()
+        shape = gl_window_model.get_selected()
         
         translate_ = translate(x, y)
         shape.transform([translate_])
 
     def scale(self):
         x, y = self.view.scaling_input_frame.get()
-        shape = singleton.get_selected()
+        shape = gl_window_model.get_selected()
         xm, ym, zm, wm = shape.mid_point_vertex() #melhorar esse nome
 
         translate_to_center = translate(-xm, -ym, -zm)
@@ -49,15 +49,15 @@ class EditShapeController:
         ])
 
     def transform(self):
-        transform_frame = TransformFrame(self.view, singleton.get_selected())
+        transform_frame = TransformFrame(self.view, gl_window_model.get_selected())
         transform_frame.open_popup()
 
     def to_origin(self):
-        shape = singleton.get_selected()
+        shape = gl_window_model.get_selected()
         xm, ym, zm, wm = shape.mid_point_vertex() #melhorar esse nome
 
         to_center = translate(-xm, -ym, -zm)
         shape.transform([to_center])
 
     def delete(self):
-        singleton.delete_shape()
+        gl_window_model.delete_shape()

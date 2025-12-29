@@ -1,4 +1,4 @@
-from src.models.gl_window_model import singleton
+from src.models.gl_window_model import gl_window_model
 from src.controllers.edit_shape_controller import EditShapeController
 from src.controllers.view_mode_controller import ViewModeController
 
@@ -11,13 +11,13 @@ class LateralBarController:
         self.view_mode_controller = ViewModeController(self.view.view_mode_view, gl_window_controller, None)
         self.edit_shape_controller = EditShapeController(self.view.edit_shape_view, None)
 
-        singleton.add_listener(self)
+        gl_window_model.add_listener(self)
 
         self.view.listbox.bind("<<ListboxSelect>>", self.select_shape)
         
     def update(self):
         self.view.listbox.delete(0, "end")
-        for id, valor in enumerate(singleton.shapes):
+        for id, valor in enumerate(gl_window_model.shapes):
             self.view.listbox.insert("end", str(id))
 
     def select_shape(self, shape):
@@ -25,5 +25,5 @@ class LateralBarController:
         if select:
             indice = select[0]
             valor = int(self.view.listbox.get(indice))
-            singleton.set_selected(valor)
+            gl_window_model.set_selected(valor)
         

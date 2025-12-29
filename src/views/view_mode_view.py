@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 
+from src.models.gl_window_model import gl_window_model
+
 class ViewModeView(Frame):
     def __init__(self, master):
         super().__init__(master, padx=10, pady=10)
@@ -14,13 +16,13 @@ class ViewModeView(Frame):
         ttk.Radiobutton(
             self, text="2D",
             variable=self.mode, value="2D",
-            command=self.to_2d
+            command=gl_window_model.to_2d
         ).pack(anchor="w")
 
         ttk.Radiobutton(
             self, text="3D",
             variable=self.mode, value="3D",
-            command=self.to_3d
+            command=gl_window_model.to_3d
         ).pack(anchor="w")
 
         # ===== EXTRAS =====
@@ -64,9 +66,3 @@ class ViewModeView(Frame):
 
     def set_controller(self, controller):
         self.controller = controller
-
-    def to_2d(self):
-        self.controller.to_2d()
-
-    def to_3d(self):
-        self.controller.to_3d()

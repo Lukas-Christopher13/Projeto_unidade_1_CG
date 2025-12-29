@@ -5,13 +5,10 @@ from OpenGL.GLU import *
 
 from src.utils.pipeline_3d import Pipeline3D
 from src.utils.backgrounds import cartesiam_plane
-from src.models.gl_window_model import singleton
-
+from src.models.gl_window_model import gl_window_model
 
 
 class GlWindowView(OpenGLFrame):
-    window_mode = "2d"
-
     def __init__(self, root, **kwargs):
         super().__init__(root, **kwargs)
         
@@ -24,7 +21,7 @@ class GlWindowView(OpenGLFrame):
         glClearColor(1, 1, 1, 1)
 
     def redraw(self):
-        if self.window_mode == "2d":
+        if gl_window_model.get_window_mode() == "2d":
             self.redraw_2d()
         else:
             self.redraw_3d()
@@ -77,10 +74,10 @@ class GlWindowView(OpenGLFrame):
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
-        for background in singleton.backgrounds:
+        for background in gl_window_model.backgrounds:
             self.draw_3d(background)
 
-        for shape in singleton.shapes:
+        for shape in gl_window_model.shapes:
             self.draw_3d(shape)
 
         glFlush()

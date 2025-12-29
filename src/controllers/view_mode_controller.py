@@ -6,8 +6,3 @@ class ViewModeController:
 
         self.view.set_controller(self)
         
-    def to_2d(self):
-        self.gl_window_controller.to_2d()
-
-    def to_3d(self):
-        self.gl_window_controller.to_3d()
