@@ -6,22 +6,49 @@ from tkinter import *
 from OpenGL.GL import *
 
 class Shape():
-    gl_color = np.empty([0, 0, 1], dtype=np.float32)
-
-    def __init__(self, matrix, gl_option, edge_sequence=None):
+    def __init__(self, matrix, gl_option, edge_sequence=None, color_matrix = None):
         if len(matrix[0]) != 4:
             matrix = self.__to_4d_array_matrix(matrix)
         self.vertex = np.array(matrix, dtype=np.float32)
         self.gl_option = gl_option
         self.edge_sequence = edge_sequence
+        self.color_matrix = color_matrix
     
     def render(self):
+        if self.color_matrix is not None:
+            self.color_render()
+        else:
+            self.default_render()
+
+    def color_render(self):
+        glBegin(self.gl_option)
+        for v, c in zip (self.vertex, self.color_matrix):
+            glColor3fv(c)
+            glVertex4fv(v)
+        glEnd()
+
+    def default_render(self):
         glColor3f(0,0,1)
         glBegin(self.gl_option)
         for v in self.vertex:
             glVertex4fv(v)
         glEnd()
-    
+
+    def render_3d(self, pipeline_3d):
+        points = pipeline_3d.transform(self.vertex)
+
+        glColor3f(1.0, 0.0, 0.0)
+        glLineWidth(2)
+        glBegin(GL_LINES)
+        if  self.has_edge_sequence():
+            for a, b in self.edge_sequence:
+                glVertex2f(points[a][0], points[a][1])
+                glVertex2f(points[b][0], points[b][1])
+        else:
+            for point in points:
+                glVertex2f(point[0], point[1])
+        glEnd()
+
     def update(self, gl_option, np_array):
         self.gl_option = gl_option
         self.vertex = np.vstack([self.vertex, np_array])

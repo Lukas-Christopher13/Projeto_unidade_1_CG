@@ -75,27 +75,12 @@ class GlWindowView(OpenGLFrame):
         glLoadIdentity()
 
         for background in gl_window_model.backgrounds:
-            self.draw_3d(background)
+            background.render_3d(self.pipeline_3d)
 
         for shape in gl_window_model.shapes:
-            self.draw_3d(shape)
+            shape.render_3d(self.pipeline_3d)
 
         glFlush()
-
-    def draw_3d(self, shape):
-        points = self.pipeline_3d.transform(shape.vertex)
-
-        glColor3f(1.0, 0.0, 0.0)
-        glLineWidth(2)
-        glBegin(GL_LINES)
-        if  shape.has_edge_sequence():
-            for a, b in shape.edge_sequence:
-                glVertex2f(points[a][0], points[a][1])
-                glVertex2f(points[b][0], points[b][1])
-        else:
-            for point in points:
-                glVertex2f(point[0], point[1])
-        glEnd()
 
     def set_controller(self, controller):
         self.controller = controller
