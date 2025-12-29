@@ -45,5 +45,10 @@ class GlWindowModel:
     def render_shapes(self):
         for shape in self.shapes:
             shape.render()
+            
+    def empty_window(self):
+        self.shapes = []
+        self.backgrounds = []
+        self.notify()
 
 singleton = GlWindowModel()

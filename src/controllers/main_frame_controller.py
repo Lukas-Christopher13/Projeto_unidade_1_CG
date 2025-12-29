@@ -17,5 +17,3 @@ class MainFrameController:
         self.view.gl_window_view.animate = 1
         self.view.gl_window_view.mainloop()
 
-
-

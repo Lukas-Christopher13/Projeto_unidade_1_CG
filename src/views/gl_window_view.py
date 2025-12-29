@@ -2,17 +2,12 @@ from tkinter import *
 from pyopengltk import OpenGLFrame
 from OpenGL.GL import *
 from OpenGL.GLU import *
-import numpy as np
-
-from utils.backgrounds import cartesiam_plane
-from src.models.gl_window_model import singleton
-from src.models.shape import Shape
 
 from src.utils.pipeline_3d import Pipeline3D
-from src.utils.shape_factory_3d import ShapeFactory3D
+from src.utils.backgrounds import cartesiam_plane
+from src.models.gl_window_model import singleton
 
-singleton.use_3d_axies()
-singleton.add_shape(ShapeFactory3D.cube())
+
 
 class GlWindowView(OpenGLFrame):
     window_mode = "2d"
@@ -72,10 +67,6 @@ class GlWindowView(OpenGLFrame):
         else:
             gluOrtho2D(-1000, 1000, -1000 / aspect, 1000 / aspect)
 
-    def set_controller(self, controller):
-        self.controller = controller
-
-    
     def display_3d(self):
         glClear(GL_COLOR_BUFFER_BIT)
 
@@ -108,3 +99,6 @@ class GlWindowView(OpenGLFrame):
             for point in points:
                 glVertex2f(point[0], point[1])
         glEnd()
+
+    def set_controller(self, controller):
+        self.controller = controller
