@@ -8,21 +8,38 @@ DEFAULT_COLOR = [0.0, 0.0, 1.0]
 
 class Shape():
     def __init__(self, matrix, gl_option, edge_sequence=None):
-
-        self.vertex = np.array(matrix, dtype=np.float32)
+        self.vertex = self.__to_4_columns(matrix)
         self.gl_option = gl_option
         self.edge_sequence = edge_sequence
+
+    def __to_4_columns(self, matrix):
+        matriz = np.array(matrix, dtype=np.float32)
+        cols = matriz.shape[1]
+
+        if cols >= 4:
+            return matriz
+
+        faltam = 4 - cols
+        extra = np.zeros((matriz.shape[0], faltam), dtype=matriz.dtype)
+
+        # última coluna = 1
+        extra[:, -1] = 1
+
+        return np.hstack((matriz, extra))
     
     def render(self):
         glBegin(self.gl_option)
         for v in self.vertex:
-            if self.has_color():
-                glColor3fv(v[4:7])
-            else:
-                glColor3fv(DEFAULT_COLOR)
-            glVertex4fv(v[0:4])
+            self.draw_point(v)
         glEnd()
-    
+
+    def draw_point(self, v):
+        if self.has_color():
+            glColor3fv(v[4:7])
+        else:
+            glColor3fv(DEFAULT_COLOR)
+        glVertex4fv(v[0:4])
+
     def render_3d(self, pipeline_3d):
         points = pipeline_3d.transform(self.vertex)
 
@@ -45,7 +62,6 @@ class Shape():
     def transform(self, tranformations: list):
         for M in tranformations:
             self.apply_transform(M)
-        print(self.vertex)
         return self.vertex
     
     def apply_transform(self, M):
