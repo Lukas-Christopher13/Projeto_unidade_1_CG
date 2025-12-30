@@ -25,20 +25,16 @@ def cartesiam_plane(width, height):
 
 
 axies_3d_points = np.array([
-    [0.0, 0.0, 0.0, 1.0],
-    [1000.0, 0.0, 0.0, 1.0],
-    [0.0, 0.0, 0.0, 1],
-    [0.0, 10000.0, 0.0, 1],
-    [0.0, 0.0, 0.0, 1],
-    [0.0, 0.0, 10000.0, 1]
+    [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0],
+    [1000.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0],
+    [0.0, 0.0, 0.0, 1, 0.0, 0.0, 1.0],
+    [0.0, 10000.0, 0.0, 1, 0.0, 0.0, 1.0],
+    [0.0, 0.0, 0.0, 1, 0.0, 0.0, 1.0],
+    [0.0, 0.0, 10000.0, 1, 0.0, 0.0, 1.0]
 ],dtype=np.float32)
 
-color_matrix = np.array([
-    [1.0, 0.0, 0.0],
-    [0.0, 1.0, 0.0],
-    [0.0, 0.0, 1.0],
-],dtype=np.float32)
 
-axies_3d = Shape(matrix=axies_3d_points, gl_option=GL_LINES, color_matrix=color_matrix)
+
+axies_3d = Shape(matrix=axies_3d_points, gl_option=GL_LINES)
 
 

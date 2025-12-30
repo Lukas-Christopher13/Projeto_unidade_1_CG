@@ -1,70 +1,84 @@
-import tkinter as tk
-from tkinter import *
+import os
+import sys
+import platform
 
-class ViewSelector(tk.Frame):
-    def __init__(self, master):
-        super().__init__(master, padx=10, pady=10)
+sys.path.append('.')
+so = platform.system()
+if so == "Linux":
+    os.environ['PYOPENGL_PLATFORM'] = 'glx'
 
-        # ===== MODO =====
-        tk.Label(self, text="Modo de Visualização", font=("Arial", 10, "bold")).pack(anchor="w")
 
-        self.mode = tk.StringVar(value="2D")
+import numpy as np
+from math import cos, sin, radians
+from OpenGL.GL import *
+from OpenGL.GLUT import *
 
-        ttk.Radiobutton(
-            self, text="2D",
-            variable=self.mode, value="2D",
-            command=self.on_change
-        ).pack(anchor="w")
+# =====================================================
+# VÉRTICES: [x, y, z, w, r, g, b]
+# Coordenadas normalizadas (NDC)
+# =====================================================
+vertices = np.array([
+    [-0.5, -0.5, 0.0, 1.0,   1.0, 0.0, 0.0],  # vermelho
+    [ 0.5, -0.5, 0.0, 1.0,   0.0, 1.0, 0.0],  # verde
+    [ 0.0,  0.5, 0.0, 1.0,   0.0, 0.0, 1.0],  # azul
+], dtype=float)
 
-        ttk.Radiobutton(
-            self, text="3D",
-            variable=self.mode, value="3D",
-            command=self.on_change
-        ).pack(anchor="w")
+# =====================================================
+# MATRIZ DE TRANSFORMAÇÃO (4x4)
+# Rotação em Z + Translação
+# =====================================================
+def create_transform(angle_deg, tx, ty):
+    a = radians(angle_deg)
+    return np.array([
+        [ cos(a), -sin(a), 0.0, tx],
+        [ sin(a),  cos(a), 0.0, ty],
+        [ 0.0,     0.0,    1.0, 0.0],
+        [ 0.0,     0.0,    0.0, 1.0],
+    ], dtype=float)
 
-        # ===== EXTRAS =====
-        ttk.Separator(self, orient="horizontal").pack(fill="x", pady=5)
+# =====================================================
+# APLICA TRANSFORMAÇÃO (SÓ NA POSIÇÃO)
+# =====================================================
+def apply_transform(vertices, M):
+    for v in vertices:
+        pos = v[0:4]          # x, y, z, w
+        v[0:4] = M @ pos      # transforma apenas posição
 
-        tk.Label(self, text="Extras", font=("Arial", 10, "bold")).pack(anchor="w")
+# =====================================================
+# RENDERIZAÇÃO
+# =====================================================
+def display():
+    glClear(GL_COLOR_BUFFER_BIT)
 
-        self.show_axes = tk.BooleanVar(value=True)
-        self.show_grid = tk.BooleanVar(value=False)
+    glBegin(GL_TRIANGLES)
+    for v in vertices:
+        glColor3fv(v[4:7])    # cor
+        glVertex3fv(v[0:3])   # posição
+    glEnd()
 
-        ttk.Checkbutton(
-            self, text="Mostrar Eixos",
-            variable=self.show_axes,
-            command=self.on_change
-        ).pack(anchor="w")
+    glFlush()
 
-        ttk.Checkbutton(
-            self, text="Mostrar Grid",
-            variable=self.show_grid,
-            command=self.on_change
-        ).pack(anchor="w")
+# =====================================================
+# MAIN
+# =====================================================
+def main():
+    glutInit()
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
+    glutInitWindowSize(600, 600)
+    glutCreateWindow(b"OpenGL - Coordenadas Homogeneas + Cores")
 
-        # ===== ZOOM =====
-        ttk.Separator(self, orient="horizontal").pack(fill="x", pady=5)
+    glClearColor(0.0, 0.0, 0.0, 1.0)
 
-        tk.Label(self, text="Zoom").pack(anchor="w")
+    # Cria e aplica uma transformação qualquer
+    M = create_transform(
+        angle_deg=45,   # rotação
+        tx=0.2,         # translação X
+        ty=0.1          # translação Y
+    )
+    apply_transform(vertices, M)
 
-        self.zoom = tk.DoubleVar(value=1.0)
-        ttk.Scale(
-            self, from_=0.5, to=3.0,
-            variable=self.zoom,
-            command=lambda e: self.on_change()
-        ).pack(fill="x")
+    glutDisplayFunc(display)
+    glutMainLoop()
 
-    def on_change(self):
-        print("Modo:", self.mode.get())
-        print("Eixos:", self.show_axes.get())
-        print("Grid:", self.show_grid.get())
-        print("Zoom:", self.zoom.get())
-        print("-" * 20)
-
-root = tk.Tk()
-root.title("Seleção 2D / 3D")
-
-panel = ViewSelector(root)
-panel.pack(side="left", fill="y")
-
-root.mainloop()
+if __name__ == "__main__":
+    main()
