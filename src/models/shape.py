@@ -43,15 +43,21 @@ class Shape():
         self.vertex = np.vstack([self.vertex, np_array])
 
     def transform(self, tranformations: list):
-        for i in tranformations:
-            self.vertex = self.vertex @ i.T
+        for M in tranformations:
+            self.apply_transform(M)
+        print(self.vertex)
         return self.vertex
+    
+    def apply_transform(self, M):
+        for v in self.vertex:
+            pos = v[0:4]
+            v[0:4] = M @ pos  
 
     def clear(self):
         self.vertex = np.empty((0, 4), dtype=np.float32)
 
     def mid_point_vertex(self):
-        x_mean, y_mean, z_mean, w_mean = self.vertex.mean(axis=0)
+        x_mean, y_mean, z_mean, w_mean = self.vertex[:, :4].mean(axis=0)
         return [x_mean, y_mean, z_mean, w_mean]
      
     def has_edge_sequence(self):
