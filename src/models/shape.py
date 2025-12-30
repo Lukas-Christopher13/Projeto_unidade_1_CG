@@ -43,15 +43,18 @@ class Shape():
     def render_3d(self, pipeline_3d):
         points = pipeline_3d.transform(self.vertex)
 
-        glColor3f(1.0, 0.0, 0.0)
         glLineWidth(2)
         glBegin(GL_LINES)
         if  self.has_edge_sequence():
             for a, b in self.edge_sequence:
+                self.apply_color(points[a])
                 glVertex2f(points[a][0], points[a][1])
+
+                self.apply_color(points[b])
                 glVertex2f(points[b][0], points[b][1])
         else:
             for point in points:
+                self.apply_color(point)
                 glVertex2f(point[0], point[1])
         glEnd()
 
@@ -82,6 +85,12 @@ class Shape():
         else:
             return True
         
+    def apply_color(self, v):
+        if self.has_color():
+            glColor3fv(v[4:7])
+        else:
+            glColor3fv(DEFAULT_COLOR)
+
     def has_color(self):
         if self.vertex.shape[1] > 4:
             return True

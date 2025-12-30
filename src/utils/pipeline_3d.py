@@ -11,17 +11,18 @@ class Pipeline3D:
     def transform(self, np_matrix):
         #modeling_transformation = None #Implementar () #aparentemente não precisa - o Shape Ja faz!!!
         #clipping = None #Implementar
+        np_matrix_copy = np_matrix.copy()
  
-        result = np_matrix @ self.isometric_rotation().T
+        np_matrix_copy[:, :4] = np_matrix_copy[:, :4] @ self.isometric_rotation().T
 
         # 2 — Projeção ortográfica paralela
-        result = result @ self.orthographic_projection().T
+        np_matrix_copy[:, :4] = np_matrix_copy[:, :4] @ self.orthographic_projection().T
 
         # 3 — Normalização NDC
-        result = np.array([self.normalize_to_ndc(v) for v in result])
+        np_matrix_copy[:, :4] = np.array([self.normalize_to_ndc(v) for v in np_matrix_copy[:, :4]])
 
         # 4 — Viewport
-        result = result @ self.viewport_transformation().T
+        np_matrix_copy[:, :4] = np_matrix_copy[:, :4] @ self.viewport_transformation().T
 
         # --Ordem--
         #Modeling Transformation
@@ -31,7 +32,7 @@ class Pipeline3D:
         #Viewport Transformation
         #Clipping Transformation 
 
-        return result
+        return np_matrix_copy
     
     def isometric_rotation(self):
         # Rotação em Y: 45°
