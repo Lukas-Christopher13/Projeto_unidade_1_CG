@@ -3,6 +3,7 @@ from pyopengltk import OpenGLFrame
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+from src.utils.pipeline_2d import Pipeline2D
 from src.utils.pipeline_3d import Pipeline3D
 from src.utils.backgrounds import cartesiam_plane
 from src.models.gl_window_model import gl_window_model
@@ -12,12 +13,11 @@ class GlWindowView(OpenGLFrame):
     def __init__(self, root, **kwargs):
         super().__init__(root, **kwargs)
         
+    #rever
     def initgl(self):
         glClearColor (1.0, 1.0, 1.0, 0.0)
         glMatrixMode(GL_PROJECTION)
-        gluOrtho2D(-1000, 1000, -1000, 1000) # Passar esse valor
-        glMatrixMode (GL_MODELVIEW)
-
+        glMatrixMode(GL_MODELVIEW)
         glClearColor(1, 1, 1, 1)
 
     def redraw(self):
@@ -30,14 +30,18 @@ class GlWindowView(OpenGLFrame):
         width = self.winfo_width()
         height = self.winfo_height()
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        
         self.resize_window(width, height)
 
+        self.pipeline_2d = Pipeline2D(
+            window_xmin = 0,
+            window_ymin = 0,
+            window_xmax= self.width,
+            window_ymax= self.height
+        )
+
         cartesiam_plane(2000, 2000)
-        self.controller.model.render_shapes()
-       
-        glFlush()
+
+        self.display_2d()
 
     def redraw_3d(self):
         width = self.winfo_width()
@@ -64,6 +68,23 @@ class GlWindowView(OpenGLFrame):
         else:
             gluOrtho2D(-1000, 1000, -1000 / aspect, 1000 / aspect)
 
+    def display_2d(self):
+        glClear(GL_COLOR_BUFFER_BIT)
+
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(0, self.width, 0, self.height, -1, 1)
+
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+
+        #self.resize_window(self.width, self.height)
+
+        for shape in gl_window_model.shapes:
+            shape.render(self.pipeline_2d)
+
+        glFlush()
+    
     def display_3d(self):
         glClear(GL_COLOR_BUFFER_BIT)
 

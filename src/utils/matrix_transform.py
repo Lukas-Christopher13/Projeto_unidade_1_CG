@@ -28,7 +28,7 @@ def scaling(vertex, sx: np.float32, sy: np.float32, sz=0.0):
     x_mean, y_mean, z_mean, w_mean = vertex.mean(axis=0)
     
     vertex = vertex @ translate(-x_mean, -y_mean, -z_mean).T
-    vertex = vertex @ basic_scaling(sx, sy, sz).T
+    vertex = vertex @ basic_scaling(sx, sy, sz).Tm
     return vertex @ translate(x_mean, y_mean, z_mean)
     
 

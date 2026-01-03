@@ -21,7 +21,6 @@ class WindowTk(OpenGLFrame):
     def initgl(self):
         glClearColor (1.0, 1.0, 1.0, 0.0)
         glMatrixMode(GL_PROJECTION)
-        gluOrtho2D(-1000, 1000, -1000, 1000) # Passar esse valor
         glMatrixMode (GL_MODELVIEW)
 
         glClearColor(1, 1, 1, 1)

@@ -27,18 +27,12 @@ class Shape():
 
         return np.hstack((matriz, extra))
     
-    def render(self):
+    def render(self, pipeline_2d):
+        points = pipeline_2d.transform(self.vertex)
         glBegin(self.gl_option)
-        for v in self.vertex:
+        for v in points:
             self.draw_point(v)
         glEnd()
-
-    def draw_point(self, v):
-        if self.has_color():
-            glColor3fv(v[4:7])
-        else:
-            glColor3fv(DEFAULT_COLOR)
-        glVertex4fv(v[0:4])
 
     def render_3d(self, pipeline_3d):
         points = pipeline_3d.transform(self.vertex)
@@ -57,6 +51,14 @@ class Shape():
                 self.apply_color(point)
                 glVertex2f(point[0], point[1])
         glEnd()
+
+    def draw_point(self, v):
+        if self.has_color():
+            glColor3fv(v[4:7])
+        else:
+            glColor3fv(DEFAULT_COLOR)
+
+        glVertex2f(v[0], v[1])
 
     def update(self, gl_option, np_array):
         self.gl_option = gl_option
