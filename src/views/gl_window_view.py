@@ -27,16 +27,15 @@ class GlWindowView(OpenGLFrame):
             self.redraw_3d()
 
     def redraw_2d(self):
-        width = self.winfo_width()
-        height = self.winfo_height()
-
-        self.resize_window(width, height)
+        self.width = self.winfo_width()
+        self.height = self.winfo_height()
+        self.aspect = self.width / self.height
 
         self.pipeline_2d = Pipeline2D(
-            window_xmin = 0,
-            window_ymin = 0,
-            window_xmax= self.width,
-            window_ymax= self.height
+            viewport_xmin = 0,
+            viewport_ymin = 0,
+            viewport_xmax= self.width,
+            viewport_ymax= self.height
         )
 
         cartesiam_plane(2000, 2000)
@@ -46,7 +45,7 @@ class GlWindowView(OpenGLFrame):
     def redraw_3d(self):
         width = self.winfo_width()
         height = self.winfo_height()
-
+        
         self.pipeline_3d = Pipeline3D(
             width=width,
             height=height,
@@ -56,29 +55,16 @@ class GlWindowView(OpenGLFrame):
 
         self.display_3d()
     
-    def resize_window(self, width, height):
-        glViewport(0, 0, width, height)
-        glMatrixMode(GL_PROJECTION)
-        glLoadIdentity()
-
-        aspect = width / height
-
-        if(width >= height):
-            gluOrtho2D(-1000 * aspect, 1000 * aspect, -1000, 1000)
-        else:
-            gluOrtho2D(-1000, 1000, -1000 / aspect, 1000 / aspect)
-
     def display_2d(self):
         glClear(GL_COLOR_BUFFER_BIT)
 
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
+
         glOrtho(0, self.width, 0, self.height, -1, 1)
 
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-
-        #self.resize_window(self.width, self.height)
 
         for shape in gl_window_model.shapes:
             shape.render(self.pipeline_2d)
