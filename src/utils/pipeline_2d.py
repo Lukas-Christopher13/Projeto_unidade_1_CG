@@ -12,15 +12,24 @@ class Pipeline2D:
     world_xmin, world_ymin = -1000, -1000
     world_xmax, world_ymax = 1000, 1000
 
-    # o mondo sou eu que defino (definir o mundo aqui)
-    # mapeio para a tela do meu computado
-    # depois normalizo
-
     def __init__(self, viewport_xmin, viewport_ymin, viewport_xmax, viewport_ymax):
         self.viewport_xmin = viewport_xmin
         self.viewport_ymin = viewport_ymin
         self.viewport_xmax = viewport_xmax
         self.viewport_ymax = viewport_ymax
+
+        aspect = self.viewport_xmax/ self.viewport_ymax
+
+        if aspect >= 1:
+            self.world_xmin =  self.world_xmin * aspect
+            self.world_xmax =  self.world_xmax * aspect
+            self.world_ymin =  self.world_ymin
+            self.world_ymax =  self.world_ymax
+        else:
+            self.world_xmin =  self.world_xmin
+            self.world_xmax =  self.world_xmax
+            self.world_ymin =  self.world_ymin / aspect
+            self.world_ymax =  self.world_ymax / aspect
         
     def transform(self, np_matrix):
         #modeling_transformation = None #Implementar () #aparentemente não precisa - o Shape Ja faz!!!
