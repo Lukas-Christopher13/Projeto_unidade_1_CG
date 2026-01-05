@@ -5,7 +5,6 @@ from OpenGL.GLU import *
 
 from src.utils.pipeline_2d import Pipeline2D
 from src.utils.pipeline_3d import Pipeline3D
-from src.utils.backgrounds import cartesiam_plane
 from src.models.gl_window_model import gl_window_model
 
 
@@ -34,8 +33,6 @@ class GlWindowView(OpenGLFrame):
             viewport_ymax= self.height
         )
 
-        cartesiam_plane(2000, 2000)
-
         self.display_2d()
 
     def redraw_3d(self):
@@ -57,6 +54,9 @@ class GlWindowView(OpenGLFrame):
         glLoadIdentity()
 
         glOrtho(0, self.width, 0, self.height, -1, 1)
+
+        for background in gl_window_model.backgrounds:
+            background.render(self.pipeline_2d)
 
         for shape in gl_window_model.shapes:
             shape.render(self.pipeline_2d)

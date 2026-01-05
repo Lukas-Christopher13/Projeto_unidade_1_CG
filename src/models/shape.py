@@ -3,7 +3,7 @@ import numpy as np
 from tkinter import *
 from OpenGL.GL import *
 
-DEFAULT_COLOR = [0.0, 0.0, 1.0]
+from config import POINT_SIZE, LINE_SIZE, DEFAULT_COLOR
 
 
 class Shape():
@@ -29,6 +29,8 @@ class Shape():
     
     def render(self, pipeline_2d):
         points = pipeline_2d.transform(self.vertex)
+
+        glPointSize(POINT_SIZE)
         glBegin(self.gl_option)
         for v in points:
             self.draw_point(v)
@@ -37,7 +39,7 @@ class Shape():
     def render_3d(self, pipeline_3d):
         points = pipeline_3d.transform(self.vertex)
 
-        glLineWidth(2)
+        glLineWidth(LINE_SIZE)
         glBegin(GL_LINES)
         if  self.has_edge_sequence():
             for a, b in self.edge_sequence:

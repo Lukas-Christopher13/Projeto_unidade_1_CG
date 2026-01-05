@@ -1,7 +1,7 @@
 from tkinter import Frame
 from typing import List
 from src.models.shape import Shape
-from src.utils.backgrounds import axies_3d
+from src.utils.backgrounds import axies_2d, axies_3d
 
 
 class GlWindowModel:
@@ -10,6 +10,9 @@ class GlWindowModel:
     shapes: List[Shape] = []
     backgrounds: List[Shape] = []
     frames: List[Frame] = []
+
+    def __init__(self):
+        self.to_2d()
     
     def add_shape(self, shape: Shape):
         self.shapes.append(shape)
@@ -62,6 +65,9 @@ class GlWindowModel:
         self.backgrounds = []
         self.notify()
 
+    def use_2d_axies(self):
+        self.backgrounds.append(axies_2d)
+
     def use_3d_axies(self):
         self.backgrounds.append(axies_3d)
 
@@ -75,6 +81,8 @@ class GlWindowModel:
         self.window_mode = "2d"
         self.empty_window()
         self.rebuild_frames()
+
+        self.use_2d_axies()
         
     def to_3d(self):   
         self.window_mode = "3d"

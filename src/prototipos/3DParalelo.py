@@ -105,7 +105,7 @@ class Window3D():
         points = self.three_dimensional_viewing_pipeline(shape)
 
         glColor3f(1.0, 1.0, 1.0)
-        glLineWidth(2)
+        glLineWidth()
         glBegin(GL_LINES)
         if shape.has_edge_sequence():
             for a, b in shape.edge_sequence:

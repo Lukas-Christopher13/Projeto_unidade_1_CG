@@ -31,7 +31,6 @@ def scaling(vertex, sx: np.float32, sy: np.float32, sz=0.0):
     vertex = vertex @ basic_scaling(sx, sy, sz).Tm
     return vertex @ translate(x_mean, y_mean, z_mean)
     
-
 def basic_scaling(sx: np.float32, sy: np.float32, sz=1.0):
     scaling = np.array([
         [sx, 0.0, 0.0, 0.0],
