@@ -13,24 +13,20 @@ class GlWindowView(OpenGLFrame):
     def __init__(self, root, **kwargs):
         super().__init__(root, **kwargs)
         
-    #rever
     def initgl(self):
-        glClearColor (1.0, 1.0, 1.0, 0.0)
-        glMatrixMode(GL_PROJECTION)
-        glMatrixMode(GL_MODELVIEW)
-        glClearColor(1, 1, 1, 1)
+        glClearColor(1.0, 1.0, 1.0, 0.0)
 
     def redraw(self):
+        self.width = self.winfo_width()
+        self.height = self.winfo_height()
+        self.aspect = self.width / self.height
+
         if gl_window_model.get_window_mode() == "2d":
             self.redraw_2d()
         else:
             self.redraw_3d()
 
     def redraw_2d(self):
-        self.width = self.winfo_width()
-        self.height = self.winfo_height()
-        self.aspect = self.width / self.height
-
         self.pipeline_2d = Pipeline2D(
             viewport_xmin = 0,
             viewport_ymin = 0,
@@ -57,14 +53,10 @@ class GlWindowView(OpenGLFrame):
     
     def display_2d(self):
         glClear(GL_COLOR_BUFFER_BIT)
-
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
 
         glOrtho(0, self.width, 0, self.height, -1, 1)
-
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
 
         for shape in gl_window_model.shapes:
             shape.render(self.pipeline_2d)
@@ -73,13 +65,9 @@ class GlWindowView(OpenGLFrame):
     
     def display_3d(self):
         glClear(GL_COLOR_BUFFER_BIT)
-
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
         glOrtho(0, self.width, 0, self.height, -1, 1)
-
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
 
         for background in gl_window_model.backgrounds:
             background.render_3d(self.pipeline_3d)
