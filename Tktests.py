@@ -7,78 +7,73 @@ so = platform.system()
 if so == "Linux":
     os.environ['PYOPENGL_PLATFORM'] = 'glx'
 
-
-import numpy as np
-from math import cos, sin, radians
+from tkinter import *
+from pyopengltk import OpenGLFrame
 from OpenGL.GL import *
-from OpenGL.GLUT import *
 
-# =====================================================
-# VÉRTICES: [x, y, z, w, r, g, b]
-# Coordenadas normalizadas (NDC)
-# =====================================================
-vertices = np.array([
-    [-0.5, -0.5, 0.0, 1.0,   1.0, 0.0, 0.0],  # vermelho
-    [ 0.5, -0.5, 0.0, 1.0,   0.0, 1.0, 0.0],  # verde
-    [ 0.0,  0.5, 0.0, 1.0,   0.0, 0.0, 1.0],  # azul
-], dtype=float)
 
-# =====================================================
-# MATRIZ DE TRANSFORMAÇÃO (4x4)
-# Rotação em Z + Translação
-# =====================================================
-def create_transform(angle_deg, tx, ty):
-    a = radians(angle_deg)
-    return np.array([
-        [ cos(a), -sin(a), 0.0, tx],
-        [ sin(a),  cos(a), 0.0, ty],
-        [ 0.0,     0.0,    1.0, 0.0],
-        [ 0.0,     0.0,    0.0, 1.0],
-    ], dtype=float)
+class MyOpenGLFrame(OpenGLFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        self.animate = 0   # 🔴 sem loop
+        self.lines = []    # 🔹 cena começa vazia
 
-# =====================================================
-# APLICA TRANSFORMAÇÃO (SÓ NA POSIÇÃO)
-# =====================================================
-def apply_transform(vertices, M):
-    for v in vertices:
-        pos = v[0:4]          # x, y, z, w
-        v[0:4] = M @ pos      # transforma apenas posição
+    def initgl(self):
+        glClearColor(1.0, 1.0, 1.0, 1.0)
 
-# =====================================================
-# RENDERIZAÇÃO
-# =====================================================
-def display():
-    glClear(GL_COLOR_BUFFER_BIT)
+    def redraw(self):
+        print("REDRAW")
 
-    glBegin(GL_TRIANGLES)
-    for v in vertices:
-        glColor3fv(v[4:7])    # cor
-        glVertex3fv(v[0:3])   # posição
-    glEnd()
+        self.tkMakeCurrent()
 
-    glFlush()
+        w = self.winfo_width()
+        h = self.winfo_height()
 
-# =====================================================
-# MAIN
-# =====================================================
-def main():
-    glutInit()
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
-    glutInitWindowSize(600, 600)
-    glutCreateWindow(b"OpenGL - Coordenadas Homogeneas + Cores")
+        glViewport(0, 0, w, h)
+        glClear(GL_COLOR_BUFFER_BIT)
 
-    glClearColor(0.0, 0.0, 0.0, 1.0)
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(0, w, 0, h, -1, 1)
 
-    # Cria e aplica uma transformação qualquer
-    M = create_transform(
-        angle_deg=45,   # rotação
-        tx=0.2,         # translação X
-        ty=0.1          # translação Y
-    )
-    apply_transform(vertices, M)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
 
-    glutDisplayFunc(display)
-    glutMainLoop()
+        # 🔹 desenha tudo que existir na cena
+        for (x1, y1, x2, y2) in self.lines:
+            glBegin(GL_LINES)
+            glColor3f(1, 0, 0)
+            glVertex2f(x1, y1)
+            glVertex2f(x2, y2)
+            glEnd()
+
+        glFlush()
+
+    def request_render(self):
+        # 🔥 forma correta de pedir redraw no Tk
+        self.event_generate("<Expose>")
+
+    def add_line(self, x1, y1, x2, y2):
+        self.lines.append((x1, y1, x2, y2))
+        self.request_render()
+
+
+class App(Tk):
+    def __init__(self):
+        super().__init__()
+
+        self.title("OpenGLFrame sem flag artificial")
+        self.geometry("600x400")
+
+        self.gl = MyOpenGLFrame(self, width=400, height=300)
+        self.gl.pack(side=TOP, fill=BOTH, expand=True)
+
+        Button(self, text="Desenhar linha", command=self.draw).pack(pady=10)
+
+    def draw(self):
+        # 🔹 modifica o modelo
+        self.gl.add_line(50, 50, 300, 300)
+
 
 if __name__ == "__main__":
-    main()
+    App().mainloop()

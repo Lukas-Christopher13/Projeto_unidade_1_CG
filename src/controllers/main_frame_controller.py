@@ -14,6 +14,5 @@ class MainFrameController:
         self.main_frame_model = None
 
     def run(self):
-        self.view.gl_window_view.animate = 1
         self.view.gl_window_view.mainloop()
 

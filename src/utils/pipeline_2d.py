@@ -1,12 +1,10 @@
-#model
-#world -> cliping
-#camera
-#viewport
-#screm
-
-import numpy as np
-
 from src.utils.matrix_transform import basic_scaling, translate
+
+INSIDE = 0b0000
+LEFT   = 0b0001
+RIGHT  = 0b0010
+BOTTOM = 0b0100
+TOP    = 0b1000
 
 class Pipeline2D:
     world_xmin, world_ymin = -1000, -1000
@@ -35,6 +33,14 @@ class Pipeline2D:
         #modeling_transformation = None #Implementar () #aparentemente não precisa - o Shape Ja faz!!!
 
         np_matrix_copy = np_matrix.copy()
+
+        self.cohen_sutherland_clip(
+            np_matrix_copy,
+            self.world_xmin, self.world_ymin,
+            self.world_xmax, self.world_ymax
+        )
+
+        print(np_matrix_copy)
 
         np_matrix_copy[:, :4] = np_matrix_copy[:, :4] @ self.normalize_transformation().T
 
@@ -79,10 +85,65 @@ class Pipeline2D:
         n_cy = (-1 + 1) / 2 
  
         return translate(tx, ty) @ basic_scaling(sx, sy) @ translate(-n_cx, -n_cy)
+    
+    def cohen_sutherland_clip(self, np_matrix, xmin, ymin, xmax, ymax):
+        x1, y1 = np_matrix[0][0], np_matrix[0][1]
+        x2, y2 = np_matrix[1][0], np_matrix[1][1]
 
+        out1 = self.compute_outcode(x1, y1, xmin, ymin, xmax, ymax)
+        out2 = self.compute_outcode(x2, y2, xmin, ymin, xmax, ymax)
 
-   
+        while True:
+            # ✅ 1. Aceitação trivial
+            if (out1 | out2) == 0:
+                return x1, y1, x2, y2
 
+            # ❌ 2. Rejeição trivial
+            if (out1 & out2) != 0:
+                return None
+
+            # 🔄 3. Recorte parcial
+            out = out1 if out1 != 0 else out2
+
+            if out & TOP:
+                x = x1 + (x2 - x1) * (ymax - y1) / (y2 - y1)
+                y = ymax
+
+            elif out & BOTTOM:
+                x = x1 + (x2 - x1) * (ymin - y1) / (y2 - y1)
+                y = ymin
+
+            elif out & RIGHT:
+                y = y1 + (y2 - y1) * (xmax - x1) / (x2 - x1)
+                x = xmax
+
+            elif out & LEFT:
+                y = y1 + (y2 - y1) * (xmin - x1) / (x2 - x1)
+                x = xmin
+
+            if out == out1:
+                x1, y1 = x, y
+                np_matrix[0][0], np_matrix[0][1] = x1, y1
+                out1 = self.compute_outcode(x1, y1, xmin, ymin, xmax, ymax)
+            else:
+                x2, y2 = x, y
+                np_matrix[1][0], np_matrix[1][1] = x2, y2
+                out2 = self.compute_outcode(x2, y2, xmin, ymin, xmax, ymax)
+
+    def compute_outcode(self, x, y, xmin, ymin, xmax, ymax):
+        code = INSIDE
+
+        if x < xmin:
+            code |= LEFT
+        elif x > xmax:
+            code |= RIGHT
+
+        if y < ymin:
+            code |= BOTTOM
+        elif y > ymax:
+            code |= TOP
+
+        return code
 
 #o window seleciona uma parte da cena no mundo
 #o viewport exibe essa parte da sena 

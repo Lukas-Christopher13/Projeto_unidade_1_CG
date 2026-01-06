@@ -5,17 +5,22 @@ from OpenGL.GLU import *
 
 from src.utils.pipeline_2d import Pipeline2D
 from src.utils.pipeline_3d import Pipeline3D
+from src.services.render_service import RenderService
 from src.models.gl_window_model import gl_window_model
 
 
 class GlWindowView(OpenGLFrame):
     def __init__(self, root, **kwargs):
         super().__init__(root, **kwargs)
+        RenderService.register_view(self)
+
+        self.animate = 0
         
     def initgl(self):
         glClearColor(1.0, 1.0, 1.0, 0.0)
 
     def redraw(self):
+        print("Redraw!!!")
         self.width = self.winfo_width()
         self.height = self.winfo_height()
         self.aspect = self.width / self.height
@@ -24,6 +29,9 @@ class GlWindowView(OpenGLFrame):
             self.redraw_2d()
         else:
             self.redraw_3d()
+
+    def request_render(self):
+        self.event_generate("<Expose>")
 
     def redraw_2d(self):
         self.pipeline_2d = Pipeline2D(
@@ -54,6 +62,9 @@ class GlWindowView(OpenGLFrame):
         glLoadIdentity()
 
         glOrtho(0, self.width, 0, self.height, -1, 1)
+
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
 
         for background in gl_window_model.backgrounds:
             background.render(self.pipeline_2d)

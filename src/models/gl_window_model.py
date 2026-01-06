@@ -1,6 +1,7 @@
 from tkinter import Frame
 from typing import List
 from src.models.shape import Shape
+from src.services.render_service import RenderService
 from src.utils.backgrounds import axies_2d, axies_3d
 
 
@@ -16,6 +17,7 @@ class GlWindowModel:
     
     def add_shape(self, shape: Shape):
         self.shapes.append(shape)
+        RenderService.request_render()
         self.notify()
 
     def add_listener(self, listener):
