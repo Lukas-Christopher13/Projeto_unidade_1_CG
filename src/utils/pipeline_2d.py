@@ -120,10 +120,19 @@ class Pipeline2D:
                 x = xmin
 
             if out == out1:
+                old = (np_matrix[0][0], np_matrix[0][1])
+                new = (x, y)
+                self.print_clipped(old, new)
+
                 x1, y1 = x, y
                 np_matrix[0][0], np_matrix[0][1] = x1, y1
+
                 out1 = self.compute_outcode(x1, y1, xmin, ymin, xmax, ymax)
             else:
+                old = (np_matrix[0][0], np_matrix[0][1])
+                new = (x, y)
+                self.print_clipped(old, new)
+
                 x2, y2 = x, y
                 np_matrix[1][0], np_matrix[1][1] = x2, y2
                 out2 = self.compute_outcode(x2, y2, xmin, ymin, xmax, ymax)
@@ -142,6 +151,9 @@ class Pipeline2D:
             code |= TOP
 
         return code
+    
+    def print_clipped(self, old, new):
+        print(f"Clipped: ({old[0]:.2f}, {old[1]:.2f}) => ({new[0]:.2f}, {new[1]:.2f})")
 
 #o window seleciona uma parte da cena no mundo
 #o viewport exibe essa parte da sena 
