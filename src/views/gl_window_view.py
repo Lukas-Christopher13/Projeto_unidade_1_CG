@@ -20,7 +20,6 @@ class GlWindowView(OpenGLFrame):
         glClearColor(1.0, 1.0, 1.0, 0.0)
 
     def redraw(self):
-        print("Redraw!!!")
         self.width = self.winfo_width()
         self.height = self.winfo_height()
         self.aspect = self.width / self.height

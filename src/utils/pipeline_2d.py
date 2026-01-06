@@ -40,8 +40,6 @@ class Pipeline2D:
             self.world_xmax, self.world_ymax
         )
 
-        print(np_matrix_copy)
-
         np_matrix_copy[:, :4] = np_matrix_copy[:, :4] @ self.normalize_transformation().T
 
         np_matrix_copy[:, :4] = np_matrix_copy[:, :4] @ self.viwport_transformation().T

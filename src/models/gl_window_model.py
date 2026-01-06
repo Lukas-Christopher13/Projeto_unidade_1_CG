@@ -17,8 +17,9 @@ class GlWindowModel:
     
     def add_shape(self, shape: Shape):
         self.shapes.append(shape)
-        RenderService.request_render()
         self.notify()
+
+        RenderService.request_render()
 
     def add_listener(self, listener):
         self.listeners.append(listener)
@@ -39,6 +40,8 @@ class GlWindowModel:
 
         self.shapes.remove(shape)
         self.notify()
+
+        RenderService.request_render()
 
     #delete e remover da lista
     def clear_all(self):
@@ -67,6 +70,8 @@ class GlWindowModel:
         self.backgrounds = []
         self.notify()
 
+        RenderService.request_render()
+
     def use_2d_axies(self):
         self.backgrounds.append(axies_2d)
 
@@ -85,13 +90,16 @@ class GlWindowModel:
         self.rebuild_frames()
 
         self.use_2d_axies()
+
+        RenderService.request_render()
         
     def to_3d(self):   
         self.window_mode = "3d"
         self.empty_window()   
         self.rebuild_frames()
 
-        #temporariamente vai ficar aqui 
         self.use_3d_axies()
+
+        RenderService.request_render()
 
 gl_window_model = GlWindowModel()

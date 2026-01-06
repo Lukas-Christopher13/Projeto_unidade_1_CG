@@ -4,7 +4,7 @@ from tkinter import *
 from OpenGL.GL import *
 
 from config import POINT_SIZE, LINE_SIZE, DEFAULT_COLOR
-
+from src.services.render_service import RenderService
 
 class Shape():
     def __init__(self, matrix, gl_option, edge_sequence=None):
@@ -69,6 +69,9 @@ class Shape():
     def transform(self, tranformations: list):
         for M in tranformations:
             self.apply_transform(M)
+
+        RenderService.request_render()
+
         return self.vertex
     
     def apply_transform(self, M):
