@@ -44,18 +44,6 @@ class Pipeline2D:
 
         vertex[:, :4] = vertex[:, :4] @ self.viwport_transformation().T
         
-        # Object Coordinates
-        # ↓ (Model Transform)
-        # World Coordinates
-        #         ↓ (Clipping)
-        # World-Coordinate Clipping Window
-        #         ↓ (Window → Viewport)
-        # Normalized Device Coordinates (opcional)
-        #         ↓
-        # Viewport / Device Coordinates
-        #         ↓
-        # OpenGL (glVertex)
-
         return vertex
     
     #talvez eu tenha que usar as formulas que centralizem

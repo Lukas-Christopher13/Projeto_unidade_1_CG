@@ -2,11 +2,14 @@
 import numpy as np
 
 class Pipeline3D:
-    def __init__(self, width, height, x_min, y_min):
-        self.width = width
-        self.height = height
-        self.x_min = x_min
-        self.y_min = y_min
+    xw_min, yw_min, z_near = -2000.0, -2000.0, -2000.0
+    xw_max, yw_max, z_far  =  2000.0,  2000.0,  2000.0
+
+    def __init__(self, viewport_xmin, viewport_ymin, viewport_xmax, viewport_ymax):
+        self.viewport_xmin = viewport_xmin
+        self.viewport_ymin = viewport_ymin
+        self.viewport_xmax = viewport_xmax
+        self.viewport_ymax = viewport_ymax
 
     def transform(self, np_matrix):
         #modeling_transformation = None #Implementar () #aparentemente não precisa - o Shape Ja faz!!!
@@ -15,14 +18,11 @@ class Pipeline3D:
  
         np_matrix_copy[:, :4] = np_matrix_copy[:, :4] @ self.isometric_rotation().T
 
-        # 2 — Projeção ortográfica paralela
-        np_matrix_copy[:, :4] = np_matrix_copy[:, :4] @ self.orthographic_projection().T
-
         # 3 — Normalização NDC
-        np_matrix_copy[:, :4] = np.array([self.normalize_to_ndc(v) for v in np_matrix_copy[:, :4]])
+        np_matrix_copy[:, :4] = np_matrix_copy[:, :4] @ self.normalize_transformation().T
 
         # 4 — Viewport
-        np_matrix_copy[:, :4] = np_matrix_copy[:, :4] @ self.viewport_transformation().T
+        np_matrix_copy[:, :4] = np_matrix_copy[:, :4] @ self.viewport_tranformation().T
 
         # --Ordem--
         #Modeling Transformation
@@ -37,9 +37,9 @@ class Pipeline3D:
     def isometric_rotation(self):
         # Rotação em Y: 45°
         Ry = np.array([
-            [ np.sqrt(2)/2, 0,  -np.sqrt(2)/2, 0],
+            [ np.sqrt(2)/2, 0,  -np.sqrt(2)/2,  0],
             [ 0,             1,  0,             0],
-            [ np.sqrt(2)/2, 0,  np.sqrt(2)/2,  0],
+            [ np.sqrt(2)/2, 0,  np.sqrt(2)/2,   0],
             [ 0,             0,  0,             1]
         ], dtype=np.float32)
 
@@ -55,49 +55,51 @@ class Pipeline3D:
         ], dtype=np.float32)
 
         return Rx @ Ry
+    
+    def normalize_transformation(self):
+        sx =  2 / (self.xw_max - self.xw_min)
+        sy =  2 / (self.yw_max - self.yw_min)
+        sz = -2 / (self.z_near - self.z_far)
 
-    def orthographic_projection(self, l=-200, r=200, b=-200, t=200, n=-500, f=500):
+        tx = - (self.xw_max + self.xw_min) / (self.xw_max - self.xw_min)
+        ty = - (self.yw_max + self.yw_min) / (self.yw_max - self.yw_min)
+        tz =   (self.z_near + self.z_far) / (self.z_near - self.z_far)
+
         return np.array([
-            [2/(r-l), 0,         0,         -(r+l)/(r-l)],
-            [0,       2/(t-b),   0,         -(t+b)/(t-b)],
-            [0,       0,        -2/(f-n),   -(f+n)/(f-n)],
-            [0,       0,         0,          1]
+            [ sx,  0.0, 0.0, tx ],
+            [ 0.0, sy,  0.0, ty ],
+            [ 0.0, 0.0, sz,  tz ], 
+            [ 0.0, 0.0, 0.0, 1.0]
         ], dtype=np.float32)
     
-    
-    def normalize_to_ndc(self, v):
-        """
-        Converte um ponto em Clip Space (x, y, z, w)
-        para NDC ao dividir tudo por w.
-        """
-        x, y, z, w = v
-        
-        if w == 0:
-            raise ValueError("w = 0 → não é possível dividir")
+    def normalize_transformation_2(self):
+        sx = -2 * self.z_near / (self.xw_max - self.xw_min)
+        sy = -2 * self.z_near / (self.yw_max - self.yw_min)
+        sz = (self.z_near + self.z_far) / (self.z_near - self.z_far)
 
-        return np.array([x/w, y/w, z/w, 1.0], dtype=np.float32)
-    
-    def viewport_transformation(self):
-        """
-        Retorna a matriz 4x4 de transformação de viewport.
-        
-        Parâmetros:
-            x_min  → posição inicial do viewport no eixo X
-            y_min  → posição inicial do viewport no eixo Y
-            width  → largura do viewport (em pixels)
-            height → altura do viewport (em pixels)
-        """
+        tx = (self.xw_max + self.xw_min) / (self.xw_max - self.xw_min)
+        ty = (self.yw_max + self.yw_min) / (self.yw_max - self.yw_min)
+        tz = - 2 * (self.z_near * self.z_far) / (self.z_near - self.z_far)
 
-        # Metade das dimensões
-        w2 = self.width / 2.0
-        h2 = self.height / 2.0
-
-        # A matriz de viewport é uma transformação afim:
-        M = np.array([
-            [ w2,   0.0, 0.0, self.x_min + w2 ],
-            [ 0.0,  h2, 0.0, self.y_min + h2 ],  # OBS: sinal negativo para inverter Y
-            [ 0.0,  0.0, 0.5, 0.5       ], # mapeia Z de [-1,1] para [0,1]
-            [ 0.0,  0.0, 0.0, 1.0       ]
+        return np.array([
+            [ sx,  0.0, tx,  0.0 ],
+            [ 0.0, sy,  ty,  0.0 ],
+            [ 0.0, 0.0, sz,  tz ], 
+            [ 0.0, 0.0, 0.0, 0.0]
         ], dtype=np.float32)
+    
+    def viewport_tranformation(self):
+        sx = (self.viewport_xmax - self.viewport_xmin) / 2
+        sy = (self.viewport_ymax - self.viewport_ymin) / 2
+        sz = 1 / 2
 
-        return M
+        tx = (self.viewport_xmax + self.viewport_xmin) / 2
+        ty = (self.viewport_ymax + self.viewport_ymin) / 2
+        tz = 1 / 2
+
+        return np.array([
+            [ sx,  0.0, 0.0, tx ],
+            [ 0.0, sy,  0.0, ty ],
+            [ 0.0, 0.0, sz,  tz ],
+            [ 0.0, 0.0, 0.0, 1.0]
+        ], dtype=np.float32)

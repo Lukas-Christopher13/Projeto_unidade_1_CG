@@ -43,14 +43,11 @@ class GlWindowView(OpenGLFrame):
         self.display_2d()
 
     def redraw_3d(self):
-        width = self.winfo_width()
-        height = self.winfo_height()
-        
         self.pipeline_3d = Pipeline3D(
-            width=width,
-            height=height,
-            x_min=0,
-            y_min=0
+            viewport_xmin = 0,
+            viewport_ymin = 0,
+            viewport_xmax= self.width,
+            viewport_ymax= self.height
         )
 
         self.display_3d()
@@ -77,7 +74,11 @@ class GlWindowView(OpenGLFrame):
         glClear(GL_COLOR_BUFFER_BIT)
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
+
         glOrtho(0, self.width, 0, self.height, -1, 1)
+
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
 
         for background in gl_window_model.backgrounds:
             background.render_3d(self.pipeline_3d)
