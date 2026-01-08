@@ -7,10 +7,11 @@ from config import POINT_SIZE, LINE_SIZE, DEFAULT_COLOR
 from src.services.render_service import RenderService
 
 class Shape():
-    def __init__(self, matrix, gl_option, edge_sequence=None):
+    def __init__(self, matrix, gl_option, edge_sequence=None, name="None"):
         self.vertex = self.__to_4_columns(matrix)
         self.gl_option = gl_option
         self.edge_sequence = edge_sequence
+        self.name = name
 
     def __to_4_columns(self, matrix):
         matriz = np.array(matrix, dtype=np.float32)
@@ -28,7 +29,7 @@ class Shape():
         return np.hstack((matriz, extra))
     
     def render(self, pipeline_2d):
-        points = pipeline_2d.transform(self.vertex)
+        points = pipeline_2d.transform(self)
 
         glPointSize(POINT_SIZE)
         glBegin(self.gl_option)

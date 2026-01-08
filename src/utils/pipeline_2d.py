@@ -29,20 +29,20 @@ class Pipeline2D:
             self.world_ymin =  self.world_ymin / aspect
             self.world_ymax =  self.world_ymax / aspect
         
-    def transform(self, np_matrix):
+    def transform(self, shape):
         #modeling_transformation = None #Implementar () #aparentemente não precisa - o Shape Ja faz!!!
 
-        np_matrix_copy = np_matrix.copy()
+        vertex = shape.vertex.copy()
 
-        self.cohen_sutherland_clip(
-            np_matrix_copy,
-            self.world_xmin, self.world_ymin,
-            self.world_xmax, self.world_ymax
-        )
+        # self.cohen_sutherland_clip(
+        #     np_matrix_copy,
+        #     self.world_xmin, self.world_ymin,
+        #     self.world_xmax, self.world_ymax
+        # )
 
-        np_matrix_copy[:, :4] = np_matrix_copy[:, :4] @ self.normalize_transformation().T
+        vertex[:, :4] = vertex[:, :4] @ self.normalize_transformation().T
 
-        np_matrix_copy[:, :4] = np_matrix_copy[:, :4] @ self.viwport_transformation().T
+        vertex[:, :4] = vertex[:, :4] @ self.viwport_transformation().T
         
         # Object Coordinates
         # ↓ (Model Transform)
@@ -56,7 +56,7 @@ class Pipeline2D:
         #         ↓
         # OpenGL (glVertex)
 
-        return np_matrix_copy
+        return vertex
     
     #talvez eu tenha que usar as formulas que centralizem
     
