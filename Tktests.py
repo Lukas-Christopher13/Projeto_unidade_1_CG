@@ -7,73 +7,73 @@ so = platform.system()
 if so == "Linux":
     os.environ['PYOPENGL_PLATFORM'] = 'glx'
 
-from tkinter import *
-from pyopengltk import OpenGLFrame
-from OpenGL.GL import *
+import tkinter as tk
+from tkinter import ttk
+
+import tkinter as tk
+from tkinter import ttk
+
+class CollapsibleForm(ttk.Frame):
+    def __init__(self, master, title="Menu", *args, **kwargs):
+        super().__init__(master, *args, **kwargs)
+
+        self.expanded = False
+
+        # Permite fill horizontal dentro do próprio frame
+        self.columnconfigure(0, weight=1)
+
+        # Botão / título clicável
+        self.header = ttk.Button(
+            self,
+            text=f"▶ {title}",
+            command=self.toggle,
+            style="Header.TButton"
+        )
+        self.header.grid(row=0, column=0, sticky="ew")
+
+        # Frame que será expandido/recolhido
+        self.content = ttk.Frame(self)
+        self.content.columnconfigure(1, weight=1)
+
+        # ----- CONTEÚDO DO FORMULÁRIO -----
+        ttk.Label(self.content, text="Nome:") \
+            .grid(row=0, column=0, sticky="w", padx=10, pady=2)
+
+        ttk.Entry(self.content) \
+            .grid(row=0, column=1, sticky="ew", padx=10, pady=2)
+
+        ttk.Label(self.content, text="Email:") \
+            .grid(row=1, column=0, sticky="w", padx=10, pady=2)
+
+        ttk.Entry(self.content) \
+            .grid(row=1, column=1, sticky="ew", padx=10, pady=2)
+
+        ttk.Button(self.content, text="Salvar") \
+            .grid(row=2, column=0, columnspan=2, pady=10)
+        # ----------------------------------
+
+    def toggle(self):
+        if self.expanded:
+            self.content.grid_remove()
+            self.header.config(text=self.header.cget("text").replace("▼", "▶"))
+        else:
+            self.content.grid(row=1, column=0, sticky="ew")
+            self.header.config(text=self.header.cget("text").replace("▶", "▼"))
+
+        self.expanded = not self.expanded
 
 
-class MyOpenGLFrame(OpenGLFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-        self.animate = 0   # 🔴 sem loop
-        self.lines = []    # 🔹 cena começa vazia
+# ----------------- APP -----------------
+root = tk.Tk()
+root.title("Formulário Expansível")
+root.geometry("300x250")
 
-    def initgl(self):
-        glClearColor(1.0, 1.0, 1.0, 1.0)
+root.columnconfigure(0, weight=1)
 
-    def redraw(self):
-        print("REDRAW")
+style = ttk.Style()
+style.configure("Header.TButton", font=("Arial", 11, "bold"))
 
-        self.tkMakeCurrent()
+form = CollapsibleForm(root, title="Dados do Usuário")
+form.grid(row=0, column=0, sticky="ew", padx=10, pady=10)
 
-        w = self.winfo_width()
-        h = self.winfo_height()
-
-        glViewport(0, 0, w, h)
-        glClear(GL_COLOR_BUFFER_BIT)
-
-        glMatrixMode(GL_PROJECTION)
-        glLoadIdentity()
-        glOrtho(0, w, 0, h, -1, 1)
-
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-
-        # 🔹 desenha tudo que existir na cena
-        for (x1, y1, x2, y2) in self.lines:
-            glBegin(GL_LINES)
-            glColor3f(1, 0, 0)
-            glVertex2f(x1, y1)
-            glVertex2f(x2, y2)
-            glEnd()
-
-        glFlush()
-
-    def request_render(self):
-        # 🔥 forma correta de pedir redraw no Tk
-        self.event_generate("<Expose>")
-
-    def add_line(self, x1, y1, x2, y2):
-        self.lines.append((x1, y1, x2, y2))
-        self.request_render()
-
-
-class App(Tk):
-    def __init__(self):
-        super().__init__()
-
-        self.title("OpenGLFrame sem flag artificial")
-        self.geometry("600x400")
-
-        self.gl = MyOpenGLFrame(self, width=400, height=300)
-        self.gl.pack(side=TOP, fill=BOTH, expand=True)
-
-        Button(self, text="Desenhar linha", command=self.draw).pack(pady=10)
-
-    def draw(self):
-        # 🔹 modifica o modelo
-        self.gl.add_line(50, 50, 300, 300)
-
-
-if __name__ == "__main__":
-    App().mainloop()
+root.mainloop()

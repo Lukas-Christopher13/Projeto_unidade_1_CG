@@ -10,13 +10,13 @@ class EditShapeView(Frame):
         super().__init__(root, **kwargs)
 
         #adicionar os comandos
-        self.translate_input_frame = TranslationInputFrame(self, command=self.translate)
+        self.translate_input_frame = TranslationInputFrame(self, title="Translate", command=self.translate)
         self.translate_input_frame.grid(row=1, column=0)
 
-        self.rotation_input_frame = RotationInputFrame(self, command=self.rotate)
+        self.rotation_input_frame = RotationInputFrame(self, title="Rotation", command=self.rotate)
         self.rotation_input_frame.grid(row=2, column=0)
 
-        self.scaling_input_frame = ScaleInputFrame(self, command=self.scale)
+        self.scaling_input_frame = ScaleInputFrame(self, title="Scaling",  command=self.scale)
         self.scaling_input_frame.grid(row=3, column=0)
 
         #talvez separar isso
