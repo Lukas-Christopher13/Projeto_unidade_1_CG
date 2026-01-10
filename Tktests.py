@@ -10,70 +10,49 @@ if so == "Linux":
 import tkinter as tk
 from tkinter import ttk
 
-import tkinter as tk
-from tkinter import ttk
 
-class CollapsibleForm(ttk.Frame):
-    def __init__(self, master, title="Menu", *args, **kwargs):
-        super().__init__(master, *args, **kwargs)
+class ShearView(ttk.LabelFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, text="Shear (Cisalhamento)", padding=10, **kwargs)
 
-        self.expanded = False
+        # Variáveis
+        self.shx_var = tk.StringVar(value="0.0")
+        self.shy_var = tk.StringVar(value="0.0")
+        self.mode_var = tk.StringVar(value="xy")
 
-        # Permite fill horizontal dentro do próprio frame
-        self.columnconfigure(0, weight=1)
+        # Labels
+        ttk.Label(self, text="Shx:").grid(row=0, column=0, sticky="w")
+        ttk.Label(self, text="Shy:").grid(row=1, column=0, sticky="w")
 
-        # Botão / título clicável
-        self.header = ttk.Button(
-            self,
-            text=f"▶ {title}",
-            command=self.toggle,
-            style="Header.TButton"
+        # Entradas
+        ttk.Entry(self, textvariable=self.shx_var, width=10).grid(row=0, column=1, padx=5)
+        ttk.Entry(self, textvariable=self.shy_var, width=10).grid(row=1, column=1, padx=5)
+
+        # Modo
+        ttk.Label(self, text="Modo:").grid(row=2, column=0, sticky="w", pady=(8, 0))
+
+        ttk.Radiobutton(self, text="Shear X",   variable=self.mode_var, value="x") \
+            .grid(row=2, column=1, sticky="w")
+        ttk.Radiobutton(self, text="Shear Y",   variable=self.mode_var, value="y") \
+            .grid(row=3, column=1, sticky="w")
+        ttk.Radiobutton(self, text="Shear X + Y", variable=self.mode_var, value="xy") \
+            .grid(row=4, column=1, sticky="w")
+
+        # Botões
+        ttk.Button(self, text="Aplicar").grid(
+            row=5, column=0, pady=10, sticky="ew"
         )
-        self.header.grid(row=0, column=0, sticky="ew")
+        ttk.Button(self, text="Reset").grid(
+            row=5, column=1, pady=10, sticky="ew"
+        )
 
-        # Frame que será expandido/recolhido
-        self.content = ttk.Frame(self)
-        self.content.columnconfigure(1, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
 
-        # ----- CONTEÚDO DO FORMULÁRIO -----
-        ttk.Label(self.content, text="Nome:") \
-            .grid(row=0, column=0, sticky="w", padx=10, pady=2)
-
-        ttk.Entry(self.content) \
-            .grid(row=0, column=1, sticky="ew", padx=10, pady=2)
-
-        ttk.Label(self.content, text="Email:") \
-            .grid(row=1, column=0, sticky="w", padx=10, pady=2)
-
-        ttk.Entry(self.content) \
-            .grid(row=1, column=1, sticky="ew", padx=10, pady=2)
-
-        ttk.Button(self.content, text="Salvar") \
-            .grid(row=2, column=0, columnspan=2, pady=10)
-        # ----------------------------------
-
-    def toggle(self):
-        if self.expanded:
-            self.content.grid_remove()
-            self.header.config(text=self.header.cget("text").replace("▼", "▶"))
-        else:
-            self.content.grid(row=1, column=0, sticky="ew")
-            self.header.config(text=self.header.cget("text").replace("▶", "▼"))
-
-        self.expanded = not self.expanded
-
-
-# ----------------- APP -----------------
 root = tk.Tk()
-root.title("Formulário Expansível")
-root.geometry("300x250")
+root.title("Transformações 2D")
 
-root.columnconfigure(0, weight=1)
-
-style = ttk.Style()
-style.configure("Header.TButton", font=("Arial", 11, "bold"))
-
-form = CollapsibleForm(root, title="Dados do Usuário")
-form.grid(row=0, column=0, sticky="ew", padx=10, pady=10)
+shear_view = ShearView(root)
+shear_view.pack(padx=10, pady=10)
 
 root.mainloop()

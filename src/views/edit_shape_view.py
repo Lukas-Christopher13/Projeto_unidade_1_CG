@@ -4,6 +4,7 @@ from src.views.inputs.scale_input_frame import ScaleInputFrame
 from src.views.inputs.rotation_input_frame import RotationInputFrame
 from src.views.inputs.translation_input_frame import TranslationInputFrame
 from src.views.inputs.reflection_input_frame import ReflectionInputFrame
+from src.views.inputs.share_input_frame import ShareInputFrame
 
 #falta o transform!
 class EditShapeView(Frame):
@@ -23,6 +24,9 @@ class EditShapeView(Frame):
         self.reflection_input_frame = ReflectionInputFrame(self, title="Reflection", command=self.reflection)
         self.reflection_input_frame.grid(row=4, column=0)
 
+        self.share_input_frame = ShareInputFrame(self, title="Share", command=self.share)
+        self.share_input_frame.grid(row=5, column=0)
+
         #talvez separar isso
         # btn_transform = Button(self, text="Transform", command=self.transform)
         # btn_transform.grid(row=4, column=0)
@@ -30,8 +34,8 @@ class EditShapeView(Frame):
         # btn_to_origin = Button(self, text="To Origin", command=self.to_origin)
         # btn_to_origin.grid(row=5, column=0)
 
-        # btn_delete = Button(self, text="Delete", command=self.delete)
-        # btn_delete.grid(row=6, column=0)
+        btn_delete = Button(self, text="Delete", command=self.delete)
+        btn_delete.grid(row=6, column=0)
 
     def set_controller(self, controller):
         self.controller = controller
@@ -56,6 +60,9 @@ class EditShapeView(Frame):
 
     def reflection(self, reflection_type: str):
         self.controller.reflection(reflection_type)
+
+    def share(self):
+        self.controller.share()
 
     def do_not(self):
         pass

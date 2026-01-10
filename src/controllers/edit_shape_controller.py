@@ -63,6 +63,28 @@ class EditShapeController:
         shape = gl_window_model.get_selected()
         shape.transform([reflection_m])
 
+    def share(self):
+        shape = gl_window_model.get_selected()
+        xm, ym, zm, wm = shape.mid_point_vertex()
+
+        shx, shy, mode = self.view.share_input_frame.get()
+
+        if mode == "x":
+            share_m = share(shx=shx)
+        elif mode == "y":
+            share_m = share(shy=shy)
+        else:
+            share_m = share(shx=shx, shy=shy)
+
+        translate_to_center = translate(-xm, -ym, -zm)
+        translate_to_inital_position = translate(xm, ym, zm)
+
+        shape.transform([
+            translate_to_center,
+            share_m,
+            translate_to_inital_position
+        ])
+
     def transform(self):
         transform_frame = TransformFrame(self.view, gl_window_model.get_selected())
         transform_frame.open_popup()

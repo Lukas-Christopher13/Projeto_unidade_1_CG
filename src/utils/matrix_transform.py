@@ -76,6 +76,14 @@ def reflection_xy():
         [0.0, 0.0, 0.0, 1.0]
     ], dtype=np.float32)
     
+def share(shx=0.0, shy=0.0):
+    return np.array([
+        [1.0, shx, 0.0, 0.0],
+        [shy, 1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ], dtype=np.float32)
+
 def aplay_transformation(vertex, steps: list):
     print(vertex)
     for i in steps:
