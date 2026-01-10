@@ -3,6 +3,7 @@ from tkinter import *
 from src.views.inputs.scale_input_frame import ScaleInputFrame
 from src.views.inputs.rotation_input_frame import RotationInputFrame
 from src.views.inputs.translation_input_frame import TranslationInputFrame
+from src.views.inputs.reflection_input_frame import ReflectionInputFrame
 
 #falta o transform!
 class EditShapeView(Frame):
@@ -19,15 +20,18 @@ class EditShapeView(Frame):
         self.scaling_input_frame = ScaleInputFrame(self, title="Scaling",  command=self.scale)
         self.scaling_input_frame.grid(row=3, column=0)
 
-        #talvez separar isso
-        btn_transform = Button(self, text="Transform", command=self.transform)
-        btn_transform.grid(row=4, column=0)
-        
-        btn_to_origin = Button(self, text="To Origin", command=self.to_origin)
-        btn_to_origin.grid(row=5, column=0)
+        self.reflection_input_frame = ReflectionInputFrame(self, title="Reflection", command=self.reflection)
+        self.reflection_input_frame.grid(row=4, column=0)
 
-        btn_delete = Button(self, text="Delete", command=self.delete)
-        btn_delete.grid(row=6, column=0)
+        #talvez separar isso
+        # btn_transform = Button(self, text="Transform", command=self.transform)
+        # btn_transform.grid(row=4, column=0)
+        
+        # btn_to_origin = Button(self, text="To Origin", command=self.to_origin)
+        # btn_to_origin.grid(row=5, column=0)
+
+        # btn_delete = Button(self, text="Delete", command=self.delete)
+        # btn_delete.grid(row=6, column=0)
 
     def set_controller(self, controller):
         self.controller = controller
@@ -49,6 +53,9 @@ class EditShapeView(Frame):
 
     def delete(self):
         self.controller.delete()
+
+    def reflection(self, reflection_type: str):
+        self.controller.reflection(reflection_type)
 
     def do_not(self):
         pass

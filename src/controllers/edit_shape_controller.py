@@ -48,6 +48,21 @@ class EditShapeController:
             translate_to_inital_position
         ])
 
+    def reflection(self, reflection_type):
+        if reflection_type == "x":
+            reflection_m = reflection_x()
+        elif reflection_type == "y":
+            reflection_m = reflection_y()
+        elif reflection_type == "origin":
+            reflection_m = reflection_origin()
+        elif reflection_type == "x = y":
+            reflection_m = reflection_xy()
+        else:
+            return
+
+        shape = gl_window_model.get_selected()
+        shape.transform([reflection_m])
+
     def transform(self):
         transform_frame = TransformFrame(self.view, gl_window_model.get_selected())
         transform_frame.open_popup()

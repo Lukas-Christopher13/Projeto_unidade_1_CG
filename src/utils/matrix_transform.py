@@ -48,6 +48,33 @@ def reflection_x():
         [0.0, 0.0, 1.0, 0.0],
         [0.0, 0.0, 0.0, 1.0]
     ], dtype=np.float32)
+
+
+def reflection_y():
+    return np.array([
+        [-1.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ], dtype=np.float32)
+
+
+def reflection_origin():
+    return np.array([
+        [-1.0, 0.0, 0.0, 0.0],
+        [0.0,-1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ], dtype=np.float32)
+
+
+def reflection_xy():
+    return np.array([
+        [0.0, 1.0, 0.0, 0.0],
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ], dtype=np.float32)
     
 def aplay_transformation(vertex, steps: list):
     print(vertex)
