@@ -3,6 +3,10 @@ from tkinter import *
 from src.views.inputs.abs_input_frame import ABSInputFrame
 
 class ReflectionInputFrame(ABSInputFrame):
+
+    def rebuild(self):
+        pass
+
     def _form_content(self):
         btn_x_reflection = Button(self.content, text="X", command=lambda: self.command("x"))
         btn_x_reflection.grid(row=0, column=0)

@@ -27,10 +27,10 @@ class EditShapeController:
         ])
 
     def translate(self):
-        x, y = self.view.translate_input_frame.get()
+        x, y, z = self.view.translate_input_frame.get()
         shape = gl_window_model.get_selected()
         
-        translate_ = translate(x, y)
+        translate_ = translate(x, y, z)
         shape.transform([translate_])
 
     def scale(self):

@@ -43,5 +43,9 @@ class ABSInputFrame(ABC, Frame):
     def get(self):
         pass
 
+    @abstractmethod
+    def rebuild(self):
+        pass
+
 
 

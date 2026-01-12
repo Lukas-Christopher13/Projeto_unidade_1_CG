@@ -5,6 +5,10 @@ from tkinter import *
 from src.views.inputs.abs_input_frame import ABSInputFrame
 
 class ScaleInputFrame(ABSInputFrame):
+
+    def rebuild(self):
+        pass
+
     def _form_content(self):
         Label(self.content, text="X").grid(row=1, column=0, sticky="e", padx=5, pady=2)
         self.x_input = Entry(self.content, textvariable=StringVar(value="1.0"), width=10)

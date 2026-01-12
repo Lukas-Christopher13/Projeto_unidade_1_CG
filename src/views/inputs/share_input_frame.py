@@ -5,6 +5,9 @@ from tkinter import ttk
 from src.views.inputs.abs_input_frame import ABSInputFrame
 
 class ShareInputFrame(ABSInputFrame):
+    def rebuild(self):
+        pass
+
     def _form_content(self):
        # Variáveis
         self.shx_var = tk.StringVar(value="0.0")

@@ -3,6 +3,10 @@ from tkinter import *
 from src.views.inputs.abs_input_frame import ABSInputFrame
 
 class RotationInputFrame(ABSInputFrame):
+    
+    def rebuild(self):
+        pass
+
     def _form_content(self):
         Label(self.content, text="Angulo").grid(row=0, column=0)
         
