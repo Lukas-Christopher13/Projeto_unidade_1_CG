@@ -40,12 +40,12 @@ class EditShapeController:
         shape.transform([translate_])
 
     def scale(self):
-        x, y = self.view.scaling_input_frame.get()
+        x, y, z = self.view.scaling_input_frame.get()
         shape = gl_window_model.get_selected()
         xm, ym, zm, wm = shape.mid_point_vertex() #melhorar esse nome
 
         translate_to_center = translate(-xm, -ym, -zm)
-        scaling = basic_scaling(x, y) 
+        scaling = basic_scaling(x, y, z) 
         translate_to_inital_position = translate(xm, ym, zm)
 
         shape.transform([
