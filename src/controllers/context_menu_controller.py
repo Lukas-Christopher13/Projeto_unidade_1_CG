@@ -40,13 +40,15 @@ class ContextMenuController:
         
     def options_3d(self):
         self.view.shapes_sub_menu.add_command(label="Cube",      command=lambda:self.create_shape("cube"))
+        self.view.shapes_sub_menu.add_command(label="Pyramid",   command=lambda:self.create_shape("pyramid"))
         
     def create_shape(self, shape_type: str):
         shape_map = {
             "triangle": ShapeFactory.triangle,
             "square": ShapeFactory.square,
             "rectangle": ShapeFactory.rectangle,
-            "cube": ShapeFactory3D.cube
+            "cube": ShapeFactory3D.cube,
+            "pyramid": ShapeFactory3D.pyramidy
         }
 
         factory = shape_map.get(shape_type)
