@@ -37,7 +37,7 @@ class TranslationInputFrame(ABSInputFrame):
     def _form_3d(self):
         self._form_2d()
 
-        Label(self.content, text="z").grid(row=3, column=0, sticky="e", padx=5, pady=2)
+        Label(self.content, text="Z").grid(row=3, column=0, sticky="e", padx=5, pady=2)
         self.z_input = Entry(self.content, textvariable=StringVar(value="0.0"), width=10)
         self.z_input.grid(row=3, column=1, padx=5, pady=2)
 

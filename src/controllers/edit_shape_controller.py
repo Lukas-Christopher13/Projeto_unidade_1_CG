@@ -12,12 +12,18 @@ class EditShapeController:
 
     #adicionar um model para isso!   
     def rotate(self):
-        angle = self.view.rotation_input_frame.get()
+        angle, axis = self.view.rotation_input_frame.get()
         shape = gl_window_model.get_selected()
         xm, ym, zm, wm = shape.mid_point_vertex() #melhorar esse nome
 
+        if axis == "x":
+            rotation = roation_x_axis(angle)
+        elif axis == "y":
+            rotation = roation_y_axis(angle)
+        else:
+            rotation = basic_rotation(angle)
+
         translate_to_center = translate(-xm, -ym, -zm)
-        rotation = basic_rotation(angle)
         translate_to_inital_position = translate(xm, ym, zm)
 
         shape.transform([

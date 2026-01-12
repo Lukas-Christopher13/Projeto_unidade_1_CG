@@ -24,6 +24,26 @@ def basic_rotation(angle: float):
 
     return rotation
 
+def roation_x_axis(angle: float):
+    r = radians(angle)
+
+    return np.array([
+        [1.0,  0.0,     0.0,    0.0],
+        [0.0,  cos(r), -sin(r), 0.0],
+        [0.0,  sin(r),  cos(r), 0.0],
+        [0.0,  0.0,     0.0,    1.0]
+    ], dtype=np.float32)
+
+def roation_y_axis(angle: float):
+    r = radians(angle)
+
+    return np.array([
+        [ cos(r), 0.0, sin(r), 0.0],
+        [ 0.0,    1.0, 0.0,    0.0],
+        [-sin(r), 0.0, cos(r), 0.0],
+        [ 0.0,    0.0, 0.0,    1.0]
+    ], dtype=np.float32)
+
 def scaling(vertex, sx: np.float32, sy: np.float32, sz=0.0):
     x_mean, y_mean, z_mean, w_mean = vertex.mean(axis=0)
     
