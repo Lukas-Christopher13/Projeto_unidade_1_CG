@@ -35,6 +35,9 @@ class ABSInputFrame(ABC, Frame):
 
         self.expanded = not self.expanded
 
+    def clear_content(self):
+        self.content = Frame(self)
+
     @abstractmethod
     def _form_content(self):
         pass

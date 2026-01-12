@@ -6,25 +6,24 @@ from src.models.gl_window_model import gl_window_model
 from src.views.inputs.abs_input_frame import ABSInputFrame
 
 class TranslationInputFrame(ABSInputFrame):
-    def rebuild(self):
-        pass
-
     def _form_content(self):
-
         self.rebuild()
-        
-        bnt_submit = Button(self.content, text="Translate", command=self.command)
-        bnt_submit.grid(row=5, column=1, padx=5, pady=2)
-
+    
         gl_window_model.add_frame(self)
 
     def rebuild(self):
+        self.clear_content()
+
         if gl_window_model.is_2d():
             self._form_2d()
         else:
             self._form_3d()
 
+        bnt_submit = Button(self.content, text="Translate", command=self.command)
+        bnt_submit.grid(row=5, column=1, padx=5, pady=2)
+
     def _form_2d(self):
+
         Label(self.content, text="X").grid(row=0, column=0, sticky="w", padx=5, pady=2)
         self.x_input = Entry(self.content, textvariable=StringVar(value="0.0"), width=10)
         self.x_input.grid(row=0, column=1, padx=5, pady=2)
