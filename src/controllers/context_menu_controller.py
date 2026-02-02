@@ -40,6 +40,7 @@ class ContextMenuController:
         
     def options_3d(self):
         self.view.shapes_sub_menu.add_command(label="Cube",      command=lambda:self.create_shape("cube"))
+        self.view.shapes_sub_menu.add_command(label="CubeBug",   command=lambda:self.create_shape("cube_b"))
         self.view.shapes_sub_menu.add_command(label="Pyramid",   command=lambda:self.create_shape("pyramid"))
         
     def create_shape(self, shape_type: str):
@@ -48,6 +49,7 @@ class ContextMenuController:
             "square": ShapeFactory.square,
             "rectangle": ShapeFactory.rectangle,
             "cube": ShapeFactory3D.cube,
+            "cube_b":ShapeFactory3D.cube_bug,
             "pyramid": ShapeFactory3D.pyramidy
         }
 

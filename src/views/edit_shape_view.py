@@ -31,11 +31,11 @@ class EditShapeView(Frame):
         # btn_transform = Button(self, text="Transform", command=self.transform)
         # btn_transform.grid(row=4, column=0)
         
-        # btn_to_origin = Button(self, text="To Origin", command=self.to_origin)
-        # btn_to_origin.grid(row=5, column=0)
+        btn_to_origin = Button(self, text="To Origin", command=self.to_origin)
+        btn_to_origin.grid(row=6, column=0)
 
         btn_delete = Button(self, text="Delete", command=self.delete)
-        btn_delete.grid(row=6, column=0)
+        btn_delete.grid(row=7, column=0)
 
     def set_controller(self, controller):
         self.controller = controller
