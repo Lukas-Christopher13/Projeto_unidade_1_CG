@@ -17,19 +17,31 @@ from utils.windowtk import WindowTk
 
 from components.contexte_menu_frame import ContextMenu
 from components.shapes_lateral_bar_frame import ShapesLateralBar
+from components.terminal_frame import TerminalFrame
 
 def main():
     root = Tk()
-    root.title("testes")
-    root.attributes("-zoomed", True)
+    root.title("Computação Gráfica - Projeto Unidade 1")
+    if so == "Linux":
+        root.attributes("-zoomed", True)
+    else:
+        root.state("zoomed")
 
     #Main Frame
     main_frame = Frame(root)
     main_frame.pack(fill="both", expand=True, padx=10, pady=10)
-  
+
+    # ── Layout vertical: Canvas (topo) + Terminal (base) ──
+    paned = PanedWindow(main_frame, orient=VERTICAL, sashwidth=4, bg="#45475a")
+    paned.pack(side=LEFT, expand=True, fill=BOTH)
+
     #Main OpenGL
-    gl_window = WindowTk(main_frame, bd=0, highlightthickness=0)
-    gl_window.pack(side=LEFT, expand=True, fill=BOTH, padx=0, pady=0)
+    gl_window = WindowTk(paned, bd=0, highlightthickness=0)
+    paned.add(gl_window, stretch="always")
+
+    # Terminal de Logs
+    terminal = TerminalFrame(paned)
+    paned.add(terminal, height=250, stretch="never")
 
     #Lateral Bar
     shapes_lateral_bar = ShapesLateralBar(main_frame, gl_window=gl_window)
@@ -44,5 +56,3 @@ def main():
  
 if __name__ == "__main__":
     main()
-
-#a clipping window seleciona oque queremos ver ea viewport indica onde vemos oque deve ser visto
