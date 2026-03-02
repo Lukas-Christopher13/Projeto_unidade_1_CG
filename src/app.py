@@ -16,7 +16,7 @@ from src.controllers.main_frame_controller import MainFrameController
 def main():
     root = Tk()
     root.title("testes")
-    root.attributes("-zoomed", True)
+    root.state("zoomed")
 
     main_frame_controller = MainFrameController(root)
     main_frame_controller.run()

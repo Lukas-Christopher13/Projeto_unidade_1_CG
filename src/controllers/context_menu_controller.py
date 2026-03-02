@@ -17,6 +17,9 @@ from src.algorithms.circle_midpoint import draw_circleMP
 from src.algorithms.circle_polynomial import draw_circle_polynomial
 from src.algorithms.circle_trigonometric import draw_circle_trigonometric
 
+from src.algorithms.bezier import draw_bezier_cubic
+from components.bezier_popup_frame import BezierFrame
+
 from src.models.gl_window_model import gl_window_model
 
 
@@ -37,6 +40,8 @@ class ContextMenuController:
         self.view.circle_sub_menu.add_command(label="Trigonometric", command=lambda:self.create_circle(draw_circle_trigonometric))
         self.view.circle_sub_menu.add_command(label="Polynomial",    command=lambda:self.create_circle(draw_circle_polynomial))
         self.view.circle_sub_menu.add_command(label="MidPoint",      command=lambda:self.create_circle(draw_circleMP))
+
+        self.view.lines_sub_menu.add_command(label="Bezier Cubic",command=self.create_bezier)
         
     def options_3d(self):
         self.view.shapes_sub_menu.add_command(label="Cube",      command=lambda:self.create_shape("cube"))
@@ -104,4 +109,21 @@ class ContextMenuController:
 
     def do_not(self):
         pass
+
+
+    def create_bezier(self):
+        bezierFrame = BezierFrame(self.view)
+        bezierFrame.open_popup()
+
+        self.view.wait_window(bezierFrame.popup)
+
+        points = draw_bezier_cubic(
+            bezierFrame.p0,
+            bezierFrame.p1,
+            bezierFrame.p2,
+            bezierFrame.p3
+        )
+
+        shape = Shape(points, GL_POINTS, name="Bezier Cubic")
+        gl_window_model.add_shape(shape)
 
