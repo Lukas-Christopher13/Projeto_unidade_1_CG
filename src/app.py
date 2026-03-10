@@ -15,8 +15,11 @@ from src.controllers.main_frame_controller import MainFrameController
 
 def main():
     root = Tk()
-    root.title("testes")
-    root.attributes("-zoomed", True)
+    root.title("Computação Gráfica - Projeto Unidade 1")
+    if so == "Linux":
+        root.attributes("-zoomed", True)
+    else:
+        root.state("zoomed")
 
     main_frame_controller = MainFrameController(root)
     main_frame_controller.run()
