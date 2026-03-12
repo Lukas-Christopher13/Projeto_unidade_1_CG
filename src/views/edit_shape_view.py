@@ -37,6 +37,9 @@ class EditShapeView(Frame):
         btn_delete = Button(self, text="Delete", command=self.delete)
         btn_delete.grid(row=7, column=0)
 
+        btn_comb = Button(self, text="comb", command=self.comb)
+        btn_comb.grid(row=8, column=0)
+
     def set_controller(self, controller):
         self.controller = controller
 
@@ -58,6 +61,9 @@ class EditShapeView(Frame):
     def delete(self):
         self.controller.delete()
 
+    def comb(self):
+        self.controller.comb()
+
     def reflection(self, reflection_type: str):
         self.controller.reflection(reflection_type)
 
@@ -66,4 +72,3 @@ class EditShapeView(Frame):
 
     def do_not(self):
         pass
-

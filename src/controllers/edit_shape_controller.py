@@ -2,6 +2,7 @@
 from src.utils.matrix_transform import *
 from src.models.gl_window_model import gl_window_model
 from components.transform_frame import TransformFrame
+from src.components.comb_transform_frame import CombTransformFrame
 
 class EditShapeController:
     def __init__(self, view, model):
@@ -104,3 +105,7 @@ class EditShapeController:
 
     def delete(self):
         gl_window_model.delete_shape()
+
+    def comb(self):
+        comb_frame = CombTransformFrame(self.view, gl_window_model.get_selected())
+        comb_frame.open_popup()
