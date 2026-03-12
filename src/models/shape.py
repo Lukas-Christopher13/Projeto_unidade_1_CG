@@ -31,8 +31,8 @@ class Shape():
     
     def render(self, pipeline_2d):
         points = pipeline_2d.transform(self)
-
         glPointSize(POINT_SIZE)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glBegin(self.gl_option)
         for v in points:
             self.draw_point(v)
@@ -83,6 +83,12 @@ class Shape():
 
     def clear(self):
         self.vertex = np.empty((0, 4), dtype=np.float32)
+
+    def first_vertex(self):
+        return self.vertex[0][:4]
+    
+    def second_vertex(self):
+        return self.vertex[1][:4]
 
     def mid_point_vertex(self):
         x_mean, y_mean, z_mean, w_mean = self.vertex[:, :4].mean(axis=0)

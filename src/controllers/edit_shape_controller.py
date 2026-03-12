@@ -15,7 +15,7 @@ class EditShapeController:
     def rotate(self):
         angle, axis = self.view.rotation_input_frame.get()
         shape = gl_window_model.get_selected()
-        xm, ym, zm, wm = shape.mid_point_vertex() #melhorar esse nome
+        xm, ym, zm, wm = shape.second_vertex()
 
         if axis == "x":
             rotation = roation_x_axis(angle)
@@ -43,7 +43,7 @@ class EditShapeController:
     def scale(self):
         x, y, z = self.view.scaling_input_frame.get()
         shape = gl_window_model.get_selected()
-        xm, ym, zm, wm = shape.mid_point_vertex() #melhorar esse nome
+        xm, ym, zm, wm = shape.second_vertex()
 
         translate_to_center = translate(-xm, -ym, -zm)
         scaling = basic_scaling(x, y, z) 
@@ -72,7 +72,7 @@ class EditShapeController:
 
     def share(self):
         shape = gl_window_model.get_selected()
-        xm, ym, zm, wm = shape.mid_point_vertex()
+        xm, ym, zm, wm = shape.second_vertex()
 
         shx, shy, mode = self.view.share_input_frame.get()
 
@@ -98,7 +98,7 @@ class EditShapeController:
 
     def to_origin(self):
         shape = gl_window_model.get_selected()
-        xm, ym, zm, wm = shape.mid_point_vertex() #melhorar esse nome
+        xm, ym, zm, wm = shape.second_vertex()
 
         to_center = translate(-xm, -ym, -zm)
         shape.transform([to_center])

@@ -25,7 +25,7 @@ class ShapeFactory:
             [ 300.0, -300.0, 0.0, 1.0],
             [ 300.0,  300.0, 0.0, 1.0],
         ]
-        return Shape(square, GL_TRIANGLE_FAN, name="Square")
+        return Shape(square, GL_QUADS, name="Square")
     
     @staticmethod
     def rectangle():
@@ -35,7 +35,7 @@ class ShapeFactory:
             [ 700.0, -400.0, 0.0, 1.0],
             [ 700.0,  400.0, 0.0, 1.0],
         ]
-        return Shape(rectangle, GL_TRIANGLE_FAN, name="Rectangle")
+        return Shape(rectangle, GL_QUADS, name="Rectangle")
     
     def line():
         line = [
