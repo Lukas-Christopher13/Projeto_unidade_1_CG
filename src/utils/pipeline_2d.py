@@ -1,3 +1,5 @@
+import numpy as np
+
 from src.utils.matrix_transform import basic_scaling, translate
 
 INSIDE = 0b0000
@@ -71,6 +73,13 @@ class Pipeline2D:
         n_cy = (-1 + 1) / 2 
  
         return translate(tx, ty) @ basic_scaling(sx, sy) @ translate(-n_cx, -n_cy)
+
+    def viewport_to_world(self, x, y):
+        M = self.viwport_transformation() @ self.normalize_transformation()
+        inv_M = np.linalg.inv(M)
+        v = np.array([x, y, 0.0, 1.0], dtype=np.float32)
+        world = v @ inv_M.T
+        return world[0], world[1]
     
     def cohen_sutherland_clip(self, np_matrix, xmin, ymin, xmax, ymax):
         x1, y1 = np_matrix[0][0], np_matrix[0][1]

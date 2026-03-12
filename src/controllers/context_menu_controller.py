@@ -1,11 +1,10 @@
 from tkinter import *
 from OpenGL.GL import *
 
-
 from src.models.shape import Shape
+from controllers.custom_shape_controller import CustomShapeController
 from src.utils.shape_factory import ShapeFactory
 from src.utils.shape_factory_3d import ShapeFactory3D
-
 
 from components.line_popup_frame import LineFrame
 from components.circle_popup_frame import CircleFrame
@@ -23,12 +22,15 @@ from src.models.gl_window_model import gl_window_model
 class ContextMenuController:
     def __init__(self, view):
         self.view = view
+        self.custon_shape_controller = CustomShapeController(view)
 
     def options_2d(self):
         self.view.shapes_sub_menu.add_command(label="Traingle",      command=lambda:self.create_shape("triangle"))
         self.view.shapes_sub_menu.add_command(label="Square",        command=lambda:self.create_shape("square"))
         self.view.shapes_sub_menu.add_command(label="Rectangle",     command=lambda:self.create_shape("rectangle"))
-        self.view.shapes_sub_menu.add_command(label="New", command=self.do_not)
+
+        self.view.shapes_sub_menu.add_command(label="Custom",        command=self.custon_shape_controller.start_custom_shape) #-----------
+
         self.view.shapes_sub_menu.add_command(label="info", command=self.do_not)
 
         self.view.lines_sub_menu.add_command(label="DDA",            command=lambda:self.create_line(drawLineDDA))
@@ -104,4 +106,3 @@ class ContextMenuController:
 
     def do_not(self):
         pass
-
