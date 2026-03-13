@@ -76,14 +76,26 @@ class EditShapeController:
         shape = gl_window_model.get_selected()
         xm, ym, zm, wm = self.get_reference_point(shape)
 
-        shx, shy, mode = self.view.share_input_frame.get()
+        share_data = self.view.share_input_frame.get()
 
-        if mode == "x":
-            share_m = basic_share(shx=shx)
-        elif mode == "y":
-            share_m = basic_share(shy=shy)
+        if gl_window_model.is_2d():
+            shx, shy, mode = share_data
+
+            if mode == "x":
+                share_m = basic_share(shx=shx)
+            elif mode == "y":
+                share_m = basic_share(shy=shy)
+            else:
+                share_m = basic_share(shx=shx, shy=shy)
         else:
-            share_m = basic_share(shx=shx, shy=shy)
+            shx, shy, shz, mode = share_data
+
+            if mode == "x":
+                share_m = share_x(shy=shy, shz=shz)
+            elif mode == "y":
+                share_m = share_y(shx=shx, shz=shz)
+            else:
+                share_m = share_z(shx=shx, shy=shy)
 
         translate_to_center = translate(-xm, -ym, -zm)
         translate_to_inital_position = translate(xm, ym, zm)

@@ -110,7 +110,32 @@ def share(shx, shy, tx, ty, shz=0.0, tz=0.0):
     vertex = vertex @ translate(-tx, -ty, -tz)
 
     return vertex
+
+def share_x(shy, shz):
+    return np.array([
+        [1.0, 0.0, 0.0, 0.0],
+        [shy, 1.0, 0.0, 0.0],
+        [shz, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ], dtype=np.float32)
+
+def share_y(shx, shz):
+    return np.array([
+        [1.0, shx, 0.0, 0.0],
+        [0.0, 1.0, 0.0, 0.0],
+        [0.0, shz, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ], dtype=np.float32)
+
+def share_z(shx, shy):
+    return np.array([
+        [1.0, 0.0, shx, 0.0],
+        [0.0, 1.0, shy, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ], dtype=np.float32)
     
+
 def basic_share(shx=0.0, shy=0.0):
     return np.array([
         [1.0, shx, 0.0, 0.0],
