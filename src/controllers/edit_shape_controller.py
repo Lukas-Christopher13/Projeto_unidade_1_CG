@@ -66,6 +66,12 @@ class EditShapeController:
             reflection_m = reflection_origin()
         elif reflection_type == "x = y":
             reflection_m = reflection_xy()
+        elif reflection_type == "XY":
+            reflection_m = reflection_3d_xy()
+        elif reflection_type == "YZ":
+            reflection_m = reflection_3d_yz()
+        elif reflection_type == "XZ":
+            reflection_m = reflection_3d_xz()
         else:
             return
 

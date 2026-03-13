@@ -94,7 +94,6 @@ def reflection_origin():
         [0.0, 0.0, 0.0, 1.0]
     ], dtype=np.float32)
 
-
 def reflection_xy():
     return np.array([
         [0.0, 1.0, 0.0, 0.0],
@@ -103,6 +102,29 @@ def reflection_xy():
         [0.0, 0.0, 0.0, 1.0]
     ], dtype=np.float32)
 
+def reflection_3d_xy():
+    return np.array([
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0, 0.0],
+        [0.0, 0.0, -1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ], dtype=np.float32)
+
+def reflection_3d_yz():
+    return np.array([
+        [-1.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ], dtype=np.float32)
+
+def reflection_3d_xz():
+    return np.array([
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, -1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]
+    ], dtype=np.float32)
 
 def share(shx, shy, tx, ty, shz=0.0, tz=0.0):
     vertex = translate(tx, ty, tz)
