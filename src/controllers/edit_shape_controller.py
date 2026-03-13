@@ -15,7 +15,8 @@ class EditShapeController:
     def rotate(self):
         angle, axis = self.view.rotation_input_frame.get()
         shape = gl_window_model.get_selected()
-        xm, ym, zm, wm = shape.second_vertex()
+
+        xm, ym, zm, wm = self.get_reference_point(shape)
 
         if axis == "x":
             rotation = roation_x_axis(angle)
@@ -43,7 +44,8 @@ class EditShapeController:
     def scale(self):
         x, y, z = self.view.scaling_input_frame.get()
         shape = gl_window_model.get_selected()
-        xm, ym, zm, wm = shape.second_vertex()
+        
+        xm, ym, zm, wm = self.get_reference_point(shape)
 
         translate_to_center = translate(-xm, -ym, -zm)
         scaling = basic_scaling(x, y, z) 
@@ -72,7 +74,7 @@ class EditShapeController:
 
     def share(self):
         shape = gl_window_model.get_selected()
-        xm, ym, zm, wm = shape.second_vertex()
+        xm, ym, zm, wm = self.get_reference_point(shape)
 
         shx, shy, mode = self.view.share_input_frame.get()
 
@@ -98,7 +100,7 @@ class EditShapeController:
 
     def to_origin(self):
         shape = gl_window_model.get_selected()
-        xm, ym, zm, wm = shape.second_vertex()
+        xm, ym, zm, wm = self.get_reference_point(shape)
 
         to_center = translate(-xm, -ym, -zm)
         shape.transform([to_center])
@@ -109,3 +111,9 @@ class EditShapeController:
     def comb(self):
         comb_frame = CombTransformFrame(self.view, gl_window_model.get_selected())
         comb_frame.open_popup()
+
+    def get_reference_point(self, shape):
+        if gl_window_model.is_2d():
+            return shape.second_vertex()
+        else:
+            return shape.first_vertex()
