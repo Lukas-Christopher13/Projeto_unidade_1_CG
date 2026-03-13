@@ -39,7 +39,7 @@ def drawLineDDAH(x1: float, y1: float, x2: float, y2: float):
     log.iteration(f"k=0: x={x:.2f}  y={y:.2f}  → Pixel({round(x)}, {round(y)})")
 
     k = 1
-    while x < x2:
+    while x < x2 if xinc >= 0 else x > x2:
         x = x + xinc
         y = y + yinc
         result.append([round(x), round(y)])
@@ -78,7 +78,7 @@ def drawLineDDAV(x1: float, y1: float, x2: float, y2: float):
     log.iteration(f"k=0: x={x:.2f}  y={y:.2f}  → Pixel({round(x)}, {round(y)})")
 
     k = 1
-    while y < y2:
+    while y < y2 if yinc >= 0 else y > y2:
         x = x + xinc
         y = y + yinc
         result.append([round(x), round(y)])

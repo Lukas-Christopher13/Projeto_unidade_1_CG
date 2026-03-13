@@ -20,16 +20,20 @@ def drawLineH(x1, y1, x2, y2) -> list:
 
     dx = x2 - x1
     dy = y2 - y1
+    sx = 1 if dx >= 0 else -1
+    sy = 1 if dy >= 0 else -1
+    dx_abs = abs(dx)
+    dy_abs = abs(dy)
 
-    d = 2 * dy - dx
-    incE = 2 * dy
-    incNE = 2 * (dy - dx)
+    d = 2 * dy_abs - dx_abs
+    incE = 2 * dy_abs
+    incNE = 2 * (dy_abs - dx_abs)
 
     log.step(f"1. dx = x2 - x1 = {dx}")
     log.step(f"2. dy = y2 - y1 = {dy}")
-    log.step(f"3. d₀ = 2·dy - dx = 2·{dy} - {dx} = {d}")
-    log.step(f"4. incE  = 2·dy = {incE}")
-    log.step(f"5. incNE = 2·(dy - dx) = 2·({dy} - {dx}) = {incNE}")
+    log.step(f"3. d₀ = 2·|dy| - |dx| = 2·{dy_abs} - {dx_abs} = {d}")
+    log.step(f"4. incE  = 2·|dy| = {incE}")
+    log.step(f"5. incNE = 2·(|dy| - |dx|) = 2·({dy_abs} - {dx_abs}) = {incNE}")
     log.separator()
 
     x, y = x1, y1
@@ -38,18 +42,18 @@ def drawLineH(x1, y1, x2, y2) -> list:
     log.iteration(f"k=0: Pixel({x}, {y})  d={d}")
 
     k = 1
-    while x < x2:
+    while k <= dx_abs:
         if d <= 0:
             d += incE
-            x += 1
+            x += sx
             direction = "E"
         else:
             d += incNE
-            x += 1
-            y += 1
+            x += sx
+            y += sy
             direction = "NE"
         result.append([x, y])
-        if k <= 15 or x == x2:
+        if k <= 15 or k == dx_abs:
             log.iteration(f"k={k}: d→{direction}  d={d}  → Pixel({x}, {y})")
         elif k == 16:
             log.iteration("...")
@@ -65,16 +69,20 @@ def drawLineV(x1, y1, x2, y2):
 
     dx = x2 - x1
     dy = y2 - y1
+    sx = 1 if dx >= 0 else -1
+    sy = 1 if dy >= 0 else -1
+    dx_abs = abs(dx)
+    dy_abs = abs(dy)
 
-    d = 2 * dx - dy
-    incE = 2 * dx
-    incNE = 2 * (dx - dy)
+    d = 2 * dx_abs - dy_abs
+    incE = 2 * dx_abs
+    incNE = 2 * (dx_abs - dy_abs)
 
     log.step(f"1. dx = x2 - x1 = {dx}")
     log.step(f"2. dy = y2 - y1 = {dy}")
-    log.step(f"3. d₀ = 2·dx - dy = 2·{dx} - {dy} = {d}")
-    log.step(f"4. incE  = 2·dx = {incE}")
-    log.step(f"5. incNE = 2·(dx - dy) = 2·({dx} - {dy}) = {incNE}")
+    log.step(f"3. d₀ = 2·|dx| - |dy| = 2·{dx_abs} - {dy_abs} = {d}")
+    log.step(f"4. incE  = 2·|dx| = {incE}")
+    log.step(f"5. incNE = 2·(|dx| - |dy|) = 2·({dx_abs} - {dy_abs}) = {incNE}")
     log.separator()
 
     x, y = x1, y1
@@ -83,18 +91,18 @@ def drawLineV(x1, y1, x2, y2):
     log.iteration(f"k=0: Pixel({x}, {y})  d={d}")
 
     k = 1
-    while y < y2:
+    while k <= dy_abs:
         if d <= 0:
             d += incE
-            y += 1
+            y += sy
             direction = "E"
         else:
             d += incNE
-            y += 1
-            x += 1
+            y += sy
+            x += sx
             direction = "NE"
         result.append([x, y])
-        if k <= 15 or y == y2:
+        if k <= 15 or k == dy_abs:
             log.iteration(f"k={k}: d→{direction}  d={d}  → Pixel({x}, {y})")
         elif k == 16:
             log.iteration("...")
