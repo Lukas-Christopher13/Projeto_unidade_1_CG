@@ -2,9 +2,9 @@ from tkinter import *
 
 from src.components.shared.popup_frame import PopupFrame
 from src.utils.matrix_transform import (
-    basic_rotation,
+    rotation,
     translate,
-    basic_scaling,
+    scaling,
     reflection_x,
     reflection_y,
     reflection_origin,
@@ -102,7 +102,10 @@ class CombTransformFrame(PopupFrame):
             angle = float(self.rotation_entry.get())
         except ValueError:
             return
-        self.queue.append(basic_rotation(angle))
+
+        tx, ty, tz, tw = self.current_shape.second_vertex()
+        
+        self.queue.append(rotation(angle, tx, ty, tz))
         self.sequence_list.insert("end", f"R({angle})")
 
     def add_translation(self):
@@ -120,7 +123,10 @@ class CombTransformFrame(PopupFrame):
             y = float(self.sy_entry.get())
         except ValueError:
             return
-        self.queue.append(basic_scaling(x, y, 1.0))
+        
+        tx, ty, tz, tw = self.current_shape.second_vertex()
+
+        self.queue.append(scaling(sx=x, sy=y, tx=tx, ty=ty))
         self.sequence_list.insert("end", f"S({x}, {y})")
 
     def add_reflection(self):
@@ -144,7 +150,10 @@ class CombTransformFrame(PopupFrame):
             shy = float(self.shy_entry.get())
         except ValueError:
             return
-        self.queue.append(share(shx=shx, shy=shy))
+        
+        tx, ty, tz, tw = self.current_shape.second_vertex()
+
+        self.queue.append(share(shx=shx, shy=shy, tx=tx, ty=ty))
         self.sequence_list.insert("end", f"Sh({shx}, {shy})")
 
     def transform(self):

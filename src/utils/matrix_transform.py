@@ -12,6 +12,12 @@ def translate(x: np.float32, y: np.float32, z=0.0):
 
     return translation
 
+def rotation(angle: float, tx, ty, tz=0.0):
+    vertex = translate(tx, ty, tz)
+    vertex = vertex @ basic_rotation(angle)
+    vertex = vertex @ translate(-tx, -ty, -tz)
+    return vertex
+
 def basic_rotation(angle: float):
     r = radians(angle)
 
@@ -44,12 +50,13 @@ def roation_y_axis(angle: float):
         [ 0.0,    0.0, 0.0,    1.0]
     ], dtype=np.float32)
 
-def scaling(vertex, sx: np.float32, sy: np.float32, sz=0.0):
-    x_mean, y_mean, z_mean, w_mean = vertex.mean(axis=0)
-    
-    vertex = vertex @ translate(-x_mean, -y_mean, -z_mean).T
-    vertex = vertex @ basic_scaling(sx, sy, sz).T
-    return vertex @ translate(x_mean, y_mean, z_mean)
+def scaling(sx, sy, tx, ty, sz=0.0, tz=0.0):    
+    vertex = translate(tx, ty, tz)
+    vertex = vertex @ basic_scaling(sx, sy, sz)
+    vertex = vertex @ translate(-tx, -ty, -tz)
+
+    return vertex
+   
     
 def basic_scaling(sx: np.float32, sy: np.float32, sz=1.0):
     scaling = np.array([
@@ -95,8 +102,16 @@ def reflection_xy():
         [0.0, 0.0, 1.0, 0.0],
         [0.0, 0.0, 0.0, 1.0]
     ], dtype=np.float32)
+
+
+def share(shx, shy, tx, ty, shz=0.0, tz=0.0):
+    vertex = translate(tx, ty, tz)
+    vertex = vertex @ basic_share(shx, shy)
+    vertex = vertex @ translate(-tx, -ty, -tz)
+
+    return vertex
     
-def share(shx=0.0, shy=0.0):
+def basic_share(shx=0.0, shy=0.0):
     return np.array([
         [1.0, shx, 0.0, 0.0],
         [shy, 1.0, 0.0, 0.0],

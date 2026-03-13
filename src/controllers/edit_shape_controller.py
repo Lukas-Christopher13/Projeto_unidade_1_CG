@@ -77,11 +77,11 @@ class EditShapeController:
         shx, shy, mode = self.view.share_input_frame.get()
 
         if mode == "x":
-            share_m = share(shx=shx)
+            share_m = basic_share(shx=shx)
         elif mode == "y":
-            share_m = share(shy=shy)
+            share_m = basic_share(shy=shy)
         else:
-            share_m = share(shx=shx, shy=shy)
+            share_m = basic_share(shx=shx, shy=shy)
 
         translate_to_center = translate(-xm, -ym, -zm)
         translate_to_inital_position = translate(xm, ym, zm)
