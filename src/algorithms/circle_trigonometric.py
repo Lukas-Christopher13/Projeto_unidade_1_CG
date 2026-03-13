@@ -5,7 +5,7 @@ from services.log_service import LogService
 log = LogService()
 
 
-def draw_circle_trigonometric(radius):
+def draw_circle_trigonometric(radius, origin_x=0, origin_y=0):
     log.header("CIRCUNFERÊNCIA - Trigonométrica")
     log.step(f"Raio: R = {radius}")
     log.step("Fórmula: x = R·cos(θ),  y = R·sin(θ)")
@@ -21,6 +21,8 @@ def draw_circle_trigonometric(radius):
         y_float = radius * math.sin(radiano)
 
         current_point = [round(x_float), round(y_float)]
+        if origin_x != 0 or origin_y != 0:
+            current_point = [current_point[0] + origin_x, current_point[1] + origin_y]
 
         if not points or current_point != points[-1]:
             points.append(current_point)

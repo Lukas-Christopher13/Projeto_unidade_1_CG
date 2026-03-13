@@ -87,7 +87,11 @@ class ContextMenuController:
 
         self.view.wait_window(circleFrame.popup)
         
-        points = draw_circle(circleFrame.radian)
+        points = draw_circle(
+            circleFrame.radian,
+            circleFrame.origin_x,
+            circleFrame.origin_y
+        )
 
         shape = Shape(points, GL_POINTS)
 

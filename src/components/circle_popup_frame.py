@@ -10,18 +10,32 @@ class CircleFrame(PopupFrame):
         Label(self.popup, text="Radian").grid(row=0, column=0, pady=5)
         self.radian = Entry(self.popup, width=6)
         self.radian.grid(row=0, column=1)
+        self.radian.insert(0, "0")
+
+        Label(self.popup, text="Origin X").grid(row=1, column=0, pady=5)
+        self.origin_x = Entry(self.popup, width=6)
+        self.origin_x.grid(row=1, column=1)
+        self.origin_x.insert(0, "0")
+
+        Label(self.popup, text="Origin Y").grid(row=1, column=2, pady=5)
+        self.origin_y = Entry(self.popup, width=6)
+        self.origin_y.grid(row=1, column=3)
+        self.origin_y.insert(0, "0")
 
         btn = Button(self.popup, text="Draw", command=self.get_input)
-        btn.grid(row=2, column=0, columnspan=3, pady=12)
+        btn.grid(row=2, column=0, columnspan=4, pady=12)
 
         # Centralizar colunas
         self.popup.grid_columnconfigure(0, weight=1)
         self.popup.grid_columnconfigure(1, weight=1)
         self.popup.grid_columnconfigure(2, weight=1)
+        self.popup.grid_columnconfigure(3, weight=1)
 
     def get_input(self):
         try:
             self.radian = float(self.radian.get())
+            self.origin_x = float(self.origin_x.get())
+            self.origin_y = float(self.origin_y.get())
 
             self.popup.destroy()
         except ValueError:

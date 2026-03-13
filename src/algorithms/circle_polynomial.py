@@ -6,7 +6,7 @@ from services.log_service import LogService
 log = LogService()
 
 
-def draw_circle_polynomial(radius):
+def draw_circle_polynomial(radius, origin_x=0, origin_y=0):
     log.header("CIRCUNFERÊNCIA - Polinomial")
     log.step(f"Raio: R = {radius}")
     log.step(f"Fórmula: y = √(R² - x²)")
@@ -36,6 +36,8 @@ def draw_circle_polynomial(radius):
         k += 1
 
     octant_points = draw_octant(points)
+    if origin_x != 0 or origin_y != 0:
+        octant_points = [[x + origin_x, y + origin_y] for x, y in octant_points]
     log.result(f"Pontos no 1º octante: {len(points)}")
     log.result(f"Total (8 octantes): {len(octant_points)} pontos")
     log.separator()
