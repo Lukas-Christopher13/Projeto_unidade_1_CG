@@ -70,6 +70,9 @@ class ContextMenuController:
 
         self.view.wait_window(lineFrame.popup)
 
+        if getattr(lineFrame, 'cancelled', False):
+            return
+
         points = drawline(
             x1=lineFrame.x1,
             y1=lineFrame.y1,
@@ -86,6 +89,9 @@ class ContextMenuController:
         circleFrame.open_popup()
 
         self.view.wait_window(circleFrame.popup)
+
+        if getattr(circleFrame, 'cancelled', False):
+            return
         
         points = draw_circle(
             circleFrame.radian,

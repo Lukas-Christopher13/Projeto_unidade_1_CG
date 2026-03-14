@@ -36,7 +36,11 @@ class ABSInputFrame(ABC, Frame):
         self.expanded = not self.expanded
 
     def clear_content(self):
+        self.content.destroy()
         self.content = Frame(self)
+        self.content.columnconfigure(1, weight=1)
+        if self.expanded:
+            self.content.grid(row=1, column=0, sticky="ew")
 
     @abstractmethod
     def _form_content(self):

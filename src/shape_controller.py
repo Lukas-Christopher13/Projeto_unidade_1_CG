@@ -41,13 +41,8 @@ class EditShape(Frame):
     def _log_vertices(self, label, vertex):
         """Loga os vértices no formato compacto."""
         log.info(f"{label}:")
-        count = len(vertex)
-        show = min(count, 6)
-        for i in range(show):
-            v = vertex[i]
+        for i, v in enumerate(vertex):
             log.info(f"  V{i}: ({v[0]:.1f}, {v[1]:.1f}, {v[2]:.1f})")
-        if count > 6:
-            log.info(f"  ... (+{count - 6} vértices)")
 
     def translate(self):
         x, y, z = self.translate_frame.get_input()

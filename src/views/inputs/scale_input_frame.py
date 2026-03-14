@@ -41,11 +41,17 @@ class ScaleInputFrame(ABSInputFrame):
         self.z_input.grid(row=3, column=1, padx=5, pady=2)
 
     def get(self):
-        x = float(self.x_input.get())
-        y = float(self.y_input.get())
+        try:
+            x = float(self.x_input.get())
+            y = float(self.y_input.get())
+        except ValueError:
+            return None
         
         if self.z_input is None:
             return [x, y, 1.0]
         else:
-            z = float(self.z_input.get())
+            try:
+                z = float(self.z_input.get())
+            except ValueError:
+                return None
         return [x, y, z]

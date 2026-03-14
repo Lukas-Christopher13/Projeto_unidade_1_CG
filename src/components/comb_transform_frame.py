@@ -11,9 +11,13 @@ from src.utils.matrix_transform import (
     reflection_xy,
     share,
 )
+from services.log_service import LogService
+
+log = LogService()
 
 WIDTH = 520
 HEIGHT = 620
+
 
 
 class CombTransformFrame(PopupFrame):
@@ -119,8 +123,14 @@ class CombTransformFrame(PopupFrame):
 
         tx, ty, tz, tw = self.current_shape.second_vertex()
         
-        self.queue.append(rotation(angle, tx, ty, tz))
+        mat = rotation(angle, tx, ty, tz)
+        self.queue.append(mat)
         self.sequence_list.insert("end", f"R({angle})")
+
+        log.header("FILA ─ Rotação adicionada")
+        log.step(f"Ângulo: θ = {angle}°")
+        log.step(f"Centro de rotação: ({tx:.1f}, {ty:.1f}, {tz:.1f})")
+        log.matrix("Matriz R composta", mat)
 
     def add_translation(self):
         try:
@@ -128,8 +138,14 @@ class CombTransformFrame(PopupFrame):
             y = float(self.ty_entry.get())
         except ValueError:
             return
-        self.queue.append(translate(x, y, 0.0))
+
+        mat = translate(x, y, 0.0)
+        self.queue.append(mat)
         self.sequence_list.insert("end", f"T({x}, {y})")
+
+        log.header("FILA ─ Translação adicionada")
+        log.step(f"T(tx={x}, ty={y})")
+        log.matrix("Matriz T", mat)
 
     def add_scale(self):
         try:
@@ -140,23 +156,36 @@ class CombTransformFrame(PopupFrame):
         
         tx, ty, tz, tw = self.current_shape.second_vertex()
 
-        self.queue.append(scaling(sx=x, sy=y, tx=tx, ty=ty))
+        mat = scaling(sx=x, sy=y, tx=tx, ty=ty)
+        self.queue.append(mat)
         self.sequence_list.insert("end", f"S({x}, {y})")
+
+        log.header("FILA ─ Escala adicionada")
+        log.step(f"Fatores: Sx={x}, Sy={y}")
+        log.step(f"Centro de escala: ({tx:.1f}, {ty:.1f})")
+        log.matrix("Matriz S composta", mat)
 
     def add_reflection(self):
         mode = self.reflection_var.get()
+        label_map = {"x": "Eixo X", "y": "Eixo Y", "origin": "Origem", "x = y": "Reta y = x"}
+
         if mode == "x":
-            self.queue.append(reflection_x())
-            self.sequence_list.insert("end", "Rx")
+            mat = reflection_x()
         elif mode == "y":
-            self.queue.append(reflection_y())
-            self.sequence_list.insert("end", "Ry")
+            mat = reflection_y()
         elif mode == "origin":
-            self.queue.append(reflection_origin())
-            self.sequence_list.insert("end", "Rorigin")
+            mat = reflection_origin()
         elif mode == "x = y":
-            self.queue.append(reflection_xy())
-            self.sequence_list.insert("end", "Rxy")
+            mat = reflection_xy()
+        else:
+            return
+
+        self.queue.append(mat)
+        self.sequence_list.insert("end", f"R{mode}")
+
+        log.header("FILA ─ Reflexão adicionada")
+        log.step(f"Tipo: {label_map.get(mode, mode)}")
+        log.matrix("Matriz de Reflexão", mat)
 
     def add_share(self):
         try:
@@ -167,8 +196,15 @@ class CombTransformFrame(PopupFrame):
         
         tx, ty, tz, tw = self.current_shape.second_vertex()
 
-        self.queue.append(share(shx=shx, shy=shy, tx=tx, ty=ty))
+        mat = share(shx=shx, shy=shy, tx=tx, ty=ty)
+        self.queue.append(mat)
         self.sequence_list.insert("end", f"Sh({shx}, {shy})")
+
+        log.header("FILA ─ Cisalhamento adicionado")
+        log.step(f"shx={shx}, shy={shy}")
+        log.step(f"Centro: ({tx:.1f}, {ty:.1f})")
+        log.matrix("Matriz Sh composta", mat)
+
 
     def transform(self):
         if not self.queue:
@@ -183,6 +219,11 @@ class CombTransformFrame(PopupFrame):
 
         print(m_result)
         self.current_shape.transform([m_result])
+
+        log.info("Vértices depois:")
+        for i, v in enumerate(vertex):
+            log.info(f"  V{i}: ({v[0]:.1f}, {v[1]:.1f}, {v[2]:.1f})")
+        log.separator()
 
     def clear_sequence(self):
         self.queue = []

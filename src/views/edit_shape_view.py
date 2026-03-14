@@ -40,6 +40,9 @@ class EditShapeView(Frame):
         btn_comb = Button(self, text="comb", command=self.comb)
         btn_comb.grid(row=8, column=0)
 
+        btn_clear_all = Button(self, text="Limpar Tudo", command=self.clear_all, fg="black")
+        btn_clear_all.grid(row=9, column=0, pady=(10, 0))
+
     def set_controller(self, controller):
         self.controller = controller
 
@@ -69,6 +72,9 @@ class EditShapeView(Frame):
 
     def share(self):
         self.controller.share()
+
+    def clear_all(self):
+        self.controller.clear_all()
 
     def do_not(self):
         pass

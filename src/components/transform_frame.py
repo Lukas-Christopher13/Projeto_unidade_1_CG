@@ -7,6 +7,9 @@ from src.components.input_components.translation_input import TranslationInput
 from src.components.input_components.scale_input import ScaleInput
 
 from src.utils.matrix_transform import *
+from services.log_service import LogService
+
+log = LogService()
 
 WIDHT = 800
 HEIGHT = 800
@@ -46,47 +49,83 @@ class TransformFrame(PopupFrame):
         btn_transform.grid(row=0, column=1, columnspan=3, pady=12)
 
     def transform(self):
-        self.print_sequence()
-        self.current_shape.transform(self.queue)
-        print(self.current_shape.vertex)
-    
-    def print_sequence(self):
-        self.log_stack = self.queue.copy()
-        self.log_stack.reverse()
-        
-        print("---sequencia lógica---")
-        for i in self.log_stack:
-            print(i)
-        
-        print("-----------------")
-        current = self.log_stack[0]
-        for i in range(len(self.log_stack) -1):
-            current = current @ self.log_stack[i + 1]
-            print(current)
+        if not self.queue:
+            return
 
-        print(self.current_shape.vertex @ current.T)
+        log.header("TRANSFORMAÇÃO COMPOSTA (Popup)")
+        log.step(f"Sequência de {len(self.queue)} operação(ões)")
+        log.step(f"Descrição: {self.transform_description.get()}")
+        log.separator()
+
+        # Mostra cada matriz da fila (em ordem lógica = inversa da aplicação)
+        log_stack = self.queue.copy()
+        log_stack.reverse()
+
+        for idx, mat in enumerate(log_stack):
+            log.step(f"Operação {idx + 1}:")
+            log.matrix(f"M{idx + 1}", mat)
+
+        # Calcula e exibe a matriz composta
+        composed = log_stack[0]
+        for m in log_stack[1:]:
+            composed = composed @ m
+        log.step("Matriz composta final (M_total):")
+        log.matrix("M_total", composed)
+
+        # Vértices antes / depois
+        vertex = self.current_shape.vertex
+        log.info("Vértices antes:")
+        for i, v in enumerate(vertex):
+            log.info(f"  V{i}: ({v[0]:.1f}, {v[1]:.1f}, {v[2]:.1f})")
+
+        self.current_shape.transform(self.queue)
+
+        log.info("Vértices depois:")
+        for i, v in enumerate(vertex):
+            log.info(f"  V{i}: ({v[0]:.1f}, {v[1]:.1f}, {v[2]:.1f})")
+        log.separator()
 
     def rotation(self):
         radians = self.rotation_input.get()
 
-        self.queue.append(basic_rotation(radians))
+        mat = basic_rotation(radians)
+        self.queue.append(mat)
         self.transform_description.set(f"R({radians}) x " + self.transform_description.get())
+
+        log.header("FILA ─ Rotação adicionada")
+        log.step(f"Ângulo: {radians}°")
+        log.matrix("R(θ)", mat)
 
     def translation(self):
         xy = self.translation_input.get()
 
-        self.queue.append(translate(xy[0], xy[1]))
+        mat = translate(xy[0], xy[1])
+        self.queue.append(mat)
         self.transform_description.set(f"T({xy[0]}, {xy[1]}) x " + self.transform_description.get())
+
+        log.header("FILA ─ Translação adicionada")
+        log.step(f"T(tx={xy[0]}, ty={xy[1]})")
+        log.matrix("T", mat)
 
     def scale(self):
         xy = self.scale_input.get()
 
-        self.queue.append(basic_scaling(xy[0], xy[1]))
+        mat = basic_scaling(xy[0], xy[1])
+        self.queue.append(mat)
         self.transform_description.set(f"S({xy[0]}, {xy[1]}) x " + self.transform_description.get())
 
+        log.header("FILA ─ Escala adicionada")
+        log.step(f"Fatores: Sx={xy[0]}, Sy={xy[1]}")
+        log.matrix("S", mat)
+
     def reflection_axis_x(self):
-        self.queue.append(reflection_x())
+        mat = reflection_x()
+        self.queue.append(mat)
         self.transform_description.set("Rx x " + self.transform_description.get())
+
+        log.header("FILA ─ Reflexão adicionada")
+        log.step("Tipo: Eixo X")
+        log.matrix("Rx", mat)
 
     def get_input(self):
         try:

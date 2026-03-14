@@ -5,8 +5,15 @@ from src.components.shared.popup_frame import PopupFrame
 class LineFrame(PopupFrame):
     def __init__(self, root, **kwargs):
        super().__init__(root, **kwargs)
+       self.x1 = 0.0
+       self.y1 = 0.0
+       self.x2 = 0.0
+       self.y2 = 0.0
+       self.cancelled = False
 
     def open_popup(self):
+        self.popup.protocol("WM_DELETE_WINDOW", self._on_close)
+
         Label(self.popup, text="Point A (x1, y1):").grid(row=0, column=0, pady=5)
         self.ent_x1 = Entry(self.popup, width=6)
         self.ent_y1 = Entry(self.popup, width=6)
@@ -39,4 +46,6 @@ class LineFrame(PopupFrame):
         except ValueError:
             print("Valores Invalidos")
 
-        
+    def _on_close(self):
+        self.cancelled = True
+        self.popup.destroy()
