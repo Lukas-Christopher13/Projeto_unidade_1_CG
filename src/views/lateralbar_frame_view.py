@@ -6,6 +6,7 @@ from src.views.edit_shape_view import EditShapeView
 class LateralBarView(Frame):
     def __init__(self, root, **kwargs):
         super().__init__(root, **kwargs)
+        gl_window_model.add_frame(self)
         self.columnconfigure(0, weight=1)
 
         self.transform_container = Frame(self)
@@ -13,7 +14,7 @@ class LateralBarView(Frame):
         self.transform_container.columnconfigure(0, weight=1)
         self.transform_container.columnconfigure(1, weight=0)
 
-        self.points_title = ttk.Label(self.transform_container, text="Pontos do plano")
+        self.points_title = ttk.Label(self.transform_container, text="Pontos")
         self.points_title.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, 6))
 
         self.listbox = Listbox(self.transform_container)
@@ -26,6 +27,7 @@ class LateralBarView(Frame):
         self.point_form = ttk.LabelFrame(self.transform_container, text="Adicionar ponto", padding=(8, 8))
         self.point_form.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(8, 8))
 
+        self._on_add_point = None
         self._build_point_form()
 
         self.edit_shape_view = EditShapeView(self.transform_container)
@@ -52,29 +54,38 @@ class LateralBarView(Frame):
         for widget in self.point_form.winfo_children():
             widget.destroy()
 
-        self.point_form.columnconfigure(1, weight=1)
+        if gl_window_model.is_2d():
+            self.points_title.configure(text="Pontos do plano (X, Y)")
+        else:
+            self.points_title.configure(text="Pontos do espaco (X, Y, Z)")
 
-        ttk.Label(self.point_form, text="X").grid(row=0, column=0, sticky="w", pady=2)
+        self.point_form.columnconfigure(0, weight=1)
+        self.point_form.columnconfigure(1, weight=1)
+        self.point_form.columnconfigure(2, weight=1)
+
+        ttk.Label(self.point_form, text="X").grid(row=0, column=0, sticky="w", pady=(0, 2))
         self.point_x = ttk.Entry(self.point_form, width=10)
-        self.point_x.grid(row=0, column=1, sticky="ew", padx=(8, 0), pady=2)
+        self.point_x.grid(row=1, column=0, sticky="ew", padx=(0, 4), pady=(0, 2))
         self.point_x.insert(0, "0.0")
 
-        ttk.Label(self.point_form, text="Y").grid(row=1, column=0, sticky="w", pady=2)
+        ttk.Label(self.point_form, text="Y").grid(row=0, column=1, sticky="w", pady=(0, 2))
         self.point_y = ttk.Entry(self.point_form, width=10)
-        self.point_y.grid(row=1, column=1, sticky="ew", padx=(8, 0), pady=2)
+        self.point_y.grid(row=1, column=1, sticky="ew", padx=4, pady=(0, 2))
         self.point_y.insert(0, "0.0")
 
         self.point_z = None
         row_btn = 2
         if not gl_window_model.is_2d():
-            ttk.Label(self.point_form, text="Z").grid(row=2, column=0, sticky="w", pady=2)
+            ttk.Label(self.point_form, text="Z").grid(row=0, column=2, sticky="w", pady=(0, 2))
             self.point_z = ttk.Entry(self.point_form, width=10)
-            self.point_z.grid(row=2, column=1, sticky="ew", padx=(8, 0), pady=2)
+            self.point_z.grid(row=1, column=2, sticky="ew", padx=(4, 0), pady=(0, 2))
             self.point_z.insert(0, "0.0")
-            row_btn = 3
 
         self.add_point_btn = ttk.Button(self.point_form, text="Adicionar ponto")
-        self.add_point_btn.grid(row=row_btn, column=0, columnspan=2, sticky="ew", pady=(8, 2))
+        self.add_point_btn.grid(row=row_btn, column=0, columnspan=3, sticky="ew", pady=(8, 2))
+
+        if self._on_add_point is not None:
+            self.add_point_btn.configure(command=self._on_add_point)
 
     def rebuild(self):
         self._build_point_form()
@@ -125,6 +136,7 @@ class LateralBarView(Frame):
         self.apply_button.configure(text=text, command=command)
 
     def set_point_actions(self, on_add_point):
+        self._on_add_point = on_add_point
         self.add_point_btn.configure(command=on_add_point)
 
     def get_point_input(self):

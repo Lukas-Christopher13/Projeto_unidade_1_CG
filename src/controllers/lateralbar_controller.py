@@ -128,7 +128,89 @@ class LateralBarController:
             shape.edge_sequence = None
             return
 
-        shape.edge_sequence = [(i, (i + 1) % total) for i in range(total)]
+        if gl_window_model.is_2d():
+            shape.edge_sequence = [(i, (i + 1) % total) for i in range(total)]
+            return
+
+        inferred = self._infer_3d_edges(shape.vertex[:, :3])
+        if inferred is not None:
+            shape.edge_sequence = inferred
+        else:
+            # Fallback for arbitrary 3D shapes: keep sequential closed contour.
+            shape.edge_sequence = [(i, (i + 1) % total) for i in range(total)]
+
+    def _infer_3d_edges(self, points):
+        n = len(points)
+
+        # Pyramid: 4-point base + 1 apex.
+        if n == 5:
+            z_vals = np.round(points[:, 2], 6)
+            unique_z, counts = np.unique(z_vals, return_counts=True)
+            if len(unique_z) == 2 and sorted(counts.tolist()) == [1, 4]:
+                apex_z = unique_z[np.argmin(counts)]
+                apex_idx = int(np.where(z_vals == apex_z)[0][0])
+                base_idx = [i for i in range(n) if i != apex_idx]
+
+                ordered_base = self._sort_indices_by_xy_angle(points, base_idx)
+                edges = []
+
+                for i in range(4):
+                    a = ordered_base[i]
+                    b = ordered_base[(i + 1) % 4]
+                    edges.append((a, b))
+
+                for i in ordered_base:
+                    edges.append((apex_idx, i))
+
+                return edges
+
+        # Cube-like prism: 2 layers of 4 points each.
+        if n == 8:
+            z_vals = np.round(points[:, 2], 6)
+            unique_z, counts = np.unique(z_vals, return_counts=True)
+            if len(unique_z) == 2 and counts[0] == 4 and counts[1] == 4:
+                lower_idx = np.where(z_vals == unique_z[0])[0].tolist()
+                upper_idx = np.where(z_vals == unique_z[1])[0].tolist()
+
+                lower_ordered = self._sort_indices_by_xy_angle(points, lower_idx)
+                upper_ordered = self._sort_indices_by_xy_angle(points, upper_idx)
+
+                edges = []
+
+                for i in range(4):
+                    a = lower_ordered[i]
+                    b = lower_ordered[(i + 1) % 4]
+                    edges.append((a, b))
+
+                for i in range(4):
+                    a = upper_ordered[i]
+                    b = upper_ordered[(i + 1) % 4]
+                    edges.append((a, b))
+
+                # Connect corresponding vertices between layers by nearest XY.
+                remaining_upper = upper_ordered.copy()
+                for li in lower_ordered:
+                    lxy = points[li, :2]
+                    best = min(
+                        remaining_upper,
+                        key=lambda ui: np.linalg.norm(points[ui, :2] - lxy)
+                    )
+                    edges.append((li, best))
+                    remaining_upper.remove(best)
+
+                return edges
+
+        return None
+
+    def _sort_indices_by_xy_angle(self, points, indices):
+        subset = points[indices, :2]
+        cx = subset[:, 0].mean()
+        cy = subset[:, 1].mean()
+
+        return sorted(
+            indices,
+            key=lambda i: np.arctan2(points[i, 1] - cy, points[i, 0] - cx)
+        )
 
     def _build_point_for_shape(self, shape, values):
         base = [values[0], values[1], values[2], 1.0]
