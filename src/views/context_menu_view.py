@@ -62,8 +62,11 @@ class ContextMenuView(Frame):
         self.context_menu_controller.options_3d()
         self.context_menu_controller.mount_transform_menu()
 
-        self.click_menu = None
-        self.root.unbind("<Button-3>")
+        self.click_menu = Menu(self.root, tearoff=0)
+        self.click_shapes_menu = Menu(self.click_menu, tearoff=0)
+        self.click_menu.add_cascade(label="Formas 3D", menu=self.click_shapes_menu)
+        self.context_menu_controller.mount_click_shapes_menu_3d()
+        self.root.bind("<Button-3>", self.show_click_menu)
 
         self.toplevel.config(menu=self.menu_bar)
 
@@ -79,5 +82,5 @@ class ContextMenuView(Frame):
         self.screen_state.set(state)
 
     def show_click_menu(self, event):
-        if gl_window_model.is_2d() and self.click_menu is not None:
+        if self.click_menu is not None:
             self.click_menu.tk_popup(event.x_root, event.y_root)

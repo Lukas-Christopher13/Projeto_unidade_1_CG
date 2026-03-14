@@ -7,6 +7,7 @@ from src.algorithms.circle_midpoint import draw_circleMP
 from src.algorithms.circle_polynomial import draw_circle_polynomial
 from src.algorithms.circle_trigonometric import draw_circle_trigonometric
 from src.utils.shape_factory import ShapeFactory
+from src.utils.shape_factory_3d import ShapeFactory3D
 from src.controllers.custom_shape_controller import CustomShapeController
 
 from src.models.gl_window_model import gl_window_model
@@ -57,6 +58,11 @@ class ContextMenuController:
         self.view.click_shapes_menu.add_command(label="Retangulo", command=lambda: self.create_shape("rectangle"))
         self.view.click_shapes_menu.add_separator()
         self.view.click_shapes_menu.add_command(label="Custom", command=self.custom_shape_controller.start_custom_shape)
+
+    def mount_click_shapes_menu_3d(self):
+        self.view.click_shapes_menu.add_command(label="Cube", command=lambda: self.create_shape("cube"))
+        self.view.click_shapes_menu.add_command(label="CubeBug", command=lambda: self.create_shape("cube_b"))
+        self.view.click_shapes_menu.add_command(label="Pyramid", command=lambda: self.create_shape("pyramid"))
         
     def options_3d(self):
         # Em 3D, os algoritmos 2D de linha/circulo ficam indisponiveis.
@@ -116,6 +122,9 @@ class ContextMenuController:
             "triangle": ShapeFactory.triangle,
             "square": ShapeFactory.square,
             "rectangle": ShapeFactory.rectangle,
+            "cube": ShapeFactory3D.cube,
+            "cube_b": ShapeFactory3D.cube_bug,
+            "pyramid": ShapeFactory3D.pyramidy,
         }
 
         factory = shape_map.get(shape_type)
