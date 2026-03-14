@@ -13,6 +13,7 @@ class GlWindowModel:
     frames: List[Frame] = []
 
     def __init__(self):
+        self.selected = None
         self.to_2d()
     
     def add_shape(self, shape: Shape):
@@ -35,10 +36,13 @@ class GlWindowModel:
             frame.rebuild()
 
     def delete_shape(self):
+        if self.selected is None:
+            return
         shape = self.shapes[self.selected]
         shape.clear()
 
         self.shapes.remove(shape)
+        self.selected = None
         self.notify()
 
         RenderService.request_render()
@@ -56,6 +60,8 @@ class GlWindowModel:
         self.selected = selected
 
     def get_selected(self):
+        if self.selected is None:
+            return None
         return self.shapes[self.selected]
     
     def get_window_mode(self):
