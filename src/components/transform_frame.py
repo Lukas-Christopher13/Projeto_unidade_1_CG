@@ -74,23 +74,15 @@ class TransformFrame(PopupFrame):
 
         # Vértices antes / depois
         vertex = self.current_shape.vertex
-        count = len(vertex)
-        show = min(count, 6)
         log.info("Vértices antes:")
-        for i in range(show):
-            v = vertex[i]
+        for i, v in enumerate(vertex):
             log.info(f"  V{i}: ({v[0]:.1f}, {v[1]:.1f}, {v[2]:.1f})")
-        if count > 6:
-            log.info(f"  ... (+{count - 6} vértices)")
 
         self.current_shape.transform(self.queue)
 
         log.info("Vértices depois:")
-        for i in range(show):
-            v = vertex[i]
+        for i, v in enumerate(vertex):
             log.info(f"  V{i}: ({v[0]:.1f}, {v[1]:.1f}, {v[2]:.1f})")
-        if count > 6:
-            log.info(f"  ... (+{count - 6} vértices)")
         log.separator()
 
     def rotation(self):
