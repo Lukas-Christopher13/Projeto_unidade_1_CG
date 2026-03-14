@@ -211,19 +211,24 @@ class CombTransformFrame(PopupFrame):
             return
         
         m_result = None
-        for m in reversed(self.queue):
+        while(self.queue):
             if m_result is None:
-                m_result = m
+                m_result = self.queue.pop()
             else:
-                m_result = m_result @ m
+                m_result = m_result @ self.queue.pop()
 
-        print(m_result)
+        log.header(" Matriz Composta")
+        log.matrix("Matriz Composta", m_result)
+
         self.current_shape.transform([m_result])
+        vertex = self.current_shape.vertex
 
         log.info("Vértices depois:")
         for i, v in enumerate(vertex):
             log.info(f"  V{i}: ({v[0]:.1f}, {v[1]:.1f}, {v[2]:.1f})")
         log.separator()
+
+        self.clear_sequence()
 
     def clear_sequence(self):
         self.queue = []
