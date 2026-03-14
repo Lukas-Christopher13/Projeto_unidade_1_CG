@@ -36,7 +36,7 @@ class GlWindowModel:
             frame.rebuild()
 
     def delete_shape(self):
-        if self.selected is None:
+        if not self._has_valid_selection():
             return
         shape = self.shapes[self.selected]
         shape.clear()
@@ -60,7 +60,7 @@ class GlWindowModel:
         self.selected = selected
 
     def get_selected(self):
-        if self.selected is None:
+        if not self._has_valid_selection():
             return None
         return self.shapes[self.selected]
     
@@ -74,9 +74,18 @@ class GlWindowModel:
     def empty_window(self):
         self.shapes = []
         self.backgrounds = []
+        self.selected = None
         self.notify()
 
         RenderService.request_render()
+
+    def _has_valid_selection(self):
+        if self.selected is None:
+            return False
+        if self.selected < 0 or self.selected >= len(self.shapes):
+            self.selected = None
+            return False
+        return True
 
     def use_2d_axies(self):
         self.backgrounds.append(axies_2d)
