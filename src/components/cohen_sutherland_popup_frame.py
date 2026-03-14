@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import messagebox
 
 from src.components.shared.popup_frame import PopupFrame
-from services.log_service import LogService
 
 
 class CohenSutherlandClipFrame(PopupFrame):
@@ -13,7 +12,6 @@ class CohenSutherlandClipFrame(PopupFrame):
 
     def __init__(self, root, **kwargs):
         super().__init__(root, **kwargs)
-        self.log_service = LogService()
         self.draw_rectangle = False
         self.draw_line = False
         self.clip_line = False
@@ -119,21 +117,14 @@ class CohenSutherlandClipFrame(PopupFrame):
             return
 
         self.draw_rectangle = True
-        self.draw_line = True
+        self.draw_line = False
         self.clip_line = True
 
-        self.log_service.header("RECORTE DE RETA - COHEN-SUTHERLAND")
         self._append_log("Aplicando o algoritmo de recorte Cohen-Sutherland")
         self.clipped_result = self._cohen_sutherland(self.x1, self.y1, self.x2, self.y2)
 
         if self.clipped_result is None:
             self._append_log("Linha completamente fora da janela de visao e rejeitada")
-            self.log_service.result("Linha rejeitada (fora da janela de visao)")
-        else:
-            cx1, cy1, cx2, cy2 = self.clipped_result
-            self.log_service.result(
-                f"Linha recortada final: ({cx1}, {cy1}) ate ({cx2}, {cy2})"
-            )
 
         self._redraw()
 
@@ -200,7 +191,6 @@ class CohenSutherlandClipFrame(PopupFrame):
         self.log_area.insert(END, f"{message}\n")
         self.log_area.see(END)
         self.log_area.configure(state=DISABLED)
-        self.log_service.info(message)
 
     def _compute_out_code(self, x, y):
         code = 0
