@@ -24,6 +24,12 @@ class ViewModeView(Frame):
             command=gl_window_model.to_3d
         ).pack(anchor="w")
 
+        ttk.Button(
+            self,
+            text="Recorte de reta",
+            command=self.open_line_clip_popup
+        ).pack(anchor="w", pady=(8, 0), fill="x")
+
     def on_change(self):
         print("Modo:", self.mode.get())
         print("Eixos:", self.show_axes.get())
@@ -33,3 +39,7 @@ class ViewModeView(Frame):
 
     def set_controller(self, controller):
         self.controller = controller
+
+    def open_line_clip_popup(self):
+        if hasattr(self, "controller"):
+            self.controller.open_line_clip_popup()
