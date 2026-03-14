@@ -196,13 +196,13 @@ class EditShapeController:
 
             if mode == "x":
                 share_m = share_x(shy=shy, shz=shz)
-                log.step(f"Fórmula: x' = x + shy·y + shz·z")
+                log.step(f"Fórmula: y' = y + shy·x, z' = z + shz·x")
             elif mode == "y":
                 share_m = share_y(shx=shx, shz=shz)
-                log.step(f"Fórmula: y' = y + shx·x + shz·z")
+                log.step(f"Fórmula: x' = x + shx·y, z' = z + shz·y")
             else:
                 share_m = share_z(shx=shx, shy=shy)
-                log.step(f"Fórmula: z' = z + shx·x + shy·y")
+                log.step(f"Fórmula: x' = x + shx·z, y' = y + shy·z")
 
         log.step(f"Ponto de referência: ({xm:.1f}, {ym:.1f}, {zm:.1f})")
         log.separator()
