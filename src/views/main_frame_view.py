@@ -37,4 +37,4 @@ class MainFrameView(Frame):
         self.paned.add(self.terminal_frame, height=220, stretch="never")
 
         # ── Context menu (vinculado ao GL) ──
-        self.context_menu_view = ContextMenuView(self.gl_window_view)
+        self.context_menu_view = ContextMenuView(self.gl_window_view, self.controller)
