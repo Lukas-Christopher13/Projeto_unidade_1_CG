@@ -87,11 +87,17 @@ class ShareInputFrame(ABSInputFrame):
         self._button_row = 6
 
     def get(self):
-        x = float(self.x_input.get())
-        y = float(self.y_input.get())
+        try:
+            x = float(self.x_input.get())
+            y = float(self.y_input.get())
+        except ValueError:
+            return None
 
         if self.z_input is None:
             return [x, y, self.mode_var.get()]
 
-        z = float(self.z_input.get())
+        try:
+            z = float(self.z_input.get())
+        except ValueError:
+            return None
         return [x, y, z, self.mode_var.get()]

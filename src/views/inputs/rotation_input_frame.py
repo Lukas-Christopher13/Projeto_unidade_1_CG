@@ -44,9 +44,12 @@ class RotationInputFrame(ABSInputFrame):
             .grid(row=4, column=1, sticky="w")
 
     def get(self):
-        angle = float(self.rotation_entry.get())
+        try:
+            angle = float(self.rotation_entry.get())
+        except ValueError:
+            return None
 
         if self.axis is None:
             return [angle, "z"]
         else:
-            return [angle, self.axis.get()]
+            return [angle, self.axis.get()]
