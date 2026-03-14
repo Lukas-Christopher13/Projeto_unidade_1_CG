@@ -27,76 +27,74 @@ class EditShapeView(Frame):
         title.grid(row=0, column=0, sticky="ew", padx=8, pady=(6, 8))
 
         row_idx = 1
-        if not gl_window_model.is_2d():
-            transforms_group = ttk.LabelFrame(self, text="Transformacoes", padding=(8, 8))
-            transforms_group.grid(row=row_idx, column=0, sticky="ew", padx=8)
-            transforms_group.columnconfigure(0, weight=1)
+        transforms_group = ttk.LabelFrame(self, text="Transformacoes", padding=(8, 8))
+        transforms_group.grid(row=row_idx, column=0, sticky="ew", padx=8)
+        transforms_group.columnconfigure(0, weight=1)
 
-            self.translate_input_frame = TranslationInputFrame(
-                transforms_group,
-                title="Translate",
-                command=self.translate,
-                borderwidth=1,
-                relief="flat"
-            )
-            self.translate_input_frame.grid(row=0, column=0, sticky="ew", pady=(0, 6))
+        self.translate_input_frame = TranslationInputFrame(
+            transforms_group,
+            title="Translate",
+            command=self.translate,
+            borderwidth=1,
+            relief="flat"
+        )
+        self.translate_input_frame.grid(row=0, column=0, sticky="ew", pady=(0, 6))
 
-            self.rotation_input_frame = RotationInputFrame(
-                transforms_group,
-                title="Rotation",
-                command=self.rotate,
-                borderwidth=1,
-                relief="flat"
-            )
-            self.rotation_input_frame.grid(row=1, column=0, sticky="ew", pady=(0, 6))
+        self.rotation_input_frame = RotationInputFrame(
+            transforms_group,
+            title="Rotation",
+            command=self.rotate,
+            borderwidth=1,
+            relief="flat"
+        )
+        self.rotation_input_frame.grid(row=1, column=0, sticky="ew", pady=(0, 6))
 
-            self.scaling_input_frame = ScaleInputFrame(
-                transforms_group,
-                title="Scaling",
-                command=self.scale,
-                borderwidth=1,
-                relief="flat"
-            )
-            self.scaling_input_frame.grid(row=2, column=0, sticky="ew", pady=(0, 6))
+        self.scaling_input_frame = ScaleInputFrame(
+            transforms_group,
+            title="Scaling",
+            command=self.scale,
+            borderwidth=1,
+            relief="flat"
+        )
+        self.scaling_input_frame.grid(row=2, column=0, sticky="ew", pady=(0, 6))
 
-            self.reflection_input_frame = ReflectionInputFrame(
-                transforms_group,
-                title="Reflection",
-                command=self.reflection,
-                borderwidth=1,
-                relief="flat"
-            )
-            self.reflection_input_frame.grid(row=3, column=0, sticky="ew", pady=(0, 6))
+        self.reflection_input_frame = ReflectionInputFrame(
+            transforms_group,
+            title="Reflection",
+            command=self.reflection,
+            borderwidth=1,
+            relief="flat"
+        )
+        self.reflection_input_frame.grid(row=3, column=0, sticky="ew", pady=(0, 6))
 
-            self.share_input_frame = ShareInputFrame(
-                transforms_group,
-                title="Share",
-                command=self.share,
-                borderwidth=1,
-                relief="flat"
-            )
-            self.share_input_frame.grid(row=4, column=0, sticky="ew")
+        self.share_input_frame = ShareInputFrame(
+            transforms_group,
+            title="Share",
+            command=self.share,
+            borderwidth=1,
+            relief="flat"
+        )
+        self.share_input_frame.grid(row=4, column=0, sticky="ew")
 
-            row_idx += 1
+        row_idx += 1
 
         actions_group = ttk.LabelFrame(self, text="Acoes", padding=(8, 8))
         actions_group.grid(row=row_idx, column=0, sticky="ew", padx=8, pady=(8, 0))
         actions_group.columnconfigure(0, weight=1)
         actions_group.columnconfigure(1, weight=1)
 
-        if not gl_window_model.is_2d():
-            btn_to_origin = ttk.Button(actions_group, text="To Origin", command=self.to_origin)
-            btn_to_origin.grid(row=0, column=0, sticky="ew", padx=(0, 4), pady=(0, 6))
+        btn_to_origin = ttk.Button(actions_group, text="To Origin", command=self.to_origin)
+        btn_to_origin.grid(row=0, column=0, sticky="ew", padx=(0, 4), pady=(0, 6))
 
-            btn_delete = ttk.Button(actions_group, text="Delete Shape", command=self.delete)
-            btn_delete.grid(row=0, column=1, sticky="ew", padx=(4, 0), pady=(0, 6))
+        btn_delete = ttk.Button(actions_group, text="Delete Shape", command=self.delete)
+        btn_delete.grid(row=0, column=1, sticky="ew", padx=(4, 0), pady=(0, 6))
 
-            row_clear = 1
-        else:
+        row_clear = 1
+
+        if gl_window_model.is_2d():
             btn_comb = ttk.Button(actions_group, text="Comb. Transform", command=self.comb)
-            btn_comb.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 6))
-
-            row_clear = 1
+            btn_comb.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(0, 6))
+            row_clear = 2
 
         btn_clear_all = ttk.Button(actions_group, text="Limpar Tudo", command=self.clear_all)
         btn_clear_all.grid(row=row_clear, column=0, columnspan=2, sticky="ew")

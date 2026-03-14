@@ -1,4 +1,5 @@
 import numpy as np
+from tkinter import messagebox
 
 from src.utils.matrix_transform import *
 from src.models.gl_window_model import gl_window_model
@@ -280,7 +281,11 @@ class EditShapeController:
             gl_window_model.set_selected(0)
             shape = gl_window_model.get_selected()
 
-        if shape is None:
+        if shape is None or len(shape.vertex) < 3:
+            messagebox.showwarning(
+                "Transformacao Combinada",
+                "Cadastre ao menos 3 pontos para usar transformacao combinada."
+            )
             return
 
         comb_frame = CombTransformFrame(self.view, shape)
