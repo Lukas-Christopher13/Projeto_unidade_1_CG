@@ -43,7 +43,8 @@ class GlWindowModel:
             frame.rebuild()
 
     def delete_shape(self):
-        if self.selected is None:
+        if self.selected is None or self.selected < 0 or self.selected >= len(self.shapes):
+            self.selected = None
             return
         shape = self.shapes[self.selected]
         shape.clear()
@@ -69,6 +70,9 @@ class GlWindowModel:
     def get_selected(self):
         if self.selected is None:
             return None
+        if self.selected < 0 or self.selected >= len(self.shapes):
+            self.selected = None
+            return None
         return self.shapes[self.selected]
     
     def get_window_mode(self):
@@ -81,6 +85,7 @@ class GlWindowModel:
     def empty_window(self):
         self.shapes = []
         self.backgrounds = []
+        self.selected = None
         self.notify()
 
         RenderService.request_render()

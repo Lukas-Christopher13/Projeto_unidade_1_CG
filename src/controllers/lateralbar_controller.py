@@ -106,9 +106,8 @@ class LateralBarController:
         if values is None:
             return
 
-        point = np.array([[values[0], values[1], values[2], 1.0]], dtype=np.float32)
-
         if self._editing_shape_index is None or self._editing_shape_index >= len(gl_window_model.shapes):
+            point = np.array([[values[0], values[1], values[2], 1.0]], dtype=np.float32)
             shape = Shape(point.tolist(), GL_LINE_LOOP)
             self._refresh_closed_edges(shape)
             gl_window_model.set_single_shape(shape)
@@ -116,6 +115,7 @@ class LateralBarController:
             gl_window_model.set_selected(self._editing_shape_index)
         else:
             shape = gl_window_model.shapes[self._editing_shape_index]
+            point = self._build_point_for_shape(shape, values)
             shape.update(GL_LINE_LOOP, point)
             self._refresh_closed_edges(shape)
             RenderService.request_render()
@@ -129,4 +129,15 @@ class LateralBarController:
             return
 
         shape.edge_sequence = [(i, (i + 1) % total) for i in range(total)]
+
+    def _build_point_for_shape(self, shape, values):
+        base = [values[0], values[1], values[2], 1.0]
+        target_cols = shape.vertex.shape[1]
+
+        if target_cols <= 4:
+            return np.array([base], dtype=np.float32)
+
+        # Preserve extra attributes (e.g., RGB) using the last vertex as template.
+        extra = shape.vertex[-1, 4:target_cols].tolist()
+        return np.array([base + extra], dtype=np.float32)
         
