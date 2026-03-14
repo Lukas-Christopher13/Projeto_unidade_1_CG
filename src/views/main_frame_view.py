@@ -17,24 +17,24 @@ class MainFrameView(Frame):
         self.build()
 
     def build(self):
-        # ── PanedWindow vertical: [canvas+lateral] / [terminal] ──
-        self.paned = PanedWindow(self, orient=VERTICAL, sashwidth=6, bg="#cccccc")
-        self.paned.pack(fill=BOTH, expand=True)
+        self.content_frame = Frame(self)
+        self.content_frame.pack(fill=BOTH, expand=True)
 
-        # ── Painel superior: GL + lateral bar ──
-        top_frame = Frame(self.paned)
+        self.gl_container = Frame(self.content_frame, bd=0, highlightthickness=0)
+        self.gl_container.pack(side=LEFT, fill=BOTH, expand=True)
 
-        self.gl_window_view = GlWindowView(top_frame, bd=0, highlightthickness=0)
-        self.gl_window_view.pack(side=LEFT, expand=True, fill=BOTH, padx=0, pady=0)
+        self.gl_window_view = GlWindowView(self.gl_container, bd=0, highlightthickness=0)
+        self.gl_window_view.pack(fill=BOTH, expand=True, padx=0, pady=0)
 
-        self.lateral_bar_view = LateralBarView(top_frame)
+        self.lateral_bar_view = LateralBarView(self.content_frame)
         self.lateral_bar_view.pack(side=LEFT, fill=BOTH, padx=0, pady=0)
 
-        self.paned.add(top_frame, stretch="always")
-
-        # ── Painel inferior: Terminal de logs ──
-        self.terminal_frame = TerminalFrame(self.paned)
-        self.paned.add(self.terminal_frame, height=220, stretch="never")
+        self.terminal_frame = TerminalFrame(
+            self.gl_container,
+            bd=0,
+            relief="flat",
+        )
+        self.terminal_frame.attach_overlay(self.gl_container)
 
         # ── Context menu (vinculado ao GL) ──
         self.context_menu_view = ContextMenuView(self.gl_window_view)
