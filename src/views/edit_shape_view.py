@@ -37,7 +37,7 @@ class EditShapeView(Frame):
         btn_delete = Button(self, text="Delete", command=self.delete)
         btn_delete.grid(row=7, column=0)
 
-        btn_comb = Button(self, text="comb", command=self.comb)
+        btn_comb = Button(self, text="combine", command=self.comb)
         btn_comb.grid(row=8, column=0)
 
         btn_clear_all = Button(self, text="Limpar Tudo", command=self.clear_all, fg="black")
