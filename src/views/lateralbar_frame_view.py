@@ -76,9 +76,6 @@ class LateralBarView(Frame):
         self.add_point_btn = ttk.Button(self.point_form, text="Adicionar ponto")
         self.add_point_btn.grid(row=row_btn, column=0, columnspan=2, sticky="ew", pady=(8, 2))
 
-        self.new_shape_btn = ttk.Button(self.point_form, text="Nova figura")
-        self.new_shape_btn.grid(row=row_btn + 1, column=0, columnspan=2, sticky="ew")
-
     def rebuild(self):
         self._build_point_form()
 
@@ -127,9 +124,8 @@ class LateralBarView(Frame):
     def set_algorithm_action(self, text: str, command):
         self.apply_button.configure(text=text, command=command)
 
-    def set_point_actions(self, on_add_point, on_new_shape):
+    def set_point_actions(self, on_add_point):
         self.add_point_btn.configure(command=on_add_point)
-        self.new_shape_btn.configure(command=on_new_shape)
 
     def get_point_input(self):
         try:

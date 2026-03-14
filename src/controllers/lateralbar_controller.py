@@ -1,7 +1,7 @@
 from src.models.gl_window_model import gl_window_model
 from src.controllers.edit_shape_controller import EditShapeController
 from src.models.shape import Shape
-from OpenGL.GL import GL_POINTS, GL_LINE_STRIP
+from OpenGL.GL import GL_POINTS, GL_LINE_LOOP
 from src.services.render_service import RenderService
 import numpy as np
 
@@ -14,7 +14,7 @@ class LateralBarController:
         self.edit_shape_controller = EditShapeController(self.view.edit_shape_view, None)
 
         gl_window_model.add_listener(self)
-        self.view.set_point_actions(self.add_point_to_shape, self.new_shape)
+        self.view.set_point_actions(self.add_point_to_shape)
 
         self._selected_line_algorithm = None
         self._selected_circle_algorithm = None
@@ -101,10 +101,6 @@ class LateralBarController:
         gl_window_model.add_shape(Shape(points, GL_POINTS))
         self._editing_shape_index = None
 
-    def new_shape(self):
-        self._editing_shape_index = None
-        self.view.set_points([])
-
     def add_point_to_shape(self):
         values = self.view.get_point_input()
         if values is None:
@@ -113,14 +109,24 @@ class LateralBarController:
         point = np.array([[values[0], values[1], values[2], 1.0]], dtype=np.float32)
 
         if self._editing_shape_index is None or self._editing_shape_index >= len(gl_window_model.shapes):
-            shape = Shape(point.tolist(), GL_LINE_STRIP)
+            shape = Shape(point.tolist(), GL_LINE_LOOP)
+            self._refresh_closed_edges(shape)
             gl_window_model.add_shape(shape)
             self._editing_shape_index = len(gl_window_model.shapes) - 1
             gl_window_model.set_selected(self._editing_shape_index)
         else:
             shape = gl_window_model.shapes[self._editing_shape_index]
-            shape.update(GL_LINE_STRIP, point)
+            shape.update(GL_LINE_LOOP, point)
+            self._refresh_closed_edges(shape)
             RenderService.request_render()
 
         self.update()
+
+    def _refresh_closed_edges(self, shape):
+        total = len(shape.vertex)
+        if total < 2:
+            shape.edge_sequence = None
+            return
+
+        shape.edge_sequence = [(i, (i + 1) % total) for i in range(total)]
         
