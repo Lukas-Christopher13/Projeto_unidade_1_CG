@@ -22,6 +22,13 @@ class GlWindowModel:
 
         RenderService.request_render()
 
+    def set_single_shape(self, shape: Shape):
+        self.shapes = [shape]
+        self.selected = 0
+        self.notify()
+
+        RenderService.request_render()
+
     def add_listener(self, listener):
         self.listeners.append(listener)
 

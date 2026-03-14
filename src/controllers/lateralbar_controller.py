@@ -82,7 +82,7 @@ class LateralBarController:
             x2=values["x2"],
             y2=values["y2"],
         )
-        gl_window_model.add_shape(Shape(points, GL_POINTS))
+        gl_window_model.set_single_shape(Shape(points, GL_POINTS))
         self._editing_shape_index = None
 
     def _run_circle_algorithm(self):
@@ -98,7 +98,7 @@ class LateralBarController:
             values["origin_x"],
             values["origin_y"],
         )
-        gl_window_model.add_shape(Shape(points, GL_POINTS))
+        gl_window_model.set_single_shape(Shape(points, GL_POINTS))
         self._editing_shape_index = None
 
     def add_point_to_shape(self):
@@ -111,8 +111,8 @@ class LateralBarController:
         if self._editing_shape_index is None or self._editing_shape_index >= len(gl_window_model.shapes):
             shape = Shape(point.tolist(), GL_LINE_LOOP)
             self._refresh_closed_edges(shape)
-            gl_window_model.add_shape(shape)
-            self._editing_shape_index = len(gl_window_model.shapes) - 1
+            gl_window_model.set_single_shape(shape)
+            self._editing_shape_index = 0
             gl_window_model.set_selected(self._editing_shape_index)
         else:
             shape = gl_window_model.shapes[self._editing_shape_index]

@@ -6,6 +6,8 @@ from src.algorithms.PontoMedio import drawLineMP
 from src.algorithms.circle_midpoint import draw_circleMP
 from src.algorithms.circle_polynomial import draw_circle_polynomial
 from src.algorithms.circle_trigonometric import draw_circle_trigonometric
+from src.utils.shape_factory import ShapeFactory
+from src.controllers.custom_shape_controller import CustomShapeController
 
 from src.models.gl_window_model import gl_window_model
 
@@ -14,6 +16,7 @@ class ContextMenuController:
     def __init__(self, view, app_controller=None):
         self.view = view
         self.app_controller = app_controller
+        self.custom_shape_controller = CustomShapeController(view)
 
     def options_2d(self):
         self.view.lines_sub_menu.add_radiobutton(
@@ -47,6 +50,13 @@ class ContextMenuController:
             value="circle_midpoint",
             command=lambda: self.open_circle_screen("MidPoint", draw_circleMP, "circle_midpoint")
         )
+
+    def mount_click_shapes_menu(self):
+        self.view.click_shapes_menu.add_command(label="Triangulo", command=lambda: self.create_shape("triangle"))
+        self.view.click_shapes_menu.add_command(label="Quadrado", command=lambda: self.create_shape("square"))
+        self.view.click_shapes_menu.add_command(label="Retangulo", command=lambda: self.create_shape("rectangle"))
+        self.view.click_shapes_menu.add_separator()
+        self.view.click_shapes_menu.add_command(label="Custom", command=self.custom_shape_controller.start_custom_shape)
         
     def options_3d(self):
         # Em 3D, os algoritmos 2D de linha/circulo ficam indisponiveis.
@@ -100,3 +110,16 @@ class ContextMenuController:
         self.view.set_screen_state("transform_3d")
         if self.app_controller is not None:
             self.app_controller.show_transform_screen()
+
+    def create_shape(self, shape_type: str):
+        shape_map = {
+            "triangle": ShapeFactory.triangle,
+            "square": ShapeFactory.square,
+            "rectangle": ShapeFactory.rectangle,
+        }
+
+        factory = shape_map.get(shape_type)
+        if not factory:
+            return
+
+        gl_window_model.set_single_shape(factory())
