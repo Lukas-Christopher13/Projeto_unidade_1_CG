@@ -276,8 +276,13 @@ class EditShapeController:
 
     def comb(self):
         shape = gl_window_model.get_selected()
+        if shape is None and gl_window_model.shapes:
+            gl_window_model.set_selected(0)
+            shape = gl_window_model.get_selected()
+
         if shape is None:
             return
+
         comb_frame = CombTransformFrame(self.view, shape)
         comb_frame.open_popup()
 
