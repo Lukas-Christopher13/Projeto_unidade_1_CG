@@ -44,8 +44,6 @@ class MainFrameView(Frame):
             self.gl_area,
             on_toggle_minimize=self.toggle_terminal,
             on_resize_start=self._start_terminal_resize,
-            bd=1,
-            relief="solid",
         )
 
         self.after_idle(self._apply_default_terminal_layout)
