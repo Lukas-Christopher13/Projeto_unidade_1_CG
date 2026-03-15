@@ -11,8 +11,8 @@ class MainFrameController:
 
         self.main_frame_model = None
 
-    def show_transform_screen(self):
-        self.lateral_bar_controller.show_transform_screen()
+    def show_transform_screen(self, reset_scene=True):
+        self.lateral_bar_controller.show_transform_screen(reset_scene=reset_scene)
 
     def show_line_algorithm_screen(self, name: str, algorithm):
         self.lateral_bar_controller.show_line_algorithm_screen(name, algorithm)

@@ -32,7 +32,7 @@ class LateralBarController:
             gl_window_model.use_3d_axies()
 
         RenderService.request_render()
-        
+
     def update(self):
         if self._editing_shape_index is not None and self._editing_shape_index < len(gl_window_model.shapes):
             shape = gl_window_model.shapes[self._editing_shape_index]
@@ -52,8 +52,13 @@ class LateralBarController:
         points = [v[:3] for v in selected.vertex]
         self.view.set_points(points)
 
-    def show_transform_screen(self):
-        self._reset_scene_with_axes()
+    def show_transform_screen(self, reset_scene=True):
+        if reset_scene:
+            self._reset_scene_with_axes()
+        else:
+            self._editing_shape_index = None
+            self.view.set_points([])
+
         self.view.show_transform_screen()
 
     def show_line_algorithm_screen(self, name: str, algorithm):
@@ -222,4 +227,4 @@ class LateralBarController:
         # Preserve extra attributes (e.g., RGB) using the last vertex as template.
         extra = shape.vertex[-1, 4:target_cols].tolist()
         return np.array([base + extra], dtype=np.float32)
-        
+

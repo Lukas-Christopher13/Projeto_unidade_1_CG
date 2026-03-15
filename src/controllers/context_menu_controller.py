@@ -63,7 +63,7 @@ class ContextMenuController:
         self.view.click_shapes_menu.add_command(label="Cube", command=lambda: self.create_shape("cube"))
         self.view.click_shapes_menu.add_command(label="CubeBug", command=lambda: self.create_shape("cube_b"))
         self.view.click_shapes_menu.add_command(label="Pyramid", command=lambda: self.create_shape("pyramid"))
-        
+
     def options_3d(self):
         # Em 3D, os algoritmos 2D de linha/circulo ficam indisponiveis.
         self.view.lines_sub_menu.add_command(label="Indisponivel em 3D", state=DISABLED)
@@ -106,16 +106,21 @@ class ContextMenuController:
         self.app_controller.show_circle_algorithm_screen(name, algorithm)
 
     def go_2d(self):
-        gl_window_model.to_2d()
-        self.view.set_screen_state("transform_2d")
-        if self.app_controller is not None:
-            self.app_controller.show_transform_screen()
+        self.view.after_idle(lambda: self._apply_mode_change("2d"))
 
     def go_3d(self):
-        gl_window_model.to_3d()
-        self.view.set_screen_state("transform_3d")
+        self.view.after_idle(lambda: self._apply_mode_change("3d"))
+
+    def _apply_mode_change(self, mode: str):
+        if mode == "2d":
+            gl_window_model.to_2d()
+            self.view.set_screen_state("transform_2d")
+        else:
+            gl_window_model.to_3d()
+            self.view.set_screen_state("transform_3d")
+
         if self.app_controller is not None:
-            self.app_controller.show_transform_screen()
+            self.app_controller.show_transform_screen(reset_scene=False)
 
     def create_shape(self, shape_type: str):
         shape_map = {
