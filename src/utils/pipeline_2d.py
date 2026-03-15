@@ -18,7 +18,9 @@ class Pipeline2D:
         self.viewport_xmax = viewport_xmax
         self.viewport_ymax = viewport_ymax
 
-        aspect = self.viewport_xmax/ self.viewport_ymax
+        viewport_width = max(1, self.viewport_xmax - self.viewport_xmin)
+        viewport_height = max(1, self.viewport_ymax - self.viewport_ymin)
+        aspect = viewport_width / viewport_height
 
         if aspect >= 1:
             self.world_xmin =  self.world_xmin * aspect
@@ -30,7 +32,7 @@ class Pipeline2D:
             self.world_xmax =  self.world_xmax
             self.world_ymin =  self.world_ymin / aspect
             self.world_ymax =  self.world_ymax / aspect
-        
+
     def transform(self, shape):
         #modeling_transformation = None #Implementar () #aparentemente não precisa - o Shape Ja faz!!!
 
@@ -45,33 +47,33 @@ class Pipeline2D:
         vertex[:, :4] = vertex[:, :4] @ self.normalize_transformation().T
 
         vertex[:, :4] = vertex[:, :4] @ self.viwport_transformation().T
-        
+
         return vertex
-    
+
     #talvez eu tenha que usar as formulas que centralizem
-    
-    def normalize_transformation(self): 
-        sx = 2 / (self.world_xmax - self.world_xmin) 
-        sy = 2 / (self.world_ymax - self.world_ymin) 
-        
-        n_cx = (self.world_xmin + self.world_xmax) / 2 
-        n_cy = (self.world_ymin + self.world_ymax) / 2 
-        
-        w_cx = (-1 + 1) / 2 
-        w_cy = (-1 + 1) / 2 
-        
+
+    def normalize_transformation(self):
+        sx = 2 / (self.world_xmax - self.world_xmin)
+        sy = 2 / (self.world_ymax - self.world_ymin)
+
+        n_cx = (self.world_xmin + self.world_xmax) / 2
+        n_cy = (self.world_ymin + self.world_ymax) / 2
+
+        w_cx = (-1 + 1) / 2
+        w_cy = (-1 + 1) / 2
+
         return translate(n_cx, n_cy) @ basic_scaling(sx, sy) @ translate(-w_cx, -w_cy)
-    
-    def viwport_transformation(self): 
-        sx = (self.viewport_xmax - self.viewport_xmin) / 2 
-        sy = (self.viewport_ymax - self.viewport_ymin) / 2 
+
+    def viwport_transformation(self):
+        sx = (self.viewport_xmax - self.viewport_xmin) / 2
+        sy = (self.viewport_ymax - self.viewport_ymin) / 2
 
         tx = (self.viewport_xmax + self.viewport_xmin) / 2
         ty = (self.viewport_ymax + self.viewport_ymin) / 2
-        
-        n_cx = (-1 + 1) / 2 
-        n_cy = (-1 + 1) / 2 
- 
+
+        n_cx = (-1 + 1) / 2
+        n_cy = (-1 + 1) / 2
+
         return translate(tx, ty) @ basic_scaling(sx, sy) @ translate(-n_cx, -n_cy)
 
     def viewport_to_world(self, x, y):
@@ -80,7 +82,7 @@ class Pipeline2D:
         v = np.array([x, y, 0.0, 1.0], dtype=np.float32)
         world = v @ inv_M.T
         return world[0], world[1]
-    
+
     def cohen_sutherland_clip(self, np_matrix, xmin, ymin, xmax, ymax):
         x1, y1 = np_matrix[0][0], np_matrix[0][1]
         x2, y2 = np_matrix[1][0], np_matrix[1][1]
@@ -148,9 +150,9 @@ class Pipeline2D:
             code |= TOP
 
         return code
-    
+
     def print_clipped(self, old, new):
         print(f"Clipped: ({old[0]:.2f}, {old[1]:.2f}) => ({new[0]:.2f}, {new[1]:.2f})")
 
 #o window seleciona uma parte da cena no mundo
-#o viewport exibe essa parte da sena 
+#o viewport exibe essa parte da sena

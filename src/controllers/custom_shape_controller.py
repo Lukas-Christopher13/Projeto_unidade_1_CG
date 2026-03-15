@@ -46,10 +46,12 @@ class CustomShapeController:
         self.custom_points.append(point[0].tolist())
 
         if self.custom_shape is None:
-            self.custom_shape = Shape(self.custom_points, GL_LINE_STRIP)
-            gl_window_model.add_shape(self.custom_shape)
+            self.custom_shape = Shape(self.custom_points, GL_LINE_LOOP)
+            gl_window_model.set_single_shape(self.custom_shape)
+            gl_window_model.set_selected(0)
         else:
-            self.custom_shape.update(self.custom_shape.gl_option, point)
+            self.custom_shape.update(GL_LINE_LOOP, point)
+            gl_window_model.notify()
             RenderService.request_render()
 
     def finish_custom_shape(self, event):
@@ -58,17 +60,14 @@ class CustomShapeController:
 
         self.custom_mode = False
         self.view.root.unbind("<Button-1>")
-        self.view.root.bind("<Button-3>", self.view.show_menu)
+        self.view.root.bind("<Button-3>", self.view.show_click_menu)
 
-        if self.custom_shape is not None:
-            try:
-                gl_window_model.shapes.remove(self.custom_shape)
-            except ValueError:
-                pass
-
-        if len(self.custom_points) >= 2:
-            shape = Shape(self.custom_points, GL_LINE_LOOP)
-            gl_window_model.add_shape(shape)
+        if len(self.custom_points) < 2:
+            self.custom_shape = None
+            self.custom_points = []
+            self.view.root.config(cursor="")
+            RenderService.request_render()
+            return "break"
 
         self.custom_shape = None
         self.custom_points = []

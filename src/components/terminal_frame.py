@@ -25,7 +25,13 @@ class TerminalFrame(Frame):
         "iteration":    "#333333",
     }
 
-    def __init__(self, master, **kwargs):
+    def __init__(
+        self,
+        master,
+        on_toggle_minimize=None,
+        on_resize_start=None,
+        **kwargs,
+    ):
         super().__init__(master, bg=self.BG, **kwargs)
         self.host = None
         self.collapsed = False

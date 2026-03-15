@@ -1,4 +1,4 @@
-from tkinter import Frame
+from tkinter import Frame, TclError
 from typing import List
 from src.models.shape import Shape
 from src.services.render_service import RenderService
@@ -22,18 +22,48 @@ class GlWindowModel:
 
         RenderService.request_render()
 
+    def set_single_shape(self, shape: Shape):
+        self.shapes = [shape]
+        self.selected = 0
+        self.notify()
+
+        RenderService.request_render()
+
     def add_listener(self, listener):
-        self.listeners.append(listener)
+        if listener not in self.listeners:
+            self.listeners.append(listener)
+
+    def remove_listener(self, listener):
+        if listener in self.listeners:
+            self.listeners.remove(listener)
 
     def add_frame(self, frame: Frame):
-        self.frames.append(frame)
+        if frame not in self.frames:
+            self.frames.append(frame)
+
+    def remove_frame(self, frame: Frame):
+        if frame in self.frames:
+            self.frames.remove(frame)
     
     def add_background(self, background: Shape):
         self.backgrounds.append(background)
 
     def rebuild_frames(self):
+        alive_frames = []
+
         for frame in self.frames:
-            frame.rebuild()
+            try:
+                # Skip widgets that were destroyed during UI rebuild cycles.
+                if not frame.winfo_exists():
+                    continue
+
+                frame.rebuild()
+                alive_frames.append(frame)
+            except (TclError, AttributeError):
+                # Drop stale references from previously destroyed widgets.
+                continue
+
+        self.frames = alive_frames
 
     def delete_shape(self):
         if not self._has_valid_selection():
@@ -53,14 +83,29 @@ class GlWindowModel:
             shape.clear() 
 
     def notify(self):
+        alive_listeners = []
+
         for listener in self.listeners:
-            listener.update()
+            try:
+                if not hasattr(listener, "update"):
+                    continue
+
+                listener.update()
+                alive_listeners.append(listener)
+            except (TclError, AttributeError, ReferenceError):
+                # Listener became invalid after UI/controller rebuild.
+                continue
+
+        self.listeners = alive_listeners
 
     def set_selected(self, selected: int):
         self.selected = selected
 
     def get_selected(self):
         if not self._has_valid_selection():
+            return None
+        if self.selected < 0 or self.selected >= len(self.shapes):
+            self.selected = None
             return None
         return self.shapes[self.selected]
     

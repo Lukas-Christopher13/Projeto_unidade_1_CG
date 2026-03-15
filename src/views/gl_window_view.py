@@ -15,13 +15,16 @@ class GlWindowView(OpenGLFrame):
         RenderService.register_view(self)
 
         self.animate = 0
-        
+
     def initgl(self):
         glClearColor(1.0, 1.0, 1.0, 0.0)
 
     def redraw(self):
         self.width = self.winfo_width()
         self.height = self.winfo_height()
+        if self.width <= 0 or self.height <= 0:
+            return
+
         self.aspect = self.width / self.height
 
         if gl_window_model.get_window_mode() == "2d":
@@ -51,7 +54,7 @@ class GlWindowView(OpenGLFrame):
         )
 
         self.display_3d()
-    
+
     def display_2d(self):
         glClear(GL_COLOR_BUFFER_BIT)
         glMatrixMode(GL_PROJECTION)
@@ -69,7 +72,7 @@ class GlWindowView(OpenGLFrame):
             shape.render(self.pipeline_2d)
 
         glFlush()
-    
+
     def display_3d(self):
         glClear(GL_COLOR_BUFFER_BIT)
         glMatrixMode(GL_PROJECTION)
