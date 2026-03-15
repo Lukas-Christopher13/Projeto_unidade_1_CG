@@ -24,9 +24,11 @@ class ContextMenuView(Frame):
         self.algorithms_menu = Menu(self.menu_bar, tearoff=0)
         self.lines_sub_menu = Menu(self.algorithms_menu, tearoff=0)
         self.circle_sub_menu = Menu(self.algorithms_menu, tearoff=0)
+        self.ellipse_sub_menu = Menu(self.algorithms_menu, tearoff=0)
 
         self.algorithms_menu.add_cascade(label="Linha", menu=self.lines_sub_menu)
         self.algorithms_menu.add_cascade(label="Circulo", menu=self.circle_sub_menu)
+        self.algorithms_menu.add_cascade(label="Elipse", menu=self.ellipse_sub_menu)
         self.menu_bar.add_cascade(label="Algoritmos", menu=self.algorithms_menu)
 
         self.transform_sub_menu = Menu(self.menu_bar, tearoff=0)

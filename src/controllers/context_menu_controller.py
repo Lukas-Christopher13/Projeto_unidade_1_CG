@@ -14,6 +14,8 @@ from src.controllers.custom_shape_controller import CustomShapeController
 from src.models.shape import Shape
 from src.algorithms.bezier import draw_bezier_cubic
 from components.bezier_popup_frame import BezierFrame
+from src.algorithms.ellipse_midpoint import draw_ellipse_midpoint
+from src.components.ellipse_popup_frame import EllipseFrame
 from src.models.gl_window_model import gl_window_model
 
 
@@ -54,6 +56,13 @@ class ContextMenuController:
             variable=self.view.screen_state,
             value="circle_midpoint",
             command=lambda: self.open_circle_screen("MidPoint", draw_circleMP, "circle_midpoint")
+        )
+
+        self.view.ellipse_sub_menu.add_radiobutton(
+            label="MidPoint",
+            variable=self.view.screen_state,
+            value="ellipse_midpoint",
+            command=self.create_ellipse
         )
 
     def mount_click_shapes_menu(self):
@@ -158,5 +167,20 @@ class ContextMenuController:
         )
 
         shape = Shape(points, GL_POINTS, name="Bezier Cubic")
+        gl_window_model.add_shape(shape)
+
+    def create_ellipse(self):
+        from src.components.ellipse_popup_frame import EllipseFrame  # componente que você vai criar
+        ellipse_frame = EllipseFrame(self.view)
+        ellipse_frame.open_popup()
+        self.view.wait_window(ellipse_frame.popup)
+
+        # Recebe os valores do popup
+        rx, ry, xc, yc = ellipse_frame.rx, ellipse_frame.ry, ellipse_frame.xc, ellipse_frame.yc
+
+        from src.algorithms.ellipse_midpoint import draw_ellipse_midpoint
+        points = draw_ellipse_midpoint(rx, ry, xc, yc)
+
+        shape = Shape(points, GL_POINTS, name="Ellipse MidPoint")
         gl_window_model.add_shape(shape)
 
