@@ -1,15 +1,33 @@
 from tkinter import *
 from tkinter import ttk
+
 from src.models.gl_window_model import gl_window_model
-from src.views.edit_shape_view import EditShapeView 
+from src.views.edit_shape_view import EditShapeView
+
 
 class LateralBarView(Frame):
     def __init__(self, root, **kwargs):
         super().__init__(root, **kwargs)
         gl_window_model.add_frame(self)
-        self.columnconfigure(0, weight=1)
 
-        self.transform_container = Frame(self)
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
+
+        self.canvas = Canvas(self, highlightthickness=0, borderwidth=0)
+        self.canvas.grid(row=0, column=0, sticky="nsew")
+
+        self.outer_scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
+        self.outer_scrollbar.grid(row=0, column=1, sticky="ns")
+        self.canvas.configure(yscrollcommand=self.outer_scrollbar.set)
+
+        self.content = Frame(self.canvas)
+        self.content.columnconfigure(0, weight=1)
+
+        self.content_window = self.canvas.create_window((0, 0), window=self.content, anchor="nw")
+        self.content.bind("<Configure>", self._on_content_configure)
+        self.canvas.bind("<Configure>", self._on_canvas_configure)
+
+        self.transform_container = Frame(self.content)
         self.transform_container.grid(row=0, column=0, sticky="nsew")
         self.transform_container.columnconfigure(0, weight=1)
         self.transform_container.columnconfigure(1, weight=0)
@@ -20,9 +38,9 @@ class LateralBarView(Frame):
         self.listbox = Listbox(self.transform_container)
         self.listbox.grid(row=1, column=0, sticky="ew")
 
-        self.scrollbar = Scrollbar(self.transform_container, orient="vertical", command=self.listbox.yview)
-        self.scrollbar.grid(row=1, column=1, sticky="ns")
-        self.listbox.config(yscrollcommand=self.scrollbar.set)
+        self.list_scrollbar = Scrollbar(self.transform_container, orient="vertical", command=self.listbox.yview)
+        self.list_scrollbar.grid(row=1, column=1, sticky="ns")
+        self.listbox.config(yscrollcommand=self.list_scrollbar.set)
 
         self.point_form = ttk.LabelFrame(self.transform_container, text="Adicionar ponto", padding=(8, 8))
         self.point_form.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(8, 8))
@@ -33,7 +51,7 @@ class LateralBarView(Frame):
         self.edit_shape_view = EditShapeView(self.transform_container)
         self.edit_shape_view.grid(row=3, column=0, columnspan=2, sticky="ew", pady=(4, 0))
 
-        self.algorithm_container = ttk.LabelFrame(self, text="Algoritmo", padding=(10, 8))
+        self.algorithm_container = ttk.LabelFrame(self.content, text="Algoritmo", padding=(10, 8))
         self.algorithm_container.columnconfigure(0, weight=1)
 
         self.algorithm_title = ttk.Label(self.algorithm_container, text="Selecione um algoritmo na barra superior")
@@ -49,6 +67,12 @@ class LateralBarView(Frame):
         self._circle_inputs = {}
 
         self.show_transform_screen()
+
+    def _on_content_configure(self, _event):
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+    def _on_canvas_configure(self, event):
+        self.canvas.itemconfigure(self.content_window, width=event.width)
 
     def _build_point_form(self):
         for widget in self.point_form.winfo_children():
@@ -171,7 +195,3 @@ class LateralBarView(Frame):
         entry.grid(row=row, column=1, sticky="ew", padx=(8, 0), pady=2)
         entry.insert(0, default)
         return entry
-        
-
-  
-    
