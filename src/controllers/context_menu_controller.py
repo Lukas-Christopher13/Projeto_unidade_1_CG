@@ -1,4 +1,5 @@
 from tkinter import *
+from OpenGL.GL import *
 from src.components.cohen_sutherland_popup_frame import CohenSutherlandClipFrame
 
 from src.algorithms.DDA import drawLineDDA
@@ -10,6 +11,9 @@ from src.utils.shape_factory import ShapeFactory
 from src.utils.shape_factory_3d import ShapeFactory3D
 from src.controllers.custom_shape_controller import CustomShapeController
 
+from src.models.shape import Shape
+from src.algorithms.bezier import draw_bezier_cubic
+from components.bezier_popup_frame import BezierFrame
 from src.models.gl_window_model import gl_window_model
 
 
@@ -58,6 +62,8 @@ class ContextMenuController:
         self.view.click_shapes_menu.add_command(label="Retangulo", command=lambda: self.create_shape("rectangle"))
         self.view.click_shapes_menu.add_separator()
         self.view.click_shapes_menu.add_command(label="Custom", command=self.custom_shape_controller.start_custom_shape)
+
+        self.view.lines_sub_menu.add_command(label="Bezier Cubic",command=self.create_bezier)
 
     def mount_click_shapes_menu_3d(self):
         self.view.click_shapes_menu.add_command(label="Cube", command=lambda: self.create_shape("cube"))
@@ -137,3 +143,20 @@ class ContextMenuController:
             return
 
         gl_window_model.set_single_shape(factory())
+    
+    def create_bezier(self):
+        bezierFrame = BezierFrame(self.view)
+        bezierFrame.open_popup()
+
+        self.view.wait_window(bezierFrame.popup)
+
+        points = draw_bezier_cubic(
+            bezierFrame.p0,
+            bezierFrame.p1,
+            bezierFrame.p2,
+            bezierFrame.p3
+        )
+
+        shape = Shape(points, GL_POINTS, name="Bezier Cubic")
+        gl_window_model.add_shape(shape)
+
