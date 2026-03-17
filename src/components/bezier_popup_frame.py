@@ -13,6 +13,8 @@ class BezierFrame(PopupFrame):
         self.ent_y0 = Entry(self.popup, width=6)
         self.ent_x0.grid(row=0, column=1)
         self.ent_y0.grid(row=0, column=2)
+        self.ent_x0.insert(0, "0")
+        self.ent_y0.insert(0, "0")
 
         
         Label(self.popup, text="Point P1 (x1, y1):").grid(row=1, column=0, pady=5)
@@ -20,6 +22,8 @@ class BezierFrame(PopupFrame):
         self.ent_y1 = Entry(self.popup, width=6)
         self.ent_x1.grid(row=1, column=1)
         self.ent_y1.grid(row=1, column=2)
+        self.ent_x1.insert(0, "150")
+        self.ent_y1.insert(0, "400")
 
         
         Label(self.popup, text="Point P2 (x2, y2):").grid(row=2, column=0, pady=5)
@@ -27,6 +31,8 @@ class BezierFrame(PopupFrame):
         self.ent_y2 = Entry(self.popup, width=6)
         self.ent_x2.grid(row=2, column=1)
         self.ent_y2.grid(row=2, column=2)
+        self.ent_x2.insert(0, "450")
+        self.ent_y2.insert(0, "-222")
 
         
         Label(self.popup, text="Point P3 (x3, y3):").grid(row=3, column=0, pady=5)
@@ -34,6 +40,9 @@ class BezierFrame(PopupFrame):
         self.ent_y3 = Entry(self.popup, width=6)
         self.ent_x3.grid(row=3, column=1)
         self.ent_y3.grid(row=3, column=2)
+        self.ent_x3.insert(0, "700")
+        self.ent_y3.insert(0, "100")
+
 
         
         btn = Button(self.popup, text="Draw", command=self.get_input)
