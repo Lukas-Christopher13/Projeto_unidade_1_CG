@@ -161,6 +161,8 @@ class LateralBarController:
         popup = Toplevel(root)
         popup.title("Viewport 2D")
         popup.geometry(f"{width}x{height}")
+        popup.minsize(width, height)
+        popup.maxsize(width, height)
 
         viewport_view = ViewportWindowView(
             popup,

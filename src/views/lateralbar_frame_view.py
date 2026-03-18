@@ -154,11 +154,11 @@ class LateralBarView(Frame):
 
         self.viewport_xmax = ttk.Entry(self.viewport_content, width=10)
         self.viewport_xmax.grid(row=3, column=0, sticky="ew", padx=(0, 4), pady=(0, 6))
-        self.viewport_xmax.insert(0, "800.0")
+        self.viewport_xmax.insert(0, "300.0")
 
         self.viewport_ymax = ttk.Entry(self.viewport_content, width=10)
         self.viewport_ymax.grid(row=3, column=1, sticky="ew", padx=(4, 0), pady=(0, 6))
-        self.viewport_ymax.insert(0, "600.0")
+        self.viewport_ymax.insert(0, "300.0")
 
         self.viewport_open_btn = ttk.Button(self.viewport_content, text="Abrir janela viewport")
         self.viewport_open_btn.grid(row=4, column=0, columnspan=2, sticky="ew", pady=(6, 2))
