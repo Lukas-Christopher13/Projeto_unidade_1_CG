@@ -6,6 +6,7 @@ from src.models.shape import Shape
 from OpenGL.GL import GL_POINTS, GL_LINE_LOOP
 from src.services.render_service import RenderService
 from src.views.viewport_window_view import ViewportWindowView
+from src.views.viewport_window_3d_view import ViewportWindow3DView
 import numpy as np
 
 class LateralBarController:
@@ -132,10 +133,6 @@ class LateralBarController:
         self.update()
 
     def open_viewport_window(self):
-        if not gl_window_model.is_2d():
-            messagebox.showwarning("Viewport", "A janela viewport so funciona no modo 2D.")
-            return
-
         values = self.view.get_viewport_input()
         if values is None:
             messagebox.showwarning("Viewport", "Valores de viewport invalidos.")
@@ -159,18 +156,30 @@ class LateralBarController:
 
         root = self.view.winfo_toplevel()
         popup = Toplevel(root)
-        popup.title("Viewport 2D")
         popup.geometry(f"{width}x{height}")
         popup.minsize(width, height)
         popup.maxsize(width, height)
 
-        viewport_view = ViewportWindowView(
-            popup,
-            viewport=(xmin, ymin, xmax, ymax),
-            shape=shape,
-            bd=0,
-            highlightthickness=0,
-        )
+        # Escolher viewport 2D ou 3D baseado no modo atual
+        if gl_window_model.is_2d():
+            popup.title("Viewport 2D")
+            viewport_view = ViewportWindowView(
+                popup,
+                viewport=(xmin, ymin, xmax, ymax),
+                shape=shape,
+                bd=0,
+                highlightthickness=0,
+            )
+        else:
+            popup.title("Viewport 3D (Isométrica)")
+            viewport_view = ViewportWindow3DView(
+                popup,
+                viewport=(xmin, ymin, xmax, ymax),
+                shape=shape,
+                bd=0,
+                highlightthickness=0,
+            )
+        
         viewport_view.pack(fill="both", expand=True)
         viewport_view.request_render()
 
