@@ -1,8 +1,11 @@
+from tkinter import messagebox, Toplevel
+
 from src.models.gl_window_model import gl_window_model
 from src.controllers.edit_shape_controller import EditShapeController
 from src.models.shape import Shape
 from OpenGL.GL import GL_POINTS, GL_LINE_LOOP
 from src.services.render_service import RenderService
+from src.views.viewport_window_view import ViewportWindowView
 import numpy as np
 
 class LateralBarController:
@@ -15,6 +18,7 @@ class LateralBarController:
 
         gl_window_model.add_listener(self)
         self.view.set_point_actions(self.add_point_to_shape)
+        self.view.set_viewport_action(self.open_viewport_window)
 
         self._selected_line_algorithm = None
         self._selected_circle_algorithm = None
@@ -127,6 +131,47 @@ class LateralBarController:
 
         self.update()
 
+    def open_viewport_window(self):
+        if not gl_window_model.is_2d():
+            messagebox.showwarning("Viewport", "A janela viewport so funciona no modo 2D.")
+            return
+
+        values = self.view.get_viewport_input()
+        if values is None:
+            messagebox.showwarning("Viewport", "Valores de viewport invalidos.")
+            return
+
+        xmin, ymin, xmax, ymax = values["xmin"], values["ymin"], values["xmax"], values["ymax"]
+        if xmax <= xmin or ymax <= ymin:
+            messagebox.showwarning("Viewport", "Informe xmin < xmax e ymin < ymax.")
+            return
+
+        if not gl_window_model.shapes:
+            messagebox.showwarning("Viewport", "Nao ha shapes na cena.")
+            return
+
+        shape = gl_window_model.get_selected()
+        if shape is None:
+            shape = gl_window_model.shapes[-1]
+
+        width = max(1, int(round(xmax - xmin)))
+        height = max(1, int(round(ymax - ymin)))
+
+        root = self.view.winfo_toplevel()
+        popup = Toplevel(root)
+        popup.title("Viewport 2D")
+        popup.geometry(f"{width}x{height}")
+
+        viewport_view = ViewportWindowView(
+            popup,
+            viewport=(xmin, ymin, xmax, ymax),
+            shape=shape,
+            bd=0,
+            highlightthickness=0,
+        )
+        viewport_view.pack(fill="both", expand=True)
+        viewport_view.request_render()
+
     def _refresh_closed_edges(self, shape):
         total = len(shape.vertex)
         if total < 2:
@@ -227,4 +272,3 @@ class LateralBarController:
         # Preserve extra attributes (e.g., RGB) using the last vertex as template.
         extra = shape.vertex[-1, 4:target_cols].tolist()
         return np.array([base + extra], dtype=np.float32)
-

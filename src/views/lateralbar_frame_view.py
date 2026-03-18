@@ -48,8 +48,28 @@ class LateralBarView(Frame):
         self._on_add_point = None
         self._build_point_form()
 
+        self.viewport_section = Frame(self.transform_container)
+        self.viewport_section.grid(row=3, column=0, columnspan=2, sticky="ew", pady=(4, 8))
+        self.viewport_section.columnconfigure(0, weight=1)
+
+        self.viewport_expanded = False
+        self.viewport_toggle_btn = ttk.Button(
+            self.viewport_section,
+            text="▶ Viewport",
+            command=self.toggle_viewport_section,
+            style="Header.TButton",
+        )
+        self.viewport_toggle_btn.grid(row=0, column=0, sticky="ew")
+
+        self.viewport_content = Frame(self.viewport_section)
+        self.viewport_content.columnconfigure(0, weight=1)
+        self.viewport_content.columnconfigure(1, weight=1)
+
+        self._on_open_viewport = None
+        self._build_viewport_form()
+
         self.edit_shape_view = EditShapeView(self.transform_container)
-        self.edit_shape_view.grid(row=3, column=0, columnspan=2, sticky="ew", pady=(4, 0))
+        self.edit_shape_view.grid(row=4, column=0, columnspan=2, sticky="ew", pady=(4, 0))
 
         self.algorithm_container = ttk.LabelFrame(self.content, text="Algoritmo", padding=(10, 8))
         self.algorithm_container.columnconfigure(0, weight=1)
@@ -111,8 +131,57 @@ class LateralBarView(Frame):
         if self._on_add_point is not None:
             self.add_point_btn.configure(command=self._on_add_point)
 
+    def _build_viewport_form(self):
+        for widget in self.viewport_content.winfo_children():
+            widget.destroy()
+
+        self.viewport_content.columnconfigure(0, weight=1)
+        self.viewport_content.columnconfigure(1, weight=1)
+
+        ttk.Label(self.viewport_content, text="X min").grid(row=0, column=0, sticky="w", pady=(0, 2))
+        ttk.Label(self.viewport_content, text="Y min").grid(row=0, column=1, sticky="w", pady=(0, 2))
+
+        self.viewport_xmin = ttk.Entry(self.viewport_content, width=10)
+        self.viewport_xmin.grid(row=1, column=0, sticky="ew", padx=(0, 4), pady=(0, 6))
+        self.viewport_xmin.insert(0, "0.0")
+
+        self.viewport_ymin = ttk.Entry(self.viewport_content, width=10)
+        self.viewport_ymin.grid(row=1, column=1, sticky="ew", padx=(4, 0), pady=(0, 6))
+        self.viewport_ymin.insert(0, "0.0")
+
+        ttk.Label(self.viewport_content, text="X max").grid(row=2, column=0, sticky="w", pady=(0, 2))
+        ttk.Label(self.viewport_content, text="Y max").grid(row=2, column=1, sticky="w", pady=(0, 2))
+
+        self.viewport_xmax = ttk.Entry(self.viewport_content, width=10)
+        self.viewport_xmax.grid(row=3, column=0, sticky="ew", padx=(0, 4), pady=(0, 6))
+        self.viewport_xmax.insert(0, "800.0")
+
+        self.viewport_ymax = ttk.Entry(self.viewport_content, width=10)
+        self.viewport_ymax.grid(row=3, column=1, sticky="ew", padx=(4, 0), pady=(0, 6))
+        self.viewport_ymax.insert(0, "600.0")
+
+        self.viewport_open_btn = ttk.Button(self.viewport_content, text="Abrir janela viewport")
+        self.viewport_open_btn.grid(row=4, column=0, columnspan=2, sticky="ew", pady=(6, 2))
+
+        if self._on_open_viewport is not None:
+            self.viewport_open_btn.configure(command=self._on_open_viewport)
+
+        if self.viewport_expanded:
+            self.viewport_content.grid(row=1, column=0, sticky="ew", pady=(6, 0))
+
     def rebuild(self):
         self._build_point_form()
+        self._build_viewport_form()
+
+    def toggle_viewport_section(self):
+        if self.viewport_expanded:
+            self.viewport_content.grid_remove()
+            self.viewport_toggle_btn.config(text=self.viewport_toggle_btn.cget("text").replace("▼", "▶"))
+        else:
+            self.viewport_content.grid(row=1, column=0, sticky="ew", pady=(6, 0))
+            self.viewport_toggle_btn.config(text=self.viewport_toggle_btn.cget("text").replace("▶", "▼"))
+
+        self.viewport_expanded = not self.viewport_expanded
 
     def show_transform_screen(self):
         self.algorithm_container.grid_remove()
@@ -163,12 +232,27 @@ class LateralBarView(Frame):
         self._on_add_point = on_add_point
         self.add_point_btn.configure(command=on_add_point)
 
+    def set_viewport_action(self, on_open_viewport):
+        self._on_open_viewport = on_open_viewport
+        self.viewport_open_btn.configure(command=on_open_viewport)
+
     def get_point_input(self):
         try:
             x = float(self.point_x.get())
             y = float(self.point_y.get())
             z = 0.0 if self.point_z is None else float(self.point_z.get())
             return [x, y, z]
+        except ValueError:
+            return None
+
+    def get_viewport_input(self):
+        try:
+            return {
+                "xmin": float(self.viewport_xmin.get()),
+                "ymin": float(self.viewport_ymin.get()),
+                "xmax": float(self.viewport_xmax.get()),
+                "ymax": float(self.viewport_ymax.get()),
+            }
         except ValueError:
             return None
 
