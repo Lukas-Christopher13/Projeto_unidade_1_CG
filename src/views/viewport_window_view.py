@@ -53,6 +53,7 @@ class ViewportWindowView(OpenGLFrame):
         self.shape = shape
         self.log = LogService()
         self._logged = False
+        self._clip_polygon_enabled = False
 
     def initgl(self):
         glClearColor(1.0, 1.0, 1.0, 0.0)
@@ -82,6 +83,12 @@ class ViewportWindowView(OpenGLFrame):
         points, normalize_m, viewport_m = apply_viewport_transform(self.shape, inner_viewport)
         self._log_transform(points, normalize_m, viewport_m, inner_viewport)
 
+        render_points = points
+        draw_mode = self.shape.gl_option
+        if self._clip_polygon_enabled:
+            render_points = self._clip_polygon_sutherland_hodgman(points, inner_viewport)
+            draw_mode = GL_LINE_LOOP
+
         glColor3f(0.2, 0.2, 0.2)
         glLineWidth(1.0)
         glBegin(GL_LINE_LOOP)
@@ -93,16 +100,24 @@ class ViewportWindowView(OpenGLFrame):
 
         glPointSize(3.0)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-        glBegin(self.shape.gl_option)
-        for v in points:
-            if v.shape[0] >= 7:
-                glColor3fv(v[4:7])
-            else:
-                glColor3f(0.0, 0.0, 1.0)
-            glVertex2f(v[0], v[1])
-        glEnd()
+        if len(render_points) >= 2:
+            glBegin(draw_mode)
+            for v in render_points:
+                if v.shape[0] >= 7:
+                    glColor3fv(v[4:7])
+                else:
+                    glColor3f(0.0, 0.0, 1.0)
+                glVertex2f(v[0], v[1])
+            glEnd()
 
         glFlush()
+
+    def clip_polygon_to_viewport(self):
+        self._clip_polygon_enabled = True
+        self.log.header("RECORTE DE POLIGONO - Sutherland-Hodgman")
+        self.log.step("Recorte ativado para manter apenas a regiao interna da viewport.")
+        self.log.separator()
+        self.request_render()
 
     def _compute_inner_viewport(self, window_width, window_height):
         xmin, ymin, xmax, ymax = self.viewport
@@ -144,3 +159,93 @@ class ViewportWindowView(OpenGLFrame):
         self.log.separator()
 
         self._logged = True
+
+    def _clip_polygon_sutherland_hodgman(self, polygon_points, viewport):
+        xmin, ymin, xmax, ymax = viewport
+        clipped = [point.copy() for point in polygon_points]
+
+        for edge_name in ("left", "right", "bottom", "top"):
+            if not clipped:
+                break
+            clipped = self._clip_against_edge(clipped, edge_name, xmin, ymin, xmax, ymax)
+
+        return clipped
+
+    def _clip_against_edge(self, polygon_points, edge_name, xmin, ymin, xmax, ymax):
+        clipped = []
+        previous = polygon_points[-1]
+
+        for current in polygon_points:
+            previous_inside = self._is_inside_edge(previous, edge_name, xmin, ymin, xmax, ymax)
+            current_inside = self._is_inside_edge(current, edge_name, xmin, ymin, xmax, ymax)
+
+            if current_inside:
+                if not previous_inside:
+                    intersection = self._segment_edge_intersection(previous, current, edge_name, xmin, ymin, xmax, ymax)
+                    if intersection is not None:
+                        clipped.append(intersection)
+                clipped.append(current.copy())
+            elif previous_inside:
+                intersection = self._segment_edge_intersection(previous, current, edge_name, xmin, ymin, xmax, ymax)
+                if intersection is not None:
+                    clipped.append(intersection)
+
+            previous = current
+
+        return clipped
+
+    def _is_inside_edge(self, point, edge_name, xmin, ymin, xmax, ymax):
+        x, y = point[0], point[1]
+        if edge_name == "left":
+            return x >= xmin
+        if edge_name == "right":
+            return x <= xmax
+        if edge_name == "bottom":
+            return y >= ymin
+        return y <= ymax
+
+    def _segment_edge_intersection(self, p1, p2, edge_name, xmin, ymin, xmax, ymax):
+        x1, y1 = p1[0], p1[1]
+        x2, y2 = p2[0], p2[1]
+
+        t = None
+        x = None
+        y = None
+
+        if edge_name == "left":
+            if x2 == x1:
+                return None
+            t = (xmin - x1) / (x2 - x1)
+            x = xmin
+            y = y1 + t * (y2 - y1)
+        elif edge_name == "right":
+            if x2 == x1:
+                return None
+            t = (xmax - x1) / (x2 - x1)
+            x = xmax
+            y = y1 + t * (y2 - y1)
+        elif edge_name == "bottom":
+            if y2 == y1:
+                return None
+            t = (ymin - y1) / (y2 - y1)
+            y = ymin
+            x = x1 + t * (x2 - x1)
+        elif edge_name == "top":
+            if y2 == y1:
+                return None
+            t = (ymax - y1) / (y2 - y1)
+            y = ymax
+            x = x1 + t * (x2 - x1)
+
+        if t is None:
+            return None
+
+        point = p1.copy()
+        point[0] = x
+        point[1] = y
+
+        # Keep additional vertex attributes smoothly interpolated when available.
+        for idx in range(2, point.shape[0]):
+            point[idx] = p1[idx] + t * (p2[idx] - p1[idx])
+
+        return point

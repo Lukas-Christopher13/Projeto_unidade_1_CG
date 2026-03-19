@@ -1,4 +1,4 @@
-from tkinter import messagebox, Toplevel
+from tkinter import messagebox, Toplevel, Frame, Button
 
 from src.models.gl_window_model import gl_window_model
 from src.controllers.edit_shape_controller import EditShapeController
@@ -167,6 +167,10 @@ class LateralBarController:
             popup.minsize(outer_width, outer_height)
             popup.maxsize(outer_width, outer_height)
             popup.title("Viewport 2D")
+
+            controls = Frame(popup)
+            controls.pack(side="top", fill="x", padx=8, pady=(8, 0))
+
             viewport_view = ViewportWindowView(
                 popup,
                 viewport=(xmin, ymin, xmax, ymax),
@@ -174,6 +178,13 @@ class LateralBarController:
                 bd=0,
                 highlightthickness=0,
             )
+
+            btn_clip = Button(
+                controls,
+                text="Recortar Poligono",
+                command=viewport_view.clip_polygon_to_viewport,
+            )
+            btn_clip.pack(side="left")
         else:
             popup.geometry(f"{width}x{height}")
             popup.minsize(width, height)
@@ -187,7 +198,7 @@ class LateralBarController:
                 highlightthickness=0,
             )
         
-        viewport_view.pack(fill="both", expand=True)
+        viewport_view.pack(fill="both", expand=True, padx=8, pady=8)
         viewport_view.request_render()
 
     def _refresh_closed_edges(self, shape):
