@@ -54,6 +54,7 @@ class ViewportWindowView(OpenGLFrame):
         self.log = LogService()
         self._logged = False
         self._clip_polygon_enabled = False
+        self._clip_log_done = False
 
     def initgl(self):
         glClearColor(1.0, 1.0, 1.0, 0.0)
@@ -86,7 +87,12 @@ class ViewportWindowView(OpenGLFrame):
         render_points = points
         draw_mode = self.shape.gl_option
         if self._clip_polygon_enabled:
-            render_points = self._clip_polygon_sutherland_hodgman(points, inner_viewport)
+            render_points = self._clip_polygon_sutherland_hodgman(
+                points,
+                inner_viewport,
+                enable_logging=not self._clip_log_done,
+            )
+            self._clip_log_done = True
             draw_mode = GL_LINE_LOOP
 
         glColor3f(0.2, 0.2, 0.2)
@@ -114,6 +120,7 @@ class ViewportWindowView(OpenGLFrame):
 
     def clip_polygon_to_viewport(self):
         self._clip_polygon_enabled = True
+        self._clip_log_done = False
         self.log.header("RECORTE DE POLIGONO - Sutherland-Hodgman")
         self.log.step("Recorte ativado para manter apenas a regiao interna da viewport.")
         self.log.separator()
@@ -160,20 +167,50 @@ class ViewportWindowView(OpenGLFrame):
 
         self._logged = True
 
-    def _clip_polygon_sutherland_hodgman(self, polygon_points, viewport):
+    def _clip_polygon_sutherland_hodgman(self, polygon_points, viewport, enable_logging=False):
         xmin, ymin, xmax, ymax = viewport
         clipped = [point.copy() for point in polygon_points]
 
+        if enable_logging:
+            self.log.step(
+                f"Retangulo da viewport (janela interna): xmin={xmin:.2f}, ymin={ymin:.2f}, "
+                f"xmax={xmax:.2f}, ymax={ymax:.2f}"
+            )
+            self.log.result(f"Vertices de entrada: {len(clipped)}")
+            self._log_vertices("Entrada", clipped)
+
         for edge_name in ("left", "right", "bottom", "top"):
             if not clipped:
+                if enable_logging:
+                    self.log.iteration(f"Aresta {edge_name}: poligono ficou vazio.")
                 break
-            clipped = self._clip_against_edge(clipped, edge_name, xmin, ymin, xmax, ymax)
+            clipped = self._clip_against_edge(
+                clipped,
+                edge_name,
+                xmin,
+                ymin,
+                xmax,
+                ymax,
+                enable_logging=enable_logging,
+            )
+
+            if enable_logging:
+                self.log.iteration(f"Apos aresta {edge_name}: {len(clipped)} vertice(s)")
+                self._log_vertices(f"Parcial {edge_name}", clipped)
+
+        if enable_logging:
+            self.log.result(f"Vertices apos recorte: {len(clipped)}")
+            self._log_vertices("Resultado", clipped)
+            self.log.separator()
 
         return clipped
 
-    def _clip_against_edge(self, polygon_points, edge_name, xmin, ymin, xmax, ymax):
+    def _clip_against_edge(self, polygon_points, edge_name, xmin, ymin, xmax, ymax, enable_logging=False):
         clipped = []
         previous = polygon_points[-1]
+
+        if enable_logging:
+            self.log.iteration(f"Recortando contra aresta {edge_name}...")
 
         for current in polygon_points:
             previous_inside = self._is_inside_edge(previous, edge_name, xmin, ymin, xmax, ymax)
@@ -184,11 +221,19 @@ class ViewportWindowView(OpenGLFrame):
                     intersection = self._segment_edge_intersection(previous, current, edge_name, xmin, ymin, xmax, ymax)
                     if intersection is not None:
                         clipped.append(intersection)
+                        if enable_logging:
+                            self.log.iteration(
+                                f"Intersecao entrando em {edge_name}: ({intersection[0]:.2f}, {intersection[1]:.2f})"
+                            )
                 clipped.append(current.copy())
             elif previous_inside:
                 intersection = self._segment_edge_intersection(previous, current, edge_name, xmin, ymin, xmax, ymax)
                 if intersection is not None:
                     clipped.append(intersection)
+                    if enable_logging:
+                        self.log.iteration(
+                            f"Intersecao saindo em {edge_name}: ({intersection[0]:.2f}, {intersection[1]:.2f})"
+                        )
 
             previous = current
 
@@ -249,3 +294,15 @@ class ViewportWindowView(OpenGLFrame):
             point[idx] = p1[idx] + t * (p2[idx] - p1[idx])
 
         return point
+
+    def _log_vertices(self, label, vertices):
+        if not vertices:
+            self.log.step(f"{label}: sem vertices.")
+            return
+
+        max_lines = 12
+        for idx, vertex in enumerate(vertices[:max_lines]):
+            self.log.step(f"{label}[{idx}] = ({vertex[0]:.2f}, {vertex[1]:.2f})")
+
+        if len(vertices) > max_lines:
+            self.log.step(f"{label}: ... {len(vertices) - max_lines} vertice(s) omitido(s)")
