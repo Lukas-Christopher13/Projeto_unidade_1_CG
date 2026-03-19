@@ -156,12 +156,16 @@ class LateralBarController:
 
         root = self.view.winfo_toplevel()
         popup = Toplevel(root)
-        popup.geometry(f"{width}x{height}")
-        popup.minsize(width, height)
-        popup.maxsize(width, height)
 
         # Escolher viewport 2D ou 3D baseado no modo atual
         if gl_window_model.is_2d():
+            frame_padding = 80
+            outer_width = width + frame_padding
+            outer_height = height + frame_padding
+
+            popup.geometry(f"{outer_width}x{outer_height}")
+            popup.minsize(outer_width, outer_height)
+            popup.maxsize(outer_width, outer_height)
             popup.title("Viewport 2D")
             viewport_view = ViewportWindowView(
                 popup,
@@ -171,6 +175,9 @@ class LateralBarController:
                 highlightthickness=0,
             )
         else:
+            popup.geometry(f"{width}x{height}")
+            popup.minsize(width, height)
+            popup.maxsize(width, height)
             popup.title("Viewport 3D (Isométrica)")
             viewport_view = ViewportWindow3DView(
                 popup,

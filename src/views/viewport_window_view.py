@@ -45,6 +45,8 @@ def apply_viewport_transform(shape, viewport):
 
 
 class ViewportWindowView(OpenGLFrame):
+    INNER_MARGIN = 40
+
     def __init__(self, root, viewport, shape, **kwargs):
         super().__init__(root, **kwargs)
         self.viewport = viewport
@@ -76,8 +78,18 @@ class ViewportWindowView(OpenGLFrame):
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
-        points, normalize_m, viewport_m = apply_viewport_transform(self.shape, self.viewport)
-        self._log_transform(points, normalize_m, viewport_m)
+        inner_viewport = self._compute_inner_viewport(self.width, self.height)
+        points, normalize_m, viewport_m = apply_viewport_transform(self.shape, inner_viewport)
+        self._log_transform(points, normalize_m, viewport_m, inner_viewport)
+
+        glColor3f(0.2, 0.2, 0.2)
+        glLineWidth(1.0)
+        glBegin(GL_LINE_LOOP)
+        glVertex2f(inner_viewport[0], inner_viewport[1])
+        glVertex2f(inner_viewport[2], inner_viewport[1])
+        glVertex2f(inner_viewport[2], inner_viewport[3])
+        glVertex2f(inner_viewport[0], inner_viewport[3])
+        glEnd()
 
         glPointSize(3.0)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
@@ -92,13 +104,36 @@ class ViewportWindowView(OpenGLFrame):
 
         glFlush()
 
-    def _log_transform(self, points, normalize_m, viewport_m):
+    def _compute_inner_viewport(self, window_width, window_height):
+        xmin, ymin, xmax, ymax = self.viewport
+        target_width = max(1, int(round(xmax - xmin)))
+        target_height = max(1, int(round(ymax - ymin)))
+
+        max_inner_width = max(1, window_width - 2 * self.INNER_MARGIN)
+        max_inner_height = max(1, window_height - 2 * self.INNER_MARGIN)
+
+        inner_width = min(target_width, max_inner_width)
+        inner_height = min(target_height, max_inner_height)
+
+        x0 = (window_width - inner_width) / 2
+        y0 = (window_height - inner_height) / 2
+        x1 = x0 + inner_width
+        y1 = y0 + inner_height
+
+        return (x0, y0, x1, y1)
+
+    def _log_transform(self, points, normalize_m, viewport_m, inner_viewport):
         if self._logged:
             return
 
         xmin, ymin, xmax, ymax = self.viewport
         self.log.header("VIEWPORT 2D")
-        self.log.step(f"Viewport: xmin={xmin}, ymin={ymin}, xmax={xmax}, ymax={ymax}")
+        self.log.step(f"Viewport solicitada: xmin={xmin}, ymin={ymin}, xmax={xmax}, ymax={ymax}")
+        self.log.step(
+            "Viewport desenhada na janela: "
+            f"xmin={inner_viewport[0]:.2f}, ymin={inner_viewport[1]:.2f}, "
+            f"xmax={inner_viewport[2]:.2f}, ymax={inner_viewport[3]:.2f}"
+        )
         self.log.separator()
         self.log.step("Matriz de Viewport (NDC → viewport):")
         self.log.matrix("M_viewport", viewport_m)
