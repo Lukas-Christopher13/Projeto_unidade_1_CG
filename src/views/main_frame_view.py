@@ -11,6 +11,7 @@ class MainFrameView(Frame):
     MINIMIZED_TERMINAL_HEIGHT = 28
     EXPANDED_TERMINAL_RATIO = 0.30
     MIN_CANVAS_VISIBLE_HEIGHT = 180
+    RESERVED_LOG_SPACE_HEIGHT = 220
 
     def __init__(self, parent, controller, **kwargs):  # adicionar controller
         super().__init__(parent, **kwargs)
@@ -33,7 +34,20 @@ class MainFrameView(Frame):
         self.gl_container = Frame(self.content_frame, bd=0, highlightthickness=0)
         self.gl_container.pack(side=LEFT, fill=BOTH, expand=True)
 
-        self.gl_window_view = GlWindowView(self.gl_container, bd=0, highlightthickness=0)
+        # Keeps the cartesian plane constrained above the log area.
+        self.log_reserved_space = Frame(
+            self.gl_container,
+            bd=0,
+            highlightthickness=0,
+            height=self.RESERVED_LOG_SPACE_HEIGHT,
+        )
+        self.log_reserved_space.pack(side=BOTTOM, fill=X)
+        self.log_reserved_space.pack_propagate(False)
+
+        self.gl_view_frame = Frame(self.gl_container, bd=0, highlightthickness=0)
+        self.gl_view_frame.pack(side=TOP, fill=BOTH, expand=True)
+
+        self.gl_window_view = GlWindowView(self.gl_view_frame, bd=0, highlightthickness=0)
         self.gl_window_view.pack(fill=BOTH, expand=True, padx=0, pady=0)
 
         self.lateral_bar_view = LateralBarView(self.content_frame)
