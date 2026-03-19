@@ -20,18 +20,13 @@ class Pipeline2D:
 
         viewport_width = max(1, self.viewport_xmax - self.viewport_xmin)
         viewport_height = max(1, self.viewport_ymax - self.viewport_ymin)
-        aspect = viewport_width / viewport_height
 
-        if aspect >= 1:
-            self.world_xmin =  self.world_xmin * aspect
-            self.world_xmax =  self.world_xmax * aspect
-            self.world_ymin =  self.world_ymin
-            self.world_ymax =  self.world_ymax
-        else:
-            self.world_xmin =  self.world_xmin
-            self.world_xmax =  self.world_xmax
-            self.world_ymin =  self.world_ymin / aspect
-            self.world_ymax =  self.world_ymax / aspect
+        half_w = viewport_width / 2.0
+        half_h = viewport_height / 2.0
+        self.world_xmin = -half_w
+        self.world_xmax = half_w
+        self.world_ymin = -half_h
+        self.world_ymax = half_h
 
     def transform(self, shape):
         #modeling_transformation = None #Implementar () #aparentemente não precisa - o Shape Ja faz!!!
